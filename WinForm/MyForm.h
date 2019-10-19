@@ -171,7 +171,7 @@ namespace WinForm {
 			this->b_Text3->Name = L"b_Text3";
 			this->b_Text3->Size = System::Drawing::Size(100, 29);
 			this->b_Text3->TabIndex = 57;
-			this->b_Text3->Text = L"1";
+			this->b_Text3->Text = L"10";
 			// 
 			// button7
 			// 
@@ -399,7 +399,7 @@ namespace WinForm {
 		{
 			f[i].gamma = m/p;
 
-			m = (double)(rand() % 7 + 1);
+			m = (double)(rand() % 15 + 1);
 			p = (double)(rand() % 10 + 2);
 			zn = rand() % 2;
 
@@ -449,6 +449,7 @@ namespace WinForm {
 			for (int j = 0; j < n; j++)
 			{
 				vplus1[j] = RK4(v[j], h, f[j]);
+				v[j] = vplus1[j];
 			}
 			x = xInc(x, h);
 			f1_list->Add(x, vplus1[0]);
