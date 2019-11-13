@@ -68,7 +68,14 @@ namespace WinForm {
 	private: System::Windows::Forms::Label^  label2;
 	private: System::Windows::Forms::TextBox^  g_Text;
 	private: System::Windows::Forms::Label^  label3;
-	private: System::Windows::Forms::TextBox^  textBox3;
+	private: System::Windows::Forms::TextBox^  Alpha_Text;
+	private: System::Windows::Forms::Label^  label5;
+	private: System::Windows::Forms::TextBox^  t_Text;
+	private: System::Windows::Forms::Label^  label6;
+	private: System::Windows::Forms::TextBox^  E_Text;
+	private: System::Windows::Forms::Label^  label7;
+	private: System::Windows::Forms::TextBox^  Q_Text;
+
 
 
 	private:
@@ -110,7 +117,13 @@ namespace WinForm {
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->g_Text = (gcnew System::Windows::Forms::TextBox());
 			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
+			this->Alpha_Text = (gcnew System::Windows::Forms::TextBox());
+			this->label5 = (gcnew System::Windows::Forms::Label());
+			this->t_Text = (gcnew System::Windows::Forms::TextBox());
+			this->label6 = (gcnew System::Windows::Forms::Label());
+			this->E_Text = (gcnew System::Windows::Forms::TextBox());
+			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->Q_Text = (gcnew System::Windows::Forms::TextBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -246,9 +259,9 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->label4->Location = System::Drawing::Point(124, 529);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(58, 24);
+			this->label4->Size = System::Drawing::Size(62, 24);
 			this->label4->TabIndex = 76;
-			this->label4->Text = L" Y2 = ";
+			this->label4->Text = L" Ф2 = ";
 			// 
 			// label11
 			// 
@@ -257,9 +270,9 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->label11->Location = System::Drawing::Point(123, 494);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(58, 24);
+			this->label11->Size = System::Drawing::Size(62, 24);
 			this->label11->TabIndex = 75;
-			this->label11->Text = L" Y1 = ";
+			this->label11->Text = L" Ф1 = ";
 			// 
 			// Y1_Text2
 			// 
@@ -286,9 +299,9 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->label12->Location = System::Drawing::Point(121, 459);
 			this->label12->Name = L"label12";
-			this->label12->Size = System::Drawing::Size(60, 24);
+			this->label12->Size = System::Drawing::Size(58, 24);
 			this->label12->TabIndex = 72;
-			this->label12->Text = L" X2 = ";
+			this->label12->Text = L" Т2 = ";
 			// 
 			// label13
 			// 
@@ -298,9 +311,9 @@ namespace WinForm {
 			this->label13->ImageAlign = System::Drawing::ContentAlignment::MiddleRight;
 			this->label13->Location = System::Drawing::Point(121, 424);
 			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(60, 24);
+			this->label13->Size = System::Drawing::Size(58, 24);
 			this->label13->TabIndex = 71;
-			this->label13->Text = L" X1 = ";
+			this->label13->Text = L" Т1 = ";
 			// 
 			// X1_Text2
 			// 
@@ -319,7 +332,7 @@ namespace WinForm {
 			this->button4->Name = L"button4";
 			this->button4->Size = System::Drawing::Size(184, 60);
 			this->button4->TabIndex = 69;
-			this->button4->Text = L"Изменить масштаб от Y1 до Y2";
+			this->button4->Text = L"Изменить масштаб от Ф1 до Ф2";
 			this->button4->UseVisualStyleBackColor = true;
 			this->button4->Click += gcnew System::EventHandler(this, &MyForm::button4_Click);
 			// 
@@ -331,7 +344,7 @@ namespace WinForm {
 			this->button5->Name = L"button5";
 			this->button5->Size = System::Drawing::Size(184, 60);
 			this->button5->TabIndex = 68;
-			this->button5->Text = L"Изменить масштаб от X1 до X2";
+			this->button5->Text = L"Изменить масштаб от T1 до T2";
 			this->button5->UseVisualStyleBackColor = true;
 			this->button5->Click += gcnew System::EventHandler(this, &MyForm::button5_Click);
 			// 
@@ -365,7 +378,7 @@ namespace WinForm {
 			this->g_Text->Name = L"g_Text";
 			this->g_Text->Size = System::Drawing::Size(80, 29);
 			this->g_Text->TabIndex = 79;
-			this->g_Text->Text = L"1.5";
+			this->g_Text->Text = L"1,5";
 			this->g_Text->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox3_TextChanged);
 			// 
 			// label3
@@ -379,23 +392,92 @@ namespace WinForm {
 			this->label3->TabIndex = 82;
 			this->label3->Text = L" α = ";
 			// 
-			// textBox3
+			// Alpha_Text
 			// 
-			this->textBox3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->Alpha_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->textBox3->Location = System::Drawing::Point(356, 314);
-			this->textBox3->Name = L"textBox3";
-			this->textBox3->Size = System::Drawing::Size(80, 29);
-			this->textBox3->TabIndex = 81;
-			this->textBox3->Text = L"1.5";
+			this->Alpha_Text->Location = System::Drawing::Point(356, 314);
+			this->Alpha_Text->Name = L"Alpha_Text";
+			this->Alpha_Text->Size = System::Drawing::Size(80, 29);
+			this->Alpha_Text->TabIndex = 81;
+			this->Alpha_Text->Text = L"0,28";
+			// 
+			// label5
+			// 
+			this->label5->AutoSize = true;
+			this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label5->Location = System::Drawing::Point(303, 352);
+			this->label5->Name = L"label5";
+			this->label5->Size = System::Drawing::Size(51, 24);
+			this->label5->TabIndex = 84;
+			this->label5->Text = L" tn = ";
+			// 
+			// t_Text
+			// 
+			this->t_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->t_Text->Location = System::Drawing::Point(356, 349);
+			this->t_Text->Name = L"t_Text";
+			this->t_Text->Size = System::Drawing::Size(80, 29);
+			this->t_Text->TabIndex = 83;
+			this->t_Text->Text = L"1,2";
+			// 
+			// label6
+			// 
+			this->label6->AutoSize = true;
+			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label6->Location = System::Drawing::Point(293, 387);
+			this->label6->Name = L"label6";
+			this->label6->Size = System::Drawing::Size(72, 24);
+			this->label6->TabIndex = 86;
+			this->label6->Text = L" E(n) = ";
+			// 
+			// E_Text
+			// 
+			this->E_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->E_Text->Location = System::Drawing::Point(371, 384);
+			this->E_Text->Name = L"E_Text";
+			this->E_Text->Size = System::Drawing::Size(63, 29);
+			this->E_Text->TabIndex = 85;
+			this->E_Text->Text = L"2";
+			// 
+			// label7
+			// 
+			this->label7->AutoSize = true;
+			this->label7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label7->Location = System::Drawing::Point(293, 422);
+			this->label7->Name = L"label7";
+			this->label7->Size = System::Drawing::Size(74, 24);
+			this->label7->TabIndex = 88;
+			this->label7->Text = L" Q(n) = ";
+			// 
+			// Q_Text
+			// 
+			this->Q_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Q_Text->Location = System::Drawing::Point(371, 419);
+			this->Q_Text->Name = L"Q_Text";
+			this->Q_Text->Size = System::Drawing::Size(63, 29);
+			this->Q_Text->TabIndex = 87;
+			this->Q_Text->Text = L"3";
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1461, 601);
+			this->Controls->Add(this->label7);
+			this->Controls->Add(this->Q_Text);
+			this->Controls->Add(this->label6);
+			this->Controls->Add(this->E_Text);
+			this->Controls->Add(this->label5);
+			this->Controls->Add(this->t_Text);
 			this->Controls->Add(this->label3);
-			this->Controls->Add(this->textBox3);
+			this->Controls->Add(this->Alpha_Text);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->g_Text);
 			this->Controls->Add(this->pictureBox1);
@@ -448,6 +530,11 @@ namespace WinForm {
 		double h = Convert::ToDouble(h_Text3->Text);
 		int k = Convert::ToInt32(textBox1->Text);
 		double b = Convert::ToDouble(b_Text3->Text);
+		double g = Convert::ToDouble(g_Text->Text);
+		double alpha = Convert::ToDouble(Alpha_Text->Text);
+		double En = Convert::ToDouble(E_Text->Text);
+		double Qn = Convert::ToDouble(Q_Text->Text);
+		double tn = Convert::ToDouble(t_Text->Text);
 		double x = 0.0;
 		Ur *f = new Ur[n];
 		int i;
@@ -494,7 +581,7 @@ namespace WinForm {
 		{
 			for (int j = 0; j < n; j++)
 			{
-				vplus1[j] = RK4(v[j], h, f[j]);
+				vplus1[j] = RK4(x, v[j], h, f[j], g, En, tn, Qn, alpha);
 				v[j] = vplus1[j];
 			}
 			x = xInc(x, h);
