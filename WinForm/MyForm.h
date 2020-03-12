@@ -71,9 +71,12 @@ namespace WinForm {
 	private: System::Windows::Forms::TabPage^  tabPage2;
 	private: ZedGraph::ZedGraphControl^  zedGraphControl1;
 	private: System::Windows::Forms::DataGridView^  dataGridView1;
-
-
 	private: ZedGraph::ZedGraphControl^  zedGraphControl2;
+
+	private:
+
+
+
 	private: System::Windows::Forms::TextBox^  Y1_Text2;
 
 
@@ -548,6 +551,7 @@ namespace WinForm {
 			// 
 			// zedGraphControl2
 			// 
+			this->zedGraphControl2->ImeMode = System::Windows::Forms::ImeMode::On;
 			this->zedGraphControl2->IsShowPointValues = false;
 			this->zedGraphControl2->Location = System::Drawing::Point(639, 145);
 			this->zedGraphControl2->Name = L"zedGraphControl2";
@@ -913,20 +917,26 @@ namespace WinForm {
 
 		double tmax_limit = t + 0.05;
 
-		LineItem Curve1 = panel1->AddCurve("Ф1(t)", f1_list, Color::Red, SymbolType::None);
-		LineItem Curve2 = panel1->AddCurve("Ф2(t)", f2_list, Color::Blue, SymbolType::None);
-		LineItem Curve3 = panel1->AddCurve("Ф3(t)", f3_list, Color::Green, SymbolType::None);
-		LineItem Curve4 = panel1->AddCurve("Ф4(t)", f4_list, Color::Brown, SymbolType::None);
-		LineItem Curve5 = panel1->AddCurve("Ф5(t)", f5_list, Color::Black, SymbolType::None);
+		LineItem ^Curve1 = panel1->AddCurve("Ф1(t)", f1_list, Color::Red, SymbolType::None);
+		LineItem ^Curve2 = panel1->AddCurve("Ф2(t)", f2_list, Color::Blue, SymbolType::None);
+		LineItem ^Curve3 = panel1->AddCurve("Ф3(t)", f3_list, Color::Green, SymbolType::None);
+		LineItem ^Curve4 = panel1->AddCurve("Ф4(t)", f4_list, Color::Brown, SymbolType::None);
+		LineItem ^Curve5 = panel1->AddCurve("Ф5(t)", f5_list, Color::Black, SymbolType::None);
 
-		LineItem Curve6 = panel2->AddCurve("Omega(i)", g_list, Color::Red, SymbolType::None);
+		LineItem ^Curve6 = panel2->AddCurve("Omega(i)", g_list, Color::Red, SymbolType::Circle);
 
-		LineItem Curve8 = panel4->AddCurve("E1(t)", E1_list, Color::Red, SymbolType::None);
-		LineItem Curve9 = panel4->AddCurve("E2(t)", E2_list, Color::Blue, SymbolType::None);
-		LineItem Curve10 = panel4->AddCurve("E3(t)", E3_list, Color::Green, SymbolType::None);
-		LineItem Curve11 = panel4->AddCurve("E4(t)", E4_list, Color::Brown, SymbolType::None);
-		LineItem Curve12 = panel4->AddCurve("E5(t)", E5_list, Color::Black, SymbolType::None);
+		LineItem ^Curve8 = panel4->AddCurve("E1(t)", E1_list, Color::Red, SymbolType::None);
+		LineItem ^Curve9 = panel4->AddCurve("E2(t)", E2_list, Color::Blue, SymbolType::None);
+		LineItem ^Curve10 = panel4->AddCurve("E3(t)", E3_list, Color::Green, SymbolType::None);
+		LineItem ^Curve11 = panel4->AddCurve("E4(t)", E4_list, Color::Brown, SymbolType::None);
+		LineItem ^Curve12 = panel4->AddCurve("E5(t)", E5_list, Color::Black, SymbolType::None);
 
+
+		Curve6->Line->IsVisible = false;
+		Curve6->Symbol->Fill->Color = Color::Red;
+		Curve6->Symbol->Fill->Type = FillType::Solid;
+		Curve6->Symbol->Size = 6;
+				
 		panel1->XAxis->Min = tmin_limit;
 		panel1->XAxis->Max = tmax_limit;
 
@@ -942,7 +952,7 @@ namespace WinForm {
 		zedGraphControl2->Invalidate();
 		zedGraphControl4->AxisChange();
 		zedGraphControl4->Invalidate();
-
+		
 		delete[]f;
 		delete[]v;
 		delete[]vplus1;
