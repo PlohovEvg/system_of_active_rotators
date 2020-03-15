@@ -757,11 +757,7 @@ namespace WinForm {
 		PointPairList^ f4_list = gcnew PointPairList();
 		PointPairList^ f5_list = gcnew PointPairList();
 		PointPairList^ g_list = gcnew PointPairList();
-		PointPairList^ E1_list = gcnew PointPairList();
-		PointPairList^ E2_list = gcnew PointPairList();
-		PointPairList^ E3_list = gcnew PointPairList();
-		PointPairList^ E4_list = gcnew PointPairList();
-		PointPairList^ E5_list = gcnew PointPairList();
+		PointPairList^ E_list = gcnew PointPairList();		
 		PointPairList^ Spaik_list = gcnew PointPairList();
 
 		int n = Convert::ToInt32(n_Text3->Text);              //Число уравнений
@@ -777,7 +773,7 @@ namespace WinForm {
 		int *k;             //Число спайков каждого отдельного ротатора  
 		int it = 0;            //Индекс строк в таблице
 		double t = 0.0;        //Текущее время
-		double *ts;       //Время предыдущего спайка для каждого ротатора
+		double ts = 0.0;       //Время последнего спайка 
 		double *Fi0;		
 		Ur *f = new Ur[n]; //Массив значений γ
 		int i;
@@ -792,8 +788,7 @@ namespace WinForm {
 		srand(time(NULL));
 
 		v = new double[n];
-		vplus1 = new double[n];
-		ts = new double[n];
+		vplus1 = new double[n];		
 		Omega = new double[n];
 		Fi0 = new double[n];
 		k = new int[n];
@@ -810,8 +805,7 @@ namespace WinForm {
 
 		for (i = 0; i < n; i++)                //Начальные условия для каждого из φ равны нулю
 		{
-			v[i] = vplus1[i] = 0.0;
-			ts[i] = 0.0;                       //Заполнение массива ts нулями
+			v[i] = vplus1[i] = 0.0;			                      
 			k[i] = 0;                          //Изначальное число спайков равно нулю
 		}
 		
@@ -828,25 +822,25 @@ namespace WinForm {
 		{
 			for (int j = 0; j < n; j++)
 			{
-				vplus1[j] = RK4(t, ts[j], v[j], h, f[j], g, E0, E0Star, alpha);
+				vplus1[j] = RK4(t, ts, v[j], h, f[j], g, E0, E0Star, alpha);
 				v[j] = vplus1[j];
 
 				if (v[j] >= 2 * M_PI)       //В моемент импульса j-го ротатора
 				{
 					k[j]++;                 //Увеличение числа спайков на 1
 					double oldE0 = E0;
-					E0 = E(t + h, ts[j], E0, E0Star, alpha);   //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts[j], oldE0, E0Star, alpha);  
+					E0 = E(t, ts, E0, E0Star, alpha);   //Пересчет начальных условий
+					E0Star = dEdt(t, ts, oldE0, E0Star, alpha);  
 					E0Star += (alpha*alpha) / n; 
-					ts[j] = xInc(t, h);  //Изменение времени последнего спайка
+					ts = t;  //Изменение времени последнего спайка
 					v[j] = 0.0;			 //Обнуление значения ф
-					if (ts[j] >= T02)    //Отбражение нового спайка на графике
+					if (ts >= T02)    //Отбражение нового спайка на графике
 					{
 						Spaik_list->Clear();
-						Spaik_list->Add(ts[j], 0.0);
-						Spaik_list->Add(ts[j], 1.0);
+						Spaik_list->Add(ts, 0.0);
+						Spaik_list->Add(ts, 1.0);
 
-						LineItem Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+						LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
 
 						zedGraphControl3->AxisChange();
 						zedGraphControl3->Invalidate();
@@ -860,13 +854,9 @@ namespace WinForm {
 			f4_list->Add(t, v[3]);
 			f5_list->Add(t, v[4]);
 
-			if (t >= T02) //Заполнение таблицы точек для вывода графика E(t) для первых пяти ротаторов
+			if (t >= T02) //Заполнение таблицы точек для вывода графика E(t) 
 			{
-				E1_list->Add(t, E(t, ts[0], E0, E0Star, alpha));
-				E2_list->Add(t, E(t, ts[1], E0, E0Star, alpha));
-				E3_list->Add(t, E(t, ts[2], E0, E0Star, alpha));
-				E4_list->Add(t, E(t, ts[3], E0, E0Star, alpha));
-				E5_list->Add(t, E(t, ts[4], E0, E0Star, alpha));
+				E_list->Add(t, E(t, ts, E0, E0Star, alpha));				
 			}
 
 			if ((t == T01)||(abs(t - T01) < h*0.5)||(T01 == 0.0))  //Запоминание начальных значений ф для частоты Omega
@@ -925,12 +915,7 @@ namespace WinForm {
 
 		LineItem ^Curve6 = panel2->AddCurve("Omega(i)", g_list, Color::Red, SymbolType::Circle);
 
-		LineItem ^Curve8 = panel4->AddCurve("E1(t)", E1_list, Color::Red, SymbolType::None);
-		LineItem ^Curve9 = panel4->AddCurve("E2(t)", E2_list, Color::Blue, SymbolType::None);
-		LineItem ^Curve10 = panel4->AddCurve("E3(t)", E3_list, Color::Green, SymbolType::None);
-		LineItem ^Curve11 = panel4->AddCurve("E4(t)", E4_list, Color::Brown, SymbolType::None);
-		LineItem ^Curve12 = panel4->AddCurve("E5(t)", E5_list, Color::Black, SymbolType::None);
-
+		LineItem ^Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);		
 
 		Curve6->Line->IsVisible = false;
 		Curve6->Symbol->Fill->Color = Color::Red;
@@ -955,8 +940,7 @@ namespace WinForm {
 		
 		delete[]f;
 		delete[]v;
-		delete[]vplus1;
-		delete[]ts;
+		delete[]vplus1;		
 		delete[]Omega;
 		delete[]Fi0;
 		delete[]k;

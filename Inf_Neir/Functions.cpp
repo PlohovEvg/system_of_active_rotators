@@ -26,10 +26,10 @@ double f(double t, double _ts, double fi, Ur d, double _g, double _E0, double _E
 
 double E(double t, double ts, double E0, double E0_star, double alpha)
 {
-	return E0*exp(-alpha*(t-ts)) + (E0_star + alpha*E0)*(t-ts)*exp(-alpha*(t-ts));
+	return exp(-alpha*(t - ts))*(E0 + (t - ts)*(E0_star + alpha*E0));
 }
 
 double dEdt(double t, double ts, double E0, double E0_star, double alpha)
 {
-	return -alpha*E0*exp(-alpha*(t - ts)) + (E0_star + alpha*E0)*exp(-alpha*(t - ts)) - alpha*(E0_star + alpha*E0)*(t - ts)*exp(-alpha*(t - ts));
+	return exp(-alpha*(t - ts))*(-(alpha*alpha)*(t - ts)*E0 + E0_star*(1 - alpha*(t - ts)));
 }
