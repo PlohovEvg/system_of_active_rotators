@@ -1,6 +1,6 @@
 #include "Functions.h"
 
-double RK4(double t, double ts, double vn, double h, Ur d, double g, double E0, double E0_star, double alpha)
+double RK4(double t, double ts, double vn, double h, double d, double g, double E0, double E0_star, double alpha)
 {
 	double vnplus1, k1, k2, k3, k4;
 
@@ -18,10 +18,10 @@ double xInc(double x, double h)
 	return x + h;
 }
 
-double f(double t, double _ts, double fi, Ur d, double _g, double _E0, double _E0_star, double _alpha)
+double f(double t, double _ts, double fi, double d, double _g, double _E0, double _E0_star, double _alpha)
 {
 	double Et = E(t, _ts, _E0, _E0_star, _alpha);
-	return d.gamma - sin(fi) + _g*Et;
+	return d - sin(fi) + _g*Et;
 }
 
 double E(double t, double ts, double E0, double E0_star, double alpha)
