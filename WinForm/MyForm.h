@@ -117,7 +117,7 @@ namespace WinForm {
 			n = Convert::ToInt32(n_Text3->Text);
 			gamma = new double[n];			
 			gamma = Set_Gamma(n);
-			qsort((void *)gamma, (size_t)n, sizeof(double), compare);
+			//qsort((void *)gamma, (size_t)n, sizeof(double), compare);
 		}
 
 	protected:
@@ -1171,21 +1171,21 @@ namespace WinForm {
 		panel4->CurveList->Clear();
 		panel5->CurveList->Clear();
 
-		panel1->Title = "Графики Ф(t) для первых пяти ротаторов";
+		panel1->Title = "Графики изменения Ф(t) для первых пяти ротаторов";
 		panel1->XAxis->Title = "t";
 		panel1->YAxis->Title = "Ф";
 
-		panel2->Title = "График Omega(i)";
-		panel2->XAxis->Title = "I";
+		panel2->Title = "График средних частот Omega(i)";
+		panel2->XAxis->Title = "i";
 		panel2->YAxis->Title = "Omega";		
 
-		panel4->Title = "График E(t)";
+		panel4->Title = "График внешнего поля E(t)";
 		panel4->XAxis->Title = "t";
 		panel4->YAxis->Title = "E(t)";
 
-		panel5->Title = "График Fi(t) в конечный момент времени";
-		panel5->XAxis->Title = "I";
-		panel5->YAxis->Title = "Fi(T)";
+		panel5->Title = "Фазы Ф(t) в конечный момент времени";
+		panel5->XAxis->Title = "i";
+		panel5->YAxis->Title = "Ф(t)";
 
 		PointPairList^ f1_list = gcnew PointPairList();    //Список точек для графика фазы ф1(t)
 		PointPairList^ f2_list = gcnew PointPairList();    //Список точек для графика фазы ф2(t)
@@ -1196,7 +1196,7 @@ namespace WinForm {
 		PointPairList^ E_list = gcnew PointPairList();	   //Список точек для графика поля E(t)
 		PointPairList^ Fi_list = gcnew PointPairList();	   //Список точек для графика фаз в конечный момент времени
 		
-		n = Convert::ToInt32(n_Text3->Text);                 //Число уравнений в системе
+		n = Convert::ToInt32(n_Text3->Text);                  //Число уравнений в системе
 		double h = Convert::ToDouble(h_Text3->Text);          //Шаг
 		int p = Convert::ToInt32(textBox1->Text);             //Число итераций
 		double b = Convert::ToDouble(b_Text3->Text);          //Максимальное время, до которого будет подсчет
@@ -1217,9 +1217,9 @@ namespace WinForm {
 		int i;
 		double *v, *vplus1;	                                 //Фазы
 		double *Omega;                                       //Средние частоты
-		double MaxOmega = -100000.0, MinOmega = 100000.0;
-		double MaxV = -1.0, MinV = 10.0;
-		string str = "";
+		double MaxOmega = -100000.0, MinOmega = 100000.0;    //Максимальная и минимальная средние частоты 
+		double MaxV = -1.0, MinV = 10.0;                     //Максимальная и минимальная фазы при t=T
+		string str = "";                                     //Строка для вывода справочных сведений
 		char buffer[100];
 		bool flag1 = false;
 		
@@ -1234,7 +1234,7 @@ namespace WinForm {
 		if (checkBox1->Checked == true)  //Если установлен флаг "Изменять gamma" 
 		{
 			gamma = Set_Gamma(n);
-			qsort(gamma, n, sizeof(double), compare); //Сортировка значений по возрастанию
+			//qsort(gamma, n, sizeof(double), compare); //Сортировка значений по возрастанию
 		}		
 
 		double tmin_limit = t - 0.05;
@@ -1488,11 +1488,13 @@ private: System::Void radioButton1_CheckedChanged(System::Object^  sender, Syste
 {
 	zedGraphControl2->Visible = true;
 	zedGraphControl5->Visible = false;
+	dataGridView1->Visible = true;
 }
 private: System::Void radioButton2_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
 {
 	zedGraphControl5->Visible = true;
 	zedGraphControl2->Visible = false;
+	dataGridView1->Visible = false;
 }
 
 private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e)
