@@ -1405,21 +1405,23 @@ namespace WinForm {
 		panel1->XAxis->Min = tmin_limit;
 		panel1->XAxis->Max = tmax_limit;
 
-		panel2->XAxis->Min = -0.05;
-		panel2->XAxis->Max = n + 0.05;
-		panel2->YAxis->Min = MinOmega - 0.5;
-		panel2->YAxis->Max = MaxOmega + 0.5;
+		panel2->XAxis->Min = -1;
+		panel2->XAxis->Max = n;	
+		panel2->YAxis->Min = MinOmega - (MaxOmega - MinOmega) / 2;
+		panel2->YAxis->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
+		panel2->YAxis->Min = MinOmega - 0.1;
+		panel2->YAxis->Max = MaxOmega + 0.1;
 
-		panel3->XAxis->Max = t + 0.2;
-		panel3->XAxis->Min = T02 - 0.2;
+		panel3->XAxis->Max = t + 0.05;
+		panel3->XAxis->Min = T02 - 0.05;
 
-		panel4->XAxis->Max = t + 0.2;
-		panel4->XAxis->Min = T02 - 0.2;
+		panel4->XAxis->Max = t + 0.05;
+		panel4->XAxis->Min = T02 - 0.05;
 
-		panel5->XAxis->Min = -0.05;
-		panel5->XAxis->Max = n + 0.05;
-		panel5->YAxis->Min = MinV - 0.5;
-		panel5->YAxis->Max = MaxV + 0.5;
+		panel5->XAxis->Min = -1;
+		panel5->XAxis->Max = n;
+		panel5->YAxis->Min = MinV - 0.1;
+		panel5->YAxis->Max = MaxV + 0.1;
 
 		zedGraphControl1->AxisChange();
 		zedGraphControl1->Invalidate();
