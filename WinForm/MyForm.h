@@ -273,6 +273,9 @@ namespace WinForm {
 			this->zedGraphControl4 = (gcnew ZedGraph::ZedGraphControl());
 			this->zedGraphControl3 = (gcnew ZedGraph::ZedGraphControl());
 			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
+			this->dataGridView3 = (gcnew System::Windows::Forms::DataGridView());
+			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->Y1_Text = (gcnew System::Windows::Forms::TextBox());
 			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->label16 = (gcnew System::Windows::Forms::Label());
@@ -292,9 +295,6 @@ namespace WinForm {
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->zedGraphControl6 = (gcnew ZedGraph::ZedGraphControl());
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
-			this->dataGridView3 = (gcnew System::Windows::Forms::DataGridView());
-			this->Column1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->Column2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
@@ -917,6 +917,28 @@ namespace WinForm {
 			this->tabPage4->Text = L"Графики 3";
 			this->tabPage4->UseVisualStyleBackColor = true;
 			// 
+			// dataGridView3
+			// 
+			this->dataGridView3->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->dataGridView3->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
+				this->Column1,
+					this->Column2
+			});
+			this->dataGridView3->Location = System::Drawing::Point(1143, 386);
+			this->dataGridView3->Name = L"dataGridView3";
+			this->dataGridView3->Size = System::Drawing::Size(245, 174);
+			this->dataGridView3->TabIndex = 141;
+			// 
+			// Column1
+			// 
+			this->Column1->HeaderText = L"g";
+			this->Column1->Name = L"Column1";
+			// 
+			// Column2
+			// 
+			this->Column2->HeaderText = L"Число кластеров";
+			this->Column2->Name = L"Column2";
+			// 
 			// Y1_Text
 			// 
 			this->Y1_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
@@ -1110,28 +1132,6 @@ namespace WinForm {
 			// 
 			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &MyForm::backgroundWorker1_DoWork);
 			// 
-			// dataGridView3
-			// 
-			this->dataGridView3->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataGridView3->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
-				this->Column1,
-					this->Column2
-			});
-			this->dataGridView3->Location = System::Drawing::Point(1143, 386);
-			this->dataGridView3->Name = L"dataGridView3";
-			this->dataGridView3->Size = System::Drawing::Size(245, 174);
-			this->dataGridView3->TabIndex = 141;
-			// 
-			// Column1
-			// 
-			this->Column1->HeaderText = L"g";
-			this->Column1->Name = L"Column1";
-			// 
-			// Column2
-			// 
-			this->Column2->HeaderText = L"Число кластеров";
-			this->Column2->Name = L"Column2";
-			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -1222,6 +1222,7 @@ namespace WinForm {
 		string str = "";                                     //Строка для вывода справочных сведений
 		char buffer[100];
 		bool flag1 = false;
+		bool spike_flag = false;
 		
 		v = new double[n];
 		vplus1 = new double[n];		
@@ -1273,7 +1274,7 @@ namespace WinForm {
 					{
 						k[j]++;  //Увеличение числа спайков на 1
 					}
-					if (ts >= T02)    //Отбражение нового спайка на графике
+					if ((ts >= T02)&&(!spike_flag))    //Отбражение нового спайка на графике
 					{
 						while (backgroundWorker1->IsBusy)
 						{
@@ -1281,10 +1282,12 @@ namespace WinForm {
 							Application::DoEvents();
 						}
 						backgroundWorker1->RunWorkerAsync();
+						spike_flag = true;
 					}
 				}
 			}
 			t = xInc(t, h);  //Увеличение времени на h
+			spike_flag = false;
 			f1_list->Add(t, v[0]);
 			f2_list->Add(t, v[1]);
 			f3_list->Add(t, v[2]);
