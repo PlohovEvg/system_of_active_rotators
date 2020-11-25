@@ -98,11 +98,11 @@ namespace WinForm {
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
 	public:
-		int n;			
-		double *gamma;
-		GraphPane^ panel3;
-		PointPairList^ Spaik_list;						
-    	double ts;
+	int n;
+	double *gamma;
+	GraphPane^ panel3;
+	PointPairList^ Spaik_list;
+	double ts;
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -205,7 +205,12 @@ namespace WinForm {
     private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn3;
     private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn4;
     private: System::Windows::Forms::CheckBox^  checkBox1;
-	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
+    private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
+    private: System::Windows::Forms::TextBox^  Omega1_Text;
+    private: System::Windows::Forms::Label^  Omega2;
+    private: System::Windows::Forms::Label^  Omega1;
+    private: System::Windows::Forms::TextBox^  Omega2_Text;
+    private: System::Windows::Forms::Button^  Change_scale_Omega;
 	private:
 		/// <summary>
 		/// Обязательная переменная конструктора.
@@ -259,6 +264,11 @@ namespace WinForm {
 			this->label21 = (gcnew System::Windows::Forms::Label());
 			this->n_Text3 = (gcnew System::Windows::Forms::TextBox());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
+			this->Omega1_Text = (gcnew System::Windows::Forms::TextBox());
+			this->Omega2 = (gcnew System::Windows::Forms::Label());
+			this->Omega1 = (gcnew System::Windows::Forms::Label());
+			this->Omega2_Text = (gcnew System::Windows::Forms::TextBox());
+			this->Change_scale_Omega = (gcnew System::Windows::Forms::Button());
 			this->radioButton2 = (gcnew System::Windows::Forms::RadioButton());
 			this->radioButton1 = (gcnew System::Windows::Forms::RadioButton());
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
@@ -747,6 +757,11 @@ namespace WinForm {
 			// 
 			// tabPage2
 			// 
+			this->tabPage2->Controls->Add(this->Omega1_Text);
+			this->tabPage2->Controls->Add(this->Omega2);
+			this->tabPage2->Controls->Add(this->Omega1);
+			this->tabPage2->Controls->Add(this->Omega2_Text);
+			this->tabPage2->Controls->Add(this->Change_scale_Omega);
 			this->tabPage2->Controls->Add(this->radioButton2);
 			this->tabPage2->Controls->Add(this->radioButton1);
 			this->tabPage2->Controls->Add(this->dataGridView1);
@@ -760,12 +775,64 @@ namespace WinForm {
 			this->tabPage2->Text = L"Графики 1";
 			this->tabPage2->UseVisualStyleBackColor = true;
 			// 
+			// Omega1_Text
+			// 
+			this->Omega1_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Omega1_Text->Location = System::Drawing::Point(1092, 76);
+			this->Omega1_Text->Name = L"Omega1_Text";
+			this->Omega1_Text->Size = System::Drawing::Size(99, 29);
+			this->Omega1_Text->TabIndex = 145;
+			// 
+			// Omega2
+			// 
+			this->Omega2->AutoSize = true;
+			this->Omega2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Omega2->Location = System::Drawing::Point(1009, 111);
+			this->Omega2->Name = L"Omega2";
+			this->Omega2->Size = System::Drawing::Size(77, 24);
+			this->Omega2->TabIndex = 144;
+			this->Omega2->Text = L" Om2 = ";
+			// 
+			// Omega1
+			// 
+			this->Omega1->AutoSize = true;
+			this->Omega1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Omega1->Location = System::Drawing::Point(1010, 76);
+			this->Omega1->Name = L"Omega1";
+			this->Omega1->Size = System::Drawing::Size(77, 24);
+			this->Omega1->TabIndex = 143;
+			this->Omega1->Text = L" Om1 = ";
+			// 
+			// Omega2_Text
+			// 
+			this->Omega2_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Omega2_Text->Location = System::Drawing::Point(1093, 111);
+			this->Omega2_Text->Name = L"Omega2_Text";
+			this->Omega2_Text->Size = System::Drawing::Size(98, 29);
+			this->Omega2_Text->TabIndex = 142;
+			// 
+			// Change_scale_Omega
+			// 
+			this->Change_scale_Omega->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Change_scale_Omega->Location = System::Drawing::Point(1197, 76);
+			this->Change_scale_Omega->Name = L"Change_scale_Omega";
+			this->Change_scale_Omega->Size = System::Drawing::Size(184, 60);
+			this->Change_scale_Omega->TabIndex = 141;
+			this->Change_scale_Omega->Text = L"Изменить масштаб от Om1 до Om2";
+			this->Change_scale_Omega->UseVisualStyleBackColor = true;
+			this->Change_scale_Omega->Click += gcnew System::EventHandler(this, &MyForm::Change_scale_Omega_Click);
+			// 
 			// radioButton2
 			// 
 			this->radioButton2->AutoSize = true;
 			this->radioButton2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->radioButton2->Location = System::Drawing::Point(1028, 62);
+			this->radioButton2->Location = System::Drawing::Point(1021, 42);
 			this->radioButton2->Name = L"radioButton2";
 			this->radioButton2->Size = System::Drawing::Size(399, 28);
 			this->radioButton2->TabIndex = 117;
@@ -779,7 +846,7 @@ namespace WinForm {
 			this->radioButton1->Checked = true;
 			this->radioButton1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->radioButton1->Location = System::Drawing::Point(1028, 26);
+			this->radioButton1->Location = System::Drawing::Point(1021, 6);
 			this->radioButton1->Name = L"radioButton1";
 			this->radioButton1->Size = System::Drawing::Size(241, 28);
 			this->radioButton1->TabIndex = 116;
@@ -795,9 +862,9 @@ namespace WinForm {
 				this->dataGridViewTextBoxColumn1,
 					this->dataGridViewTextBoxColumn2
 			});
-			this->dataGridView1->Location = System::Drawing::Point(997, 128);
+			this->dataGridView1->Location = System::Drawing::Point(997, 146);
 			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->Size = System::Drawing::Size(445, 439);
+			this->dataGridView1->Size = System::Drawing::Size(445, 421);
 			this->dataGridView1->TabIndex = 115;
 			// 
 			// dataGridViewTextBoxColumn1
@@ -953,22 +1020,22 @@ namespace WinForm {
 			this->label13->AutoSize = true;
 			this->label13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label13->Location = System::Drawing::Point(1071, 358);
+			this->label13->Location = System::Drawing::Point(1051, 355);
 			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(58, 24);
+			this->label13->Size = System::Drawing::Size(77, 24);
 			this->label13->TabIndex = 139;
-			this->label13->Text = L" Y2 = ";
+			this->label13->Text = L" Om2 = ";
 			// 
 			// label16
 			// 
 			this->label16->AutoSize = true;
 			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label16->Location = System::Drawing::Point(1070, 323);
+			this->label16->Location = System::Drawing::Point(1052, 320);
 			this->label16->Name = L"label16";
-			this->label16->Size = System::Drawing::Size(58, 24);
+			this->label16->Size = System::Drawing::Size(77, 24);
 			this->label16->TabIndex = 138;
-			this->label16->Text = L" Y1 = ";
+			this->label16->Text = L" Om1 = ";
 			// 
 			// Y2_Text
 			// 
@@ -997,7 +1064,7 @@ namespace WinForm {
 			this->label17->Name = L"label17";
 			this->label17->Size = System::Drawing::Size(60, 24);
 			this->label17->TabIndex = 135;
-			this->label17->Text = L" X2 = ";
+			this->label17->Text = L" G2 = ";
 			// 
 			// label18
 			// 
@@ -1009,7 +1076,7 @@ namespace WinForm {
 			this->label18->Name = L"label18";
 			this->label18->Size = System::Drawing::Size(60, 24);
 			this->label18->TabIndex = 134;
-			this->label18->Text = L" X1 = ";
+			this->label18->Text = L" G1 = ";
 			// 
 			// X1_Text
 			// 
@@ -1028,7 +1095,7 @@ namespace WinForm {
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(184, 60);
 			this->button3->TabIndex = 132;
-			this->button3->Text = L"Изменить масштаб от Y1 до Y2";
+			this->button3->Text = L"Изменить масштаб от Om1 до Om2";
 			this->button3->UseVisualStyleBackColor = true;
 			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
 			// 
@@ -1040,7 +1107,7 @@ namespace WinForm {
 			this->button6->Name = L"button6";
 			this->button6->Size = System::Drawing::Size(184, 60);
 			this->button6->TabIndex = 131;
-			this->button6->Text = L"Изменить масштаб от X1 до X2";
+			this->button6->Text = L"Изменить масштаб от G1 до G2";
 			this->button6->UseVisualStyleBackColor = true;
 			this->button6->Click += gcnew System::EventHandler(this, &MyForm::button6_Click);
 			// 
@@ -1125,7 +1192,7 @@ namespace WinForm {
 			this->zedGraphControl6->Location = System::Drawing::Point(3, 6);
 			this->zedGraphControl6->Name = L"zedGraphControl6";
 			this->zedGraphControl6->PointValueFormat = L"G";
-			this->zedGraphControl6->Size = System::Drawing::Size(1097, 564);
+			this->zedGraphControl6->Size = System::Drawing::Size(1081, 564);
 			this->zedGraphControl6->TabIndex = 0;
 			// 
 			// backgroundWorker1
@@ -1138,8 +1205,9 @@ namespace WinForm {
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1461, 601);
 			this->Controls->Add(this->tabControl1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Text = L"Исследование коллективной динамики активных ротаторов";
 			this->tabControl1->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
 			this->tabPage1->PerformLayout();
@@ -1708,6 +1776,18 @@ private: System::Void button3_Click(System::Object^  sender, System::EventArgs^ 
 
 	zedGraphControl6->AxisChange();
 	zedGraphControl6->Invalidate();
+}
+private: System::Void Change_scale_Omega_Click(System::Object^  sender, System::EventArgs^  e) 
+{
+	GraphPane ^panel = zedGraphControl2->GraphPane;
+	double Om1 = Convert::ToDouble(Omega1_Text->Text);
+	double Om2 = Convert::ToDouble(Omega2_Text->Text);
+
+	panel->YAxis->Min = Om1;
+	panel->YAxis->Max = Om2;
+
+	zedGraphControl2->AxisChange();
+	zedGraphControl2->Invalidate();
 }
 };
 }
