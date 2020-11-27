@@ -48,6 +48,7 @@ int GetNumberOfClusters(const double *_Omega, const int _n)
 	int *Classes = new int[_n];
 	double cur;
 	bool flag;
+	bool only_one_element_in_cluster;
 
 	for (int i = 0; i < _n; i++)
 	{
@@ -59,6 +60,7 @@ int GetNumberOfClusters(const double *_Omega, const int _n)
 		if (Classes[i] == 0)
 		{
 			flag = false;
+			only_one_element_in_cluster = true;
 			cur = _Omega[i];
 
 			for (int j = i + 1; j < _n; j++)
@@ -67,10 +69,16 @@ int GetNumberOfClusters(const double *_Omega, const int _n)
 				{
 					Classes[i] = Classes[j] = ClusterNum + 1;
 					flag = true;
+					only_one_element_in_cluster = false;
 				}
 			}
+
+			if (only_one_element_in_cluster == true)
+			{
+				Classes[i] = ClusterNum + 1;
+			}
 			
-			if (flag == true)
+			if ((flag == true) || (only_one_element_in_cluster == true))
 			{
 				ClusterNum++;
 			}
@@ -100,9 +108,9 @@ namespace WinForm {
 	public:
 	int n;
 	double *gamma;
-	GraphPane^ panel3;
-	PointPairList^ Spaik_list;
 	double ts;
+	GraphPane^ panel3;
+	PointPairList^ Spaik_list;				 
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -381,9 +389,9 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->checkBox1->Location = System::Drawing::Point(588, 282);
 			this->checkBox1->Name = L"checkBox1";
-			this->checkBox1->Size = System::Drawing::Size(186, 28);
+			this->checkBox1->Size = System::Drawing::Size(191, 28);
 			this->checkBox1->TabIndex = 132;
-			this->checkBox1->Text = L"Изменять gamma";
+			this->checkBox1->Text = L"Изменять набор γ";
 			this->checkBox1->UseVisualStyleBackColor = true;
 			// 
 			// button1
@@ -410,24 +418,24 @@ namespace WinForm {
 			// label9
 			// 
 			this->label9->AutoSize = true;
-			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label9->Location = System::Drawing::Point(525, 143);
+			this->label9->Location = System::Drawing::Point(519, 142);
 			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(62, 24);
+			this->label9->Size = System::Drawing::Size(66, 25);
 			this->label9->TabIndex = 129;
-			this->label9->Text = L" Ф2 = ";
+			this->label9->Text = L" Φ₂ = ";
 			// 
 			// label10
 			// 
 			this->label10->AutoSize = true;
-			this->label10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label10->Location = System::Drawing::Point(524, 108);
+			this->label10->Location = System::Drawing::Point(519, 107);
 			this->label10->Name = L"label10";
-			this->label10->Size = System::Drawing::Size(62, 24);
+			this->label10->Size = System::Drawing::Size(66, 25);
 			this->label10->TabIndex = 128;
-			this->label10->Text = L" Ф1 = ";
+			this->label10->Text = L" Φ₁ = ";
 			// 
 			// Y2_Text2
 			// 
@@ -450,25 +458,25 @@ namespace WinForm {
 			// label14
 			// 
 			this->label14->AutoSize = true;
-			this->label14->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label14->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label14->Location = System::Drawing::Point(522, 73);
+			this->label14->Location = System::Drawing::Point(523, 72);
 			this->label14->Name = L"label14";
-			this->label14->Size = System::Drawing::Size(58, 24);
+			this->label14->Size = System::Drawing::Size(62, 25);
 			this->label14->TabIndex = 125;
-			this->label14->Text = L" Т2 = ";
+			this->label14->Text = L" Т₂ = ";
 			// 
 			// label15
 			// 
 			this->label15->AutoSize = true;
-			this->label15->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label15->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->label15->ImageAlign = System::Drawing::ContentAlignment::MiddleRight;
-			this->label15->Location = System::Drawing::Point(522, 38);
+			this->label15->Location = System::Drawing::Point(523, 37);
 			this->label15->Name = L"label15";
-			this->label15->Size = System::Drawing::Size(58, 24);
+			this->label15->Size = System::Drawing::Size(62, 25);
 			this->label15->TabIndex = 124;
-			this->label15->Text = L" Т1 = ";
+			this->label15->Text = L" Т₁ = ";
 			// 
 			// X1_Text2
 			// 
@@ -487,7 +495,7 @@ namespace WinForm {
 			this->button4->Name = L"button4";
 			this->button4->Size = System::Drawing::Size(184, 60);
 			this->button4->TabIndex = 122;
-			this->button4->Text = L"Изменить масштаб от Ф1 до Ф2";
+			this->button4->Text = L"Изменить масштаб от Φ₁ до Φ₂";
 			this->button4->UseVisualStyleBackColor = true;
 			this->button4->Click += gcnew System::EventHandler(this, &MyForm::button4_Click);
 			// 
@@ -499,7 +507,7 @@ namespace WinForm {
 			this->button5->Name = L"button5";
 			this->button5->Size = System::Drawing::Size(184, 60);
 			this->button5->TabIndex = 121;
-			this->button5->Text = L"Изменить масштаб от T1 до T2";
+			this->button5->Text = L"Изменить масштаб от Т₁ до Т₂";
 			this->button5->UseVisualStyleBackColor = true;
 			this->button5->Click += gcnew System::EventHandler(this, &MyForm::button5_Click);
 			// 
@@ -511,17 +519,20 @@ namespace WinForm {
 			this->zedGraphControl1->PointValueFormat = L"G";
 			this->zedGraphControl1->Size = System::Drawing::Size(565, 567);
 			this->zedGraphControl1->TabIndex = 120;
+			this->zedGraphControl1->GraphPane->Title = "График фаз Ф(t) для первых пяти ротаторов";
+			this->zedGraphControl1->GraphPane->XAxis->Title = "t";
+			this->zedGraphControl1->GraphPane->YAxis->Title = "Ф(t)";
 			// 
 			// label8
 			// 
 			this->label8->AutoSize = true;
-			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label8->Location = System::Drawing::Point(108, 408);
+			this->label8->Location = System::Drawing::Point(98, 405);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(68, 24);
+			this->label8->Size = System::Drawing::Size(77, 29);
 			this->label8->TabIndex = 119;
-			this->label8->Text = L" T02 = ";
+			this->label8->Text = L" T₀₂ = ";
 			// 
 			// T02_text
 			// 
@@ -536,13 +547,13 @@ namespace WinForm {
 			// label5
 			// 
 			this->label5->AutoSize = true;
-			this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label5->Location = System::Drawing::Point(108, 373);
+			this->label5->Location = System::Drawing::Point(98, 370);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(68, 24);
+			this->label5->Size = System::Drawing::Size(77, 29);
 			this->label5->TabIndex = 117;
-			this->label5->Text = L" T01 = ";
+			this->label5->Text = L" T₀₁ = ";
 			// 
 			// T01_text
 			// 
@@ -557,13 +568,13 @@ namespace WinForm {
 			// label7
 			// 
 			this->label7->AutoSize = true;
-			this->label7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label7->Location = System::Drawing::Point(311, 300);
+			this->label7->Location = System::Drawing::Point(314, 297);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(69, 24);
+			this->label7->Size = System::Drawing::Size(63, 29);
 			this->label7->TabIndex = 115;
-			this->label7->Text = L"E ̃_0 = ";
+			this->label7->Text = L"Ẽ₀ = ";
 			// 
 			// E0Star_Text
 			// 
@@ -578,13 +589,13 @@ namespace WinForm {
 			// label6
 			// 
 			this->label6->AutoSize = true;
-			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label6->Location = System::Drawing::Point(318, 266);
+			this->label6->Location = System::Drawing::Point(308, 265);
 			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(59, 24);
+			this->label6->Size = System::Drawing::Size(69, 29);
 			this->label6->TabIndex = 113;
-			this->label6->Text = L" E0 = ";
+			this->label6->Text = L" E₀ = ";
 			// 
 			// E0_Text
 			// 
@@ -599,11 +610,11 @@ namespace WinForm {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label3->Location = System::Drawing::Point(128, 514);
+			this->label3->Location = System::Drawing::Point(111, 511);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(47, 24);
+			this->label3->Size = System::Drawing::Size(60, 29);
 			this->label3->TabIndex = 108;
 			this->label3->Text = L" α = ";
 			// 
@@ -620,11 +631,11 @@ namespace WinForm {
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label2->Location = System::Drawing::Point(128, 479);
+			this->label2->Location = System::Drawing::Point(112, 476);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(47, 24);
+			this->label2->Size = System::Drawing::Size(59, 29);
 			this->label2->TabIndex = 106;
 			this->label2->Text = L" g = ";
 			// 
@@ -664,7 +675,7 @@ namespace WinForm {
 			this->label1->AutoSize = true;
 			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label1->Location = System::Drawing::Point(47, 444);
+			this->label1->Location = System::Drawing::Point(43, 441);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(128, 24);
 			this->label1->TabIndex = 92;
@@ -695,11 +706,11 @@ namespace WinForm {
 			// label24
 			// 
 			this->label24->AutoSize = true;
-			this->label24->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label24->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label24->Location = System::Drawing::Point(128, 338);
+			this->label24->Location = System::Drawing::Point(113, 338);
 			this->label24->Name = L"label24";
-			this->label24->Size = System::Drawing::Size(48, 24);
+			this->label24->Size = System::Drawing::Size(61, 29);
 			this->label24->TabIndex = 89;
 			this->label24->Text = L" T = ";
 			// 
@@ -716,11 +727,11 @@ namespace WinForm {
 			// label23
 			// 
 			this->label23->AutoSize = true;
-			this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label23->Location = System::Drawing::Point(128, 303);
+			this->label23->Location = System::Drawing::Point(113, 299);
 			this->label23->Name = L"label23";
-			this->label23->Size = System::Drawing::Size(47, 24);
+			this->label23->Size = System::Drawing::Size(58, 29);
 			this->label23->TabIndex = 87;
 			this->label23->Text = L" h = ";
 			// 
@@ -739,7 +750,7 @@ namespace WinForm {
 			this->label21->AutoSize = true;
 			this->label21->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label21->Location = System::Drawing::Point(6, 268);
+			this->label21->Location = System::Drawing::Point(2, 270);
 			this->label21->Name = L"label21";
 			this->label21->Size = System::Drawing::Size(169, 24);
 			this->label21->TabIndex = 85;
@@ -787,24 +798,24 @@ namespace WinForm {
 			// Omega2
 			// 
 			this->Omega2->AutoSize = true;
-			this->Omega2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->Omega2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->Omega2->Location = System::Drawing::Point(1009, 111);
+			this->Omega2->Location = System::Drawing::Point(1021, 113);
 			this->Omega2->Name = L"Omega2";
-			this->Omega2->Size = System::Drawing::Size(77, 24);
+			this->Omega2->Size = System::Drawing::Size(65, 25);
 			this->Omega2->TabIndex = 144;
-			this->Omega2->Text = L" Om2 = ";
+			this->Omega2->Text = L" Ω₂ = ";
 			// 
 			// Omega1
 			// 
 			this->Omega1->AutoSize = true;
-			this->Omega1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->Omega1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->Omega1->Location = System::Drawing::Point(1010, 76);
+			this->Omega1->Location = System::Drawing::Point(1021, 78);
 			this->Omega1->Name = L"Omega1";
-			this->Omega1->Size = System::Drawing::Size(77, 24);
+			this->Omega1->Size = System::Drawing::Size(65, 25);
 			this->Omega1->TabIndex = 143;
-			this->Omega1->Text = L" Om1 = ";
+			this->Omega1->Text = L" Ω₁ = ";
 			// 
 			// Omega2_Text
 			// 
@@ -823,7 +834,7 @@ namespace WinForm {
 			this->Change_scale_Omega->Name = L"Change_scale_Omega";
 			this->Change_scale_Omega->Size = System::Drawing::Size(184, 60);
 			this->Change_scale_Omega->TabIndex = 141;
-			this->Change_scale_Omega->Text = L"Изменить масштаб от Om1 до Om2";
+			this->Change_scale_Omega->Text = L"Изменить масштаб от Ω₁ до Ω₂";
 			this->Change_scale_Omega->UseVisualStyleBackColor = true;
 			this->Change_scale_Omega->Click += gcnew System::EventHandler(this, &MyForm::Change_scale_Omega_Click);
 			// 
@@ -869,13 +880,13 @@ namespace WinForm {
 			// 
 			// dataGridViewTextBoxColumn1
 			// 
-			this->dataGridViewTextBoxColumn1->HeaderText = L"I";
+			this->dataGridViewTextBoxColumn1->HeaderText = L"i";
 			this->dataGridViewTextBoxColumn1->Name = L"dataGridViewTextBoxColumn1";
 			this->dataGridViewTextBoxColumn1->Width = 200;
 			// 
 			// dataGridViewTextBoxColumn2
 			// 
-			this->dataGridViewTextBoxColumn2->HeaderText = L"Omega(i)";
+			this->dataGridViewTextBoxColumn2->HeaderText = L"Ω(i)";
 			this->dataGridViewTextBoxColumn2->Name = L"dataGridViewTextBoxColumn2";
 			this->dataGridViewTextBoxColumn2->Width = 200;
 			// 
@@ -888,6 +899,9 @@ namespace WinForm {
 			this->zedGraphControl2->PointValueFormat = L"G";
 			this->zedGraphControl2->Size = System::Drawing::Size(991, 574);
 			this->zedGraphControl2->TabIndex = 114;
+			this->zedGraphControl2->GraphPane->Title = "График средних частот Omega(i)";
+			this->zedGraphControl2->GraphPane->XAxis->Title = "i";
+			this->zedGraphControl2->GraphPane->YAxis->Title = "Omega(i)";			
 			// 
 			// zedGraphControl5
 			// 
@@ -899,6 +913,9 @@ namespace WinForm {
 			this->zedGraphControl5->Size = System::Drawing::Size(991, 561);
 			this->zedGraphControl5->TabIndex = 118;
 			this->zedGraphControl5->Visible = false;
+			this->zedGraphControl5->GraphPane->Title = "Фазы Ф(t) в конечный момент времени t = T";
+			this->zedGraphControl5->GraphPane->XAxis->Title = "i";
+			this->zedGraphControl5->GraphPane->YAxis->Title = "Ф(T)";
 			// 
 			// tabPage3
 			// 
@@ -945,6 +962,9 @@ namespace WinForm {
 			this->zedGraphControl4->PointValueFormat = L"G";
 			this->zedGraphControl4->Size = System::Drawing::Size(986, 285);
 			this->zedGraphControl4->TabIndex = 1;
+			this->zedGraphControl4->GraphPane->Title = "График внешнего поля E(t)";
+			this->zedGraphControl4->GraphPane->XAxis->Title = "t";
+			this->zedGraphControl4->GraphPane->YAxis->Title = "E(t)";
 			// 
 			// zedGraphControl3
 			// 
@@ -1018,24 +1038,24 @@ namespace WinForm {
 			// label13
 			// 
 			this->label13->AutoSize = true;
-			this->label13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label13->Location = System::Drawing::Point(1051, 355);
+			this->label13->Location = System::Drawing::Point(1068, 357);
 			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(77, 24);
+			this->label13->Size = System::Drawing::Size(65, 25);
 			this->label13->TabIndex = 139;
-			this->label13->Text = L" Om2 = ";
+			this->label13->Text = L" Ω₂ = ";
 			// 
 			// label16
 			// 
 			this->label16->AutoSize = true;
-			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label16->Location = System::Drawing::Point(1052, 320);
+			this->label16->Location = System::Drawing::Point(1074, 322);
 			this->label16->Name = L"label16";
-			this->label16->Size = System::Drawing::Size(77, 24);
+			this->label16->Size = System::Drawing::Size(59, 25);
 			this->label16->TabIndex = 138;
-			this->label16->Text = L" Om1 = ";
+			this->label16->Text = L"Ω₁ = ";
 			// 
 			// Y2_Text
 			// 
@@ -1058,25 +1078,25 @@ namespace WinForm {
 			// label17
 			// 
 			this->label17->AutoSize = true;
-			this->label17->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label17->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label17->Location = System::Drawing::Point(1068, 288);
+			this->label17->Location = System::Drawing::Point(1068, 287);
 			this->label17->Name = L"label17";
-			this->label17->Size = System::Drawing::Size(60, 24);
+			this->label17->Size = System::Drawing::Size(65, 25);
 			this->label17->TabIndex = 135;
-			this->label17->Text = L" G2 = ";
+			this->label17->Text = L" G₂ = ";
 			// 
 			// label18
 			// 
 			this->label18->AutoSize = true;
-			this->label18->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label18->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->label18->ImageAlign = System::Drawing::ContentAlignment::MiddleRight;
 			this->label18->Location = System::Drawing::Point(1068, 253);
 			this->label18->Name = L"label18";
-			this->label18->Size = System::Drawing::Size(60, 24);
+			this->label18->Size = System::Drawing::Size(65, 25);
 			this->label18->TabIndex = 134;
-			this->label18->Text = L" G1 = ";
+			this->label18->Text = L" G₁ = ";
 			// 
 			// X1_Text
 			// 
@@ -1095,7 +1115,7 @@ namespace WinForm {
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(184, 60);
 			this->button3->TabIndex = 132;
-			this->button3->Text = L"Изменить масштаб от Om1 до Om2";
+			this->button3->Text = L"Изменить масштаб от Ω₁ до Ω₂";
 			this->button3->UseVisualStyleBackColor = true;
 			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
 			// 
@@ -1107,7 +1127,7 @@ namespace WinForm {
 			this->button6->Name = L"button6";
 			this->button6->Size = System::Drawing::Size(184, 60);
 			this->button6->TabIndex = 131;
-			this->button6->Text = L"Изменить масштаб от G1 до G2";
+			this->button6->Text = L"Изменить масштаб от G₁ до G₂";
 			this->button6->UseVisualStyleBackColor = true;
 			this->button6->Click += gcnew System::EventHandler(this, &MyForm::button6_Click);
 			// 
@@ -1135,24 +1155,24 @@ namespace WinForm {
 			// label11
 			// 
 			this->label11->AutoSize = true;
-			this->label11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->label11->Location = System::Drawing::Point(1191, 149);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(42, 24);
+			this->label11->Size = System::Drawing::Size(43, 25);
 			this->label11->TabIndex = 5;
-			this->label11->Text = L"g2=";
+			this->label11->Text = L"g₂=";
 			// 
 			// label4
 			// 
 			this->label4->AutoSize = true;
-			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label4->Location = System::Drawing::Point(1191, 114);
+			this->label4->Location = System::Drawing::Point(1190, 113);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(42, 24);
+			this->label4->Size = System::Drawing::Size(43, 25);
 			this->label4->TabIndex = 4;
-			this->label4->Text = L"g1=";
+			this->label4->Text = L"g₁=";
 			// 
 			// g2_Text
 			// 
@@ -1194,6 +1214,9 @@ namespace WinForm {
 			this->zedGraphControl6->PointValueFormat = L"G";
 			this->zedGraphControl6->Size = System::Drawing::Size(1081, 564);
 			this->zedGraphControl6->TabIndex = 0;
+			this->zedGraphControl6->GraphPane->Title = "График зависимотси Omega(i) от g";
+			this->zedGraphControl6->GraphPane->XAxis->Title = "g";
+			this->zedGraphControl6->GraphPane->YAxis->Title = "Omega(i)";
 			// 
 			// backgroundWorker1
 			// 
@@ -1225,9 +1248,7 @@ namespace WinForm {
 		}
 #pragma endregion									
 	private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e) 
-	{
-		
-
+	{		
 		GraphPane^ panel1 = zedGraphControl1->GraphPane;
 		GraphPane^ panel2 = zedGraphControl2->GraphPane;		
 		GraphPane^ panel4 = zedGraphControl4->GraphPane;
@@ -1239,21 +1260,12 @@ namespace WinForm {
 		panel4->CurveList->Clear();
 		panel5->CurveList->Clear();
 
-		panel1->Title = "Графики изменения Ф(t) для первых пяти ротаторов";
-		panel1->XAxis->Title = "t";
-		panel1->YAxis->Title = "Ф";
+		panel2->YAxis->StepAuto = true;
+		panel2->YAxis->MinorStepAuto = true;
 
-		panel2->Title = "График средних частот Omega(i)";
-		panel2->XAxis->Title = "i";
-		panel2->YAxis->Title = "Omega";		
-
-		panel4->Title = "График внешнего поля E(t)";
-		panel4->XAxis->Title = "t";
-		panel4->YAxis->Title = "E(t)";
-
-		panel5->Title = "Фазы Ф(t) в конечный момент времени";
+		/*panel5->Title = "Фазы Ф(t) в конечный момент времени";
 		panel5->XAxis->Title = "i";
-		panel5->YAxis->Title = "Ф(t)";
+		panel5->YAxis->Title = "Ф(t)";*/
 
 		PointPairList^ f1_list = gcnew PointPairList();    //Список точек для графика фазы ф1(t)
 		PointPairList^ f2_list = gcnew PointPairList();    //Список точек для графика фазы ф2(t)
@@ -1287,7 +1299,7 @@ namespace WinForm {
 		double *Omega;                                       //Средние частоты
 		double MaxOmega = -100000.0, MinOmega = 100000.0;    //Максимальная и минимальная средние частоты 
 		double MaxV = -1.0, MinV = 10.0;                     //Максимальная и минимальная фазы при t=T
-		string str = "";                                     //Строка для вывода справочных сведений
+		string str = "";                                     //Строка для вывода справочных сведений		
 		char buffer[100];
 		bool flag1 = false;
 		bool spike_flag = false;
@@ -1423,34 +1435,34 @@ namespace WinForm {
 			}
 		}
 
-		str += "Gamma1 =";                          //Вывод значений γ для первых пяти ротатороы на экран
+		str += "Gamma1 = ";                          //Вывод значений γ для первых пяти ротатороы на экран
 		sprintf_s(buffer, "%lf", gamma[0]);
-		str += buffer;		
+		str += buffer;
 		str += "\r\n";
-		str += "Gamma2 =";
+		str += "Gamma2 = ";
 		sprintf_s(buffer, "%lf", gamma[1]);
 		str += buffer;		
 		str += "\r\n";
-		str += "Gamma3 =";
+		str += "Gamma3 = ";
 		sprintf_s(buffer, "%lf", gamma[2]);
 		str += buffer;		
 		str += "\r\n";
-		str += "Gamma4 =";
+		str += "Gamma4 = ";
 		sprintf_s(buffer, "%lf", gamma[3]);
 		str += buffer;		
 		str += "\r\n";
-		str += "Gamma5 =";
+		str += "Gamma5 = ";
 		sprintf_s(buffer, "%lf", gamma[4]);
 		str += buffer;		
 		str += "\r\n";
 		str += "\r\n";
 		str += "\r\n";		
-		str += "Число кластеров при t=T:";
+		str += "Число кластеров при t = T:";
 		sprintf_s(buffer, "%d", NumOfClusters);
 		str += buffer;
 		str += "\r\n";
 
-		textBox2->Text = gcnew String(str.c_str());
+		textBox2->Text = gcnew String(str.c_str());		
 
 		double tmax_limit = t + 0.05;
 
@@ -1576,9 +1588,9 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 
 	panel->CurveList->Clear();
 
-	panel->Title = "График зависимотси Omega(i) от g";
+	/*panel->Title = "График зависимотси Omega(i) от g";
 	panel->XAxis->Title = "g";
-	panel->YAxis->Title = "Omega(i)";
+	panel->YAxis->Title = "Omega(i)";*/
 	panel->YAxis->Type = AxisType::Log;	
 	panel->YAxis->StepAuto = false;
 	panel->YAxis->MinorStepAuto = false;
@@ -1786,6 +1798,10 @@ private: System::Void Change_scale_Omega_Click(System::Object^  sender, System::
 	panel->YAxis->Min = Om1;
 	panel->YAxis->Max = Om2;
 
+	panel->YAxis->StepAuto = false;
+	panel->YAxis->MinorStepAuto = false;
+	panel->YAxis->Step = (Om2 - Om1)*0.1;
+	panel->YAxis->MinorStep = (Om2 - Om1)*0.02;
 	zedGraphControl2->AxisChange();
 	zedGraphControl2->Invalidate();
 }

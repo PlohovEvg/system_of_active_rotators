@@ -29,7 +29,7 @@ int comp(const void * val1, const void * val2)
 
 int main()
 {
-	int n = 10;
+	/*int n = 10;
 	double *a = new double[n];
 	srand(time(NULL));
 	for (int i = 0; i < n; i++)
@@ -40,6 +40,12 @@ int main()
 	for (int i = 0; i < 10; i++)
 	{
 		cout << a[i] << " ";
-	}
+	}*/
+	/*cout << sizeof(wchar_t) << endl;
+	cout << sizeof(char) << endl;*/
+
+	int a[3] = { 0,0,0 };
+	a[0] = a[2] = 2;
+	cout << a[0] << "  " << a[2] << endl;
 	return 0;
 }
