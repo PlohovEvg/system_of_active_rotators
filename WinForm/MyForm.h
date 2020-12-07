@@ -1632,7 +1632,8 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 
 	for (double g = g1; g <= g2; g = g + gh)
 	{
-		non++;
+		g = round(g * 1000) / 1000;
+		non++;	
 	}
 
 	for (int i = 0; i < n; i++)
@@ -1648,6 +1649,7 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 
 	for (double g = g1; g <= g2; g = g + gh)
 	{
+		g = round(g * 1000) / 1000;
 		for (int i = 1; ((i < p) && ((t < T01))); i++)
 		{
 			t = round(t * 1000) / 1000;
@@ -1744,8 +1746,9 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 		{
 			f_list->Add(g, Omega[i][j]);
 			if (g <= g2)
-			{
+			{				
 				g = g + gh;
+				g = round(g * 1000) / 1000;
 			}
 		}
 		LineItem ^Curve = panel->AddCurve("", f_list, Color::Red, SymbolType::Circle);
