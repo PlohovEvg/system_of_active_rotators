@@ -102,7 +102,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Пользователь\Documents\Git\Inf_Neir\Inf_Neir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies />
@@ -139,17 +139,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Calculating_functions.cpp" />
     <ClCompile Include="MyForm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Calculating_functions.h" />
+    <ClInclude Include="Input_structure.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Inf_Neir\Inf_Neir.vcxproj">
-      <Project>{87db3d5d-3e65-41f2-98b5-95fbcc39e52b}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">
