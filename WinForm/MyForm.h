@@ -26,8 +26,71 @@ namespace WinForm {
 	public: bool AvgMaxMinAlreadyExists;
 	public: bool GraphsDrawn;
 	public: vector<int*> *Clusters_vec;
+	public: vector<double**> *Omega_vec;
+	public: cli::array<Color> ^Colors;
+		MyForm(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: добавьте код конструктора
+			//									
+			gamma_generated = false;
+			AvgMaxMinAlreadyExists = false;
+			GraphsDrawn = false;
+			Clusters_vec = new vector<int*>;
+			Omega_vec = new vector<double**>;
+
+			Colors = gcnew cli::array<Color>(5);
+
+			Colors[0] = Color::Red;
+			Colors[1] = Color::Green;
+			Colors[2] = Color::Blue;
+			Colors[3] = Color::Black;
+			Colors[4] = Color::Brown;
+
+			zedGraphControl2->GraphPane->Title->Text = L"График средних частот Ωᵢ";
+			zedGraphControl2->GraphPane->XAxis->Title->Text = L"i";
+			zedGraphControl2->GraphPane->YAxis->Title->Text = L"Ωᵢ";
+			zedGraphControl2->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			zedGraphControl2->GraphPane->XAxis->MajorGrid->IsVisible = true;
+
+			zedGraphControl3->GraphPane->Title->Text = "График числа спайков";
+			zedGraphControl3->GraphPane->XAxis->Title->Text = "t";
+			zedGraphControl3->GraphPane->YAxis->Title->Text = "Спайки";
+			zedGraphControl3->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			zedGraphControl3->GraphPane->XAxis->MajorGrid->IsVisible = true;
+
+			zedGraphControl4->GraphPane->Title->Text = L"График внешнего поля E(t)";
+			zedGraphControl4->GraphPane->XAxis->Title->Text = L"t";
+			zedGraphControl4->GraphPane->YAxis->Title->Text = L"E(t)";
+			zedGraphControl4->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			zedGraphControl4->GraphPane->XAxis->MajorGrid->IsVisible = true;
+
+			zedGraphControl6->GraphPane->Title->Text = L"График зависимости средних частот Ωᵢ от различных значений силы связи g";
+			zedGraphControl6->GraphPane->XAxis->Title->Text = L"g";
+			zedGraphControl6->GraphPane->YAxis->Title->Text = L"Ωᵢ";
+			zedGraphControl6->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			zedGraphControl6->GraphPane->XAxis->MajorGrid->IsVisible = true;
+
+			zedGraphControl1->GraphPane->Title->Text = L"График зависимости числа кластеров от различных значений силы связи g";
+			zedGraphControl1->GraphPane->XAxis->Title->Text = L"g";
+			zedGraphControl1->GraphPane->YAxis->Title->Text = L"Кол-во кластеров";
+			zedGraphControl1->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			zedGraphControl1->GraphPane->XAxis->MajorGrid->IsVisible = true;
+		}
+
+	protected:
+		/// <summary>
+		/// Освободить все используемые ресурсы.
+		/// </summary>
+		~MyForm()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
 	private: System::Windows::Forms::TabPage^  tabPage5;
-	public:
 	private: System::Windows::Forms::TabPage^  tabPage6;
 	private: ZedGraph::ZedGraphControl^  zedGraphControl1;
 	private: System::Windows::Forms::TabPage^  tabPage4;
@@ -45,93 +108,7 @@ namespace WinForm {
 	private: System::Windows::Forms::TextBox^  g1_Text;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::Label^  label22;
-	private: System::Windows::Forms::TextBox^  Y1_Text;
-	private: System::Windows::Forms::Label^  label13;
-	private: System::Windows::Forms::Label^  label16;
-	private: System::Windows::Forms::TextBox^  Y2_Text;
-	private: System::Windows::Forms::TextBox^  X2_Text;
-	private: System::Windows::Forms::Label^  label17;
-	private: System::Windows::Forms::TextBox^  X1_Text;
-	private: System::Windows::Forms::Button^  button3;
-	private: System::Windows::Forms::Button^  button6;
-	private: System::Windows::Forms::Label^  label18;
 	private: ZedGraph::ZedGraphControl^  zedGraphControl6;
-
-	public: vector<double**> *Omega_vec;
-		MyForm(void)
-		{
-			InitializeComponent();
-			//
-			//TODO: добавьте код конструктора
-			//									
-			gamma_generated = false;
-			AvgMaxMinAlreadyExists = false;
-			GraphsDrawn = false;
-			Clusters_vec = new vector<int*>;
-			Omega_vec = new vector<double**>;
-
-			zedGraphControl2->GraphPane->Title = L"График средних частот Ωᵢ";
-			zedGraphControl2->GraphPane->XAxis->Title = L"i";
-			zedGraphControl2->GraphPane->YAxis->Title = L"Ωᵢ";
-			zedGraphControl2->GraphPane->YAxis->IsShowGrid = true;
-			zedGraphControl2->GraphPane->XAxis->IsShowGrid = true;
-
-			zedGraphControl3->GraphPane->Title = "График числа спайков";
-			zedGraphControl3->GraphPane->XAxis->Title = "t";
-			zedGraphControl3->GraphPane->YAxis->Title = "Спайки";
-			zedGraphControl3->GraphPane->YAxis->IsShowGrid = true;
-			zedGraphControl3->GraphPane->XAxis->IsShowGrid = true;
-
-			zedGraphControl4->GraphPane->Title = L"График внешнего поля E(t)";
-			zedGraphControl4->GraphPane->XAxis->Title = L"t";
-			zedGraphControl4->GraphPane->YAxis->Title = L"E(t)";
-			zedGraphControl4->GraphPane->YAxis->IsShowGrid = true;
-			zedGraphControl4->GraphPane->XAxis->IsShowGrid = true;
-
-			zedGraphControl6->GraphPane->Title = L"График зависимости средних частот Ωᵢ от различных значений силы связи g";
-			zedGraphControl6->GraphPane->XAxis->Title = L"g";
-			zedGraphControl6->GraphPane->YAxis->Title = L"Ωᵢ";
-			zedGraphControl6->GraphPane->YAxis->IsShowGrid = true;
-			zedGraphControl6->GraphPane->XAxis->IsShowGrid = true;
-
-			zedGraphControl1->GraphPane->Title = L"График зависимости числа кластеров от различных значений силы связи g";
-			zedGraphControl1->GraphPane->XAxis->Title = L"g";
-			zedGraphControl1->GraphPane->YAxis->Title = L"Кол-во кластеров";
-			zedGraphControl1->GraphPane->YAxis->IsShowGrid = true;
-			zedGraphControl1->GraphPane->XAxis->IsShowGrid = true;
-		}
-
-	protected:
-		/// <summary>
-		/// Освободить все используемые ресурсы.
-		/// </summary>
-		~MyForm()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	private: ZedGraph::ZedGraphControl^  zedGraphControl2;
 	private: System::Windows::Forms::TabControl^  tabControl1;	
 	private: System::Windows::Forms::TabPage^  tabPage1;
@@ -165,14 +142,14 @@ namespace WinForm {
 	private: System::Windows::Forms::DataGridView^  dataGridView1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn1;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn2;
-    private: System::Windows::Forms::DataGridView^  dataGridView2;
-    private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn3;
-    private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn4;
-    private: System::Windows::Forms::TextBox^  Omega1_Text;
-    private: System::Windows::Forms::Label^  Omega2;
-    private: System::Windows::Forms::Label^  Omega1;
-    private: System::Windows::Forms::TextBox^  Omega2_Text;
-    private: System::Windows::Forms::Button^  Change_scale_Omega;
+	private: System::Windows::Forms::DataGridView^  dataGridView2;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn3;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn4;
+	private: System::Windows::Forms::TextBox^  Omega1_Text;
+	private: System::Windows::Forms::Label^  Omega2;
+	private: System::Windows::Forms::Label^  Omega1;
+	private: System::Windows::Forms::TextBox^  Omega2_Text;
+	private: System::Windows::Forms::Button^  Change_scale_Omega;
 	private: System::Windows::Forms::Label^  label10;
 	private: System::Windows::Forms::TextBox^  Gamma2_Text;
 	private: System::Windows::Forms::Label^  Gamma1;
@@ -186,24 +163,16 @@ namespace WinForm {
 	private: System::Windows::Forms::DataGridView^  dataGridView4;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column3;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  Column4;
-
-
-
 	private: System::Windows::Forms::Label^  label27;
 	private: System::Windows::Forms::Label^  label26;
 	private: System::Windows::Forms::Label^  label25;
 	private: System::Windows::Forms::Label^  label29;
 	private: System::Windows::Forms::Label^  label28;
 	private: System::Windows::Forms::Label^  label30;
-private: System::ComponentModel::IContainer^  components;
-
-
-
-
 		/// <summary>
 		/// Обязательная переменная конструктора.
 		/// </summary>
-
+	private: System::ComponentModel::IContainer^  components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -212,6 +181,7 @@ private: System::ComponentModel::IContainer^  components;
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
@@ -288,16 +258,6 @@ private: System::ComponentModel::IContainer^  components;
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->label22 = (gcnew System::Windows::Forms::Label());
 			this->tabPage5 = (gcnew System::Windows::Forms::TabPage());
-			this->Y1_Text = (gcnew System::Windows::Forms::TextBox());
-			this->label13 = (gcnew System::Windows::Forms::Label());
-			this->label16 = (gcnew System::Windows::Forms::Label());
-			this->Y2_Text = (gcnew System::Windows::Forms::TextBox());
-			this->X2_Text = (gcnew System::Windows::Forms::TextBox());
-			this->label17 = (gcnew System::Windows::Forms::Label());
-			this->X1_Text = (gcnew System::Windows::Forms::TextBox());
-			this->button3 = (gcnew System::Windows::Forms::Button());
-			this->button6 = (gcnew System::Windows::Forms::Button());
-			this->label18 = (gcnew System::Windows::Forms::Label());
 			this->zedGraphControl6 = (gcnew ZedGraph::ZedGraphControl());
 			this->tabPage6 = (gcnew System::Windows::Forms::TabPage());
 			this->zedGraphControl1 = (gcnew ZedGraph::ZedGraphControl());
@@ -326,7 +286,7 @@ private: System::ComponentModel::IContainer^  components;
 			this->tabControl1->Location = System::Drawing::Point(3, 3);
 			this->tabControl1->Name = L"tabControl1";
 			this->tabControl1->SelectedIndex = 0;
-			this->tabControl1->Size = System::Drawing::Size(1574, 929);
+			this->tabControl1->Size = System::Drawing::Size(1570, 929);
 			this->tabControl1->TabIndex = 0;
 			// 
 			// tabPage1
@@ -373,7 +333,7 @@ private: System::ComponentModel::IContainer^  components;
 			this->tabPage1->Location = System::Drawing::Point(4, 22);
 			this->tabPage1->Name = L"tabPage1";
 			this->tabPage1->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage1->Size = System::Drawing::Size(1566, 903);
+			this->tabPage1->Size = System::Drawing::Size(1562, 903);
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Ввод данных";
 			this->tabPage1->UseVisualStyleBackColor = true;
@@ -830,7 +790,7 @@ private: System::ComponentModel::IContainer^  components;
 			this->tabPage2->Location = System::Drawing::Point(4, 22);
 			this->tabPage2->Name = L"tabPage2";
 			this->tabPage2->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage2->Size = System::Drawing::Size(1566, 903);
+			this->tabPage2->Size = System::Drawing::Size(1562, 903);
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"Средние частоты";
 			this->tabPage2->UseVisualStyleBackColor = true;
@@ -842,6 +802,13 @@ private: System::ComponentModel::IContainer^  components;
 			this->zedGraphControl2->Location = System::Drawing::Point(0, 3);
 			this->zedGraphControl2->Name = L"zedGraphControl2";
 			this->zedGraphControl2->PointValueFormat = L"g";
+			this->zedGraphControl2->ScrollGrace = 0;
+			this->zedGraphControl2->ScrollMaxX = 0;
+			this->zedGraphControl2->ScrollMaxY = 0;
+			this->zedGraphControl2->ScrollMaxY2 = 0;
+			this->zedGraphControl2->ScrollMinX = 0;
+			this->zedGraphControl2->ScrollMinY = 0;
+			this->zedGraphControl2->ScrollMinY2 = 0;
 			this->zedGraphControl2->Size = System::Drawing::Size(1103, 718);
 			this->zedGraphControl2->TabIndex = 114;
 			// 
@@ -929,7 +896,7 @@ private: System::ComponentModel::IContainer^  components;
 			this->tabPage3->Location = System::Drawing::Point(4, 22);
 			this->tabPage3->Name = L"tabPage3";
 			this->tabPage3->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage3->Size = System::Drawing::Size(1566, 903);
+			this->tabPage3->Size = System::Drawing::Size(1562, 903);
 			this->tabPage3->TabIndex = 2;
 			this->tabPage3->Text = L"Внешнее поле и спайки";
 			this->tabPage3->UseVisualStyleBackColor = true;
@@ -963,7 +930,13 @@ private: System::ComponentModel::IContainer^  components;
 			this->zedGraphControl4->IsShowPointValues = true;
 			this->zedGraphControl4->Location = System::Drawing::Point(6, 3);
 			this->zedGraphControl4->Name = L"zedGraphControl4";
-			this->zedGraphControl4->PointValueFormat = L"G";
+			this->zedGraphControl4->ScrollGrace = 0;
+			this->zedGraphControl4->ScrollMaxX = 0;
+			this->zedGraphControl4->ScrollMaxY = 0;
+			this->zedGraphControl4->ScrollMaxY2 = 0;
+			this->zedGraphControl4->ScrollMinX = 0;
+			this->zedGraphControl4->ScrollMinY = 0;
+			this->zedGraphControl4->ScrollMinY2 = 0;
 			this->zedGraphControl4->Size = System::Drawing::Size(1097, 342);
 			this->zedGraphControl4->TabIndex = 1;
 			// 
@@ -972,7 +945,13 @@ private: System::ComponentModel::IContainer^  components;
 			this->zedGraphControl3->IsShowPointValues = true;
 			this->zedGraphControl3->Location = System::Drawing::Point(0, 351);
 			this->zedGraphControl3->Name = L"zedGraphControl3";
-			this->zedGraphControl3->PointValueFormat = L"G";
+			this->zedGraphControl3->ScrollGrace = 0;
+			this->zedGraphControl3->ScrollMaxX = 0;
+			this->zedGraphControl3->ScrollMaxY = 0;
+			this->zedGraphControl3->ScrollMaxY2 = 0;
+			this->zedGraphControl3->ScrollMinX = 0;
+			this->zedGraphControl3->ScrollMinY = 0;
+			this->zedGraphControl3->ScrollMinY2 = 0;
 			this->zedGraphControl3->Size = System::Drawing::Size(1103, 370);
 			this->zedGraphControl3->TabIndex = 0;
 			// 
@@ -995,7 +974,7 @@ private: System::ComponentModel::IContainer^  components;
 			this->tabPage4->Location = System::Drawing::Point(4, 22);
 			this->tabPage4->Name = L"tabPage4";
 			this->tabPage4->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage4->Size = System::Drawing::Size(1566, 903);
+			this->tabPage4->Size = System::Drawing::Size(1562, 903);
 			this->tabPage4->TabIndex = 3;
 			this->tabPage4->Text = L"Серия экспериментов";
 			this->tabPage4->UseVisualStyleBackColor = true;
@@ -1137,7 +1116,7 @@ private: System::ComponentModel::IContainer^  components;
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(132, 66);
 			this->button2->TabIndex = 1;
-			this->button2->Text = L"Построить графики";
+			this->button2->Text = L"Добавить набор ";
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			// 
@@ -1154,135 +1133,28 @@ private: System::ComponentModel::IContainer^  components;
 			// 
 			// tabPage5
 			// 
-			this->tabPage5->Controls->Add(this->Y1_Text);
-			this->tabPage5->Controls->Add(this->label13);
-			this->tabPage5->Controls->Add(this->label16);
-			this->tabPage5->Controls->Add(this->Y2_Text);
-			this->tabPage5->Controls->Add(this->X2_Text);
-			this->tabPage5->Controls->Add(this->label17);
-			this->tabPage5->Controls->Add(this->X1_Text);
-			this->tabPage5->Controls->Add(this->button3);
-			this->tabPage5->Controls->Add(this->button6);
-			this->tabPage5->Controls->Add(this->label18);
 			this->tabPage5->Controls->Add(this->zedGraphControl6);
 			this->tabPage5->Location = System::Drawing::Point(4, 22);
 			this->tabPage5->Name = L"tabPage5";
 			this->tabPage5->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage5->Size = System::Drawing::Size(1566, 903);
+			this->tabPage5->Size = System::Drawing::Size(1562, 903);
 			this->tabPage5->TabIndex = 4;
 			this->tabPage5->Text = L"Средние частоты для серии";
 			this->tabPage5->UseVisualStyleBackColor = true;
 			// 
-			// Y1_Text
-			// 
-			this->Y1_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->Y1_Text->Location = System::Drawing::Point(1454, 328);
-			this->Y1_Text->Name = L"Y1_Text";
-			this->Y1_Text->Size = System::Drawing::Size(100, 29);
-			this->Y1_Text->TabIndex = 150;
-			// 
-			// label13
-			// 
-			this->label13->AutoSize = true;
-			this->label13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->label13->Location = System::Drawing::Point(1388, 365);
-			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(65, 25);
-			this->label13->TabIndex = 149;
-			this->label13->Text = L" Ω₂ = ";
-			// 
-			// label16
-			// 
-			this->label16->AutoSize = true;
-			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->label16->Location = System::Drawing::Point(1394, 330);
-			this->label16->Name = L"label16";
-			this->label16->Size = System::Drawing::Size(59, 25);
-			this->label16->TabIndex = 148;
-			this->label16->Text = L"Ω₁ = ";
-			// 
-			// Y2_Text
-			// 
-			this->Y2_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->Y2_Text->Location = System::Drawing::Point(1454, 363);
-			this->Y2_Text->Name = L"Y2_Text";
-			this->Y2_Text->Size = System::Drawing::Size(100, 29);
-			this->Y2_Text->TabIndex = 147;
-			// 
-			// X2_Text
-			// 
-			this->X2_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->X2_Text->Location = System::Drawing::Point(1451, 158);
-			this->X2_Text->Name = L"X2_Text";
-			this->X2_Text->Size = System::Drawing::Size(100, 29);
-			this->X2_Text->TabIndex = 146;
-			// 
-			// label17
-			// 
-			this->label17->AutoSize = true;
-			this->label17->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->label17->Location = System::Drawing::Point(1385, 160);
-			this->label17->Name = L"label17";
-			this->label17->Size = System::Drawing::Size(65, 25);
-			this->label17->TabIndex = 145;
-			this->label17->Text = L" G₂ = ";
-			// 
-			// X1_Text
-			// 
-			this->X1_Text->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->X1_Text->Location = System::Drawing::Point(1451, 124);
-			this->X1_Text->Name = L"X1_Text";
-			this->X1_Text->Size = System::Drawing::Size(100, 29);
-			this->X1_Text->TabIndex = 143;
-			// 
-			// button3
-			// 
-			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->button3->Location = System::Drawing::Point(1376, 398);
-			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(184, 60);
-			this->button3->TabIndex = 142;
-			this->button3->Text = L"Изменить масштаб от Ω₁ до Ω₂";
-			this->button3->UseVisualStyleBackColor = true;
-			// 
-			// button6
-			// 
-			this->button6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->button6->Location = System::Drawing::Point(1376, 193);
-			this->button6->Name = L"button6";
-			this->button6->Size = System::Drawing::Size(184, 60);
-			this->button6->TabIndex = 141;
-			this->button6->Text = L"Изменить масштаб от G₁ до G₂";
-			this->button6->UseVisualStyleBackColor = true;
-			// 
-			// label18
-			// 
-			this->label18->AutoSize = true;
-			this->label18->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->label18->ImageAlign = System::Drawing::ContentAlignment::MiddleRight;
-			this->label18->Location = System::Drawing::Point(1385, 126);
-			this->label18->Name = L"label18";
-			this->label18->Size = System::Drawing::Size(65, 25);
-			this->label18->TabIndex = 144;
-			this->label18->Text = L" G₁ = ";
-			// 
 			// zedGraphControl6
 			// 
 			this->zedGraphControl6->IsShowPointValues = true;
-			this->zedGraphControl6->Location = System::Drawing::Point(3, 3);
+			this->zedGraphControl6->Location = System::Drawing::Point(0, 6);
 			this->zedGraphControl6->Name = L"zedGraphControl6";
-			this->zedGraphControl6->PointValueFormat = L"G";
-			this->zedGraphControl6->Size = System::Drawing::Size(1420, 737);
+			this->zedGraphControl6->ScrollGrace = 0;
+			this->zedGraphControl6->ScrollMaxX = 0;
+			this->zedGraphControl6->ScrollMaxY = 0;
+			this->zedGraphControl6->ScrollMaxY2 = 0;
+			this->zedGraphControl6->ScrollMinX = 0;
+			this->zedGraphControl6->ScrollMinY = 0;
+			this->zedGraphControl6->ScrollMinY2 = 0;
+			this->zedGraphControl6->Size = System::Drawing::Size(1563, 737);
 			this->zedGraphControl6->TabIndex = 1;
 			// 
 			// tabPage6
@@ -1291,7 +1163,7 @@ private: System::ComponentModel::IContainer^  components;
 			this->tabPage6->Location = System::Drawing::Point(4, 22);
 			this->tabPage6->Name = L"tabPage6";
 			this->tabPage6->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage6->Size = System::Drawing::Size(1566, 903);
+			this->tabPage6->Size = System::Drawing::Size(1562, 903);
 			this->tabPage6->TabIndex = 5;
 			this->tabPage6->Text = L"Число кластеров для серии";
 			this->tabPage6->UseVisualStyleBackColor = true;
@@ -1299,10 +1171,16 @@ private: System::ComponentModel::IContainer^  components;
 			// zedGraphControl1
 			// 
 			this->zedGraphControl1->IsShowPointValues = true;
-			this->zedGraphControl1->Location = System::Drawing::Point(6, 3);
+			this->zedGraphControl1->Location = System::Drawing::Point(0, 6);
 			this->zedGraphControl1->Name = L"zedGraphControl1";
-			this->zedGraphControl1->PointValueFormat = L"G";
-			this->zedGraphControl1->Size = System::Drawing::Size(1548, 747);
+			this->zedGraphControl1->ScrollGrace = 0;
+			this->zedGraphControl1->ScrollMaxX = 0;
+			this->zedGraphControl1->ScrollMaxY = 0;
+			this->zedGraphControl1->ScrollMaxY2 = 0;
+			this->zedGraphControl1->ScrollMinX = 0;
+			this->zedGraphControl1->ScrollMinY = 0;
+			this->zedGraphControl1->ScrollMinY2 = 0;
+			this->zedGraphControl1->Size = System::Drawing::Size(1564, 740);
 			this->zedGraphControl1->TabIndex = 148;
 			// 
 			// backgroundWorker1
@@ -1334,7 +1212,6 @@ private: System::ComponentModel::IContainer^  components;
 			this->tabPage4->ResumeLayout(false);
 			this->tabPage4->PerformLayout();
 			this->tabPage5->ResumeLayout(false);
-			this->tabPage5->PerformLayout();
 			this->tabPage6->ResumeLayout(false);
 			this->ResumeLayout(false);
 
@@ -1361,14 +1238,14 @@ private: System::ComponentModel::IContainer^  components;
 		panel3->CurveList->Clear();
 		panel4->CurveList->Clear();		
 
-		panel2->YAxis->StepAuto = true;
-		panel2->YAxis->MinorStepAuto = true;		
+		panel2->YAxis->Scale->MajorStepAuto = true;
+		panel2->YAxis->Scale->MinorStepAuto = true;		
 	
 		PointPairList^ g_list = gcnew PointPairList();        //Список точек для графика средних частот Ω
 		PointPairList^ E_list = gcnew PointPairList();	      //Список точек для графика поля E(t)
 		PointPairList^ Spaik_list = gcnew PointPairList();
 		
-		int n = Convert::ToInt32(n_Text3->Text);                  //Число уравнений в системе
+		int n = Convert::ToInt32(n_Text3->Text);              //Число уравнений в системе
 		double h = Convert::ToDouble(h_Text3->Text);          //Шаг
 		int p = Convert::ToInt32(textBox1->Text);             //Число итераций, второй критерий остановки
 		double T = Convert::ToDouble(b_Text3->Text);          //Максимальное время, до которого будет подсчет, первый критерий остановки
@@ -1527,18 +1404,18 @@ Curve6->Symbol->Fill->Color = Color::Red;
 Curve6->Symbol->Fill->Type = FillType::Solid;
 Curve6->Symbol->Size = 6;
 
-panel2->XAxis->Min = -1;
-panel2->XAxis->Max = n;
-panel2->YAxis->Min = MinOmega - (MaxOmega - MinOmega) / 2;
-panel2->YAxis->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
-panel2->YAxis->Min = MinOmega - 0.1;
-panel2->YAxis->Max = MaxOmega + 0.1;
+panel2->XAxis->Scale->Min = -1;
+panel2->XAxis->Scale->Max = n;
+panel2->YAxis->Scale->Min = MinOmega - (MaxOmega - MinOmega) / 2;
+panel2->YAxis->Scale->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
+panel2->YAxis->Scale->Min = MinOmega - 0.1;
+panel2->YAxis->Scale->Max = MaxOmega + 0.1;
 
-panel3->XAxis->Max = t + 0.05;
-panel3->XAxis->Min = T02 - 0.05;
+panel3->XAxis->Scale->Max = t + 0.05;
+panel3->XAxis->Scale->Min = T02 - 0.05;
 
-panel4->XAxis->Max = t + 0.05;
-panel4->XAxis->Min = T02 - 0.05;
+panel4->XAxis->Scale->Max = t + 0.05;
+panel4->XAxis->Scale->Min = T02 - 0.05;
 
 zedGraphControl2->AxisChange();
 zedGraphControl2->Invalidate();
@@ -1560,12 +1437,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	GraphPane ^panel2 = zedGraphControl1->GraphPane;
 
 	panel->YAxis->Type = AxisType::Log;
-	panel->YAxis->StepAuto = false;
-	panel->YAxis->MinorStepAuto = false;
-	panel->YAxis->MinorStep = 0.00002;
-	panel->YAxis->Step = 0.0001;
 
-	PointPairList ^f_list = gcnew PointPairList();
 	PointPairList ^Cl_list = gcnew PointPairList();
 
 	gamma1 = Convert::ToDouble(Gamma1_Text->Text);
@@ -1598,18 +1470,25 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	double oldE0;
 	bool flag1 = false;
 
+	cli::array<PointPairList^> ^Omega_List = gcnew cli::array<PointPairList^>(n);
+
+	for (int i = 0; i < n; i++)
+	{
+		Omega_List[i] = gcnew PointPairList();
+	}
+
 	double ts = 0.0;
 
-	panel->XAxis->Min = g1 - 0.1;
-	panel->XAxis->Max = g2 + 0.1;
-	panel->XAxis->Step = gh;
-	panel->XAxis->MinorStep = gh / 5;
-	panel2->XAxis->Min = g1 - 0.1;
-	panel2->XAxis->Max = g2 + 0.1;
-	panel2->YAxis->Step = 2;
-	panel2->YAxis->MinorStep = 1;
-	panel2->XAxis->Step = gh;
-	panel2->XAxis->MinorStep = gh / 5;
+	panel->XAxis->Scale->Min = g1 - 0.1;
+	panel->XAxis->Scale->Max = g2 + 0.1;
+	panel->XAxis->Scale->MajorStep = gh;
+	panel->XAxis->Scale->MinorStep = gh / 5;
+	panel2->XAxis->Scale->Min = g1 - 0.1;
+	panel2->XAxis->Scale->Max = g2 + 0.1;
+	panel2->YAxis->Scale->MajorStep = 2;
+	panel2->YAxis->Scale->MinorStep = 1;
+	panel2->XAxis->Scale->MajorStep = gh;
+	panel2->XAxis->Scale->MinorStep = gh / 5;
 
 	//Вычисляем количество вершин в графе
 	for (double g = g1; g <= g2; g = g + gh)
@@ -1709,10 +1588,9 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	for (int i = 0; i < n; i++)
 	{
 		_g = g1;
-		f_list->Clear();
 		for (int j = 0; j < non; j++)
 		{
-			f_list->Add(_g, Omega[i][j]);
+			Omega_List[i]->Add(_g, Omega[i][j]);
 			if (_g <= g2)
 			{
 				_g += gh;
@@ -1720,43 +1598,13 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 			}
 		}
 		LineItem ^Curve;
-		switch (NumOfSets)
-		{
-		case 1:		
-			Curve = panel->AddCurve("1", f_list, Color::Red, SymbolType::Circle);
-			Curve->Symbol->Fill->Color = Color::Red;
-			Curve->Symbol->Size = 8.0f;
-			Curve->Symbol->Fill->Type = FillType::Solid;
-			break;
-		
-		case 2:		
-			Curve = panel->AddCurve("2", f_list, Color::Green, SymbolType::Circle);
-			Curve->Symbol->Fill->Color = Color::Green;
-			Curve->Symbol->Size = 8.0f;
-			Curve->Symbol->Fill->Type = FillType::Solid;
-			break;		
-		case 3:	
-			Curve = panel->AddCurve("3", f_list, Color::Blue, SymbolType::Circle);
-			Curve->Symbol->Fill->Color = Color::Blue;
-			Curve->Symbol->Size = 8.0f;
-			Curve->Symbol->Fill->Type = FillType::Solid;
-			break;
-		case 4:
-			Curve = panel->AddCurve("4", f_list, Color::Black, SymbolType::Circle);
-			Curve->Symbol->Fill->Color = Color::Black;
-			Curve->Symbol->Size = 8.0f;
-			Curve->Symbol->Fill->Type = FillType::Solid;
-			break;
-		case 5:
-			Curve = panel->AddCurve("5", f_list, Color::Pink, SymbolType::Circle);
-			Curve->Symbol->Fill->Color = Color::Pink;
-			Curve->Symbol->Size = 8.0f;
-			Curve->Symbol->Fill->Type = FillType::Solid;
-			break;		
-		}		
+		Curve = panel->AddCurve(Convert::ToString(NumOfSets), Omega_List[i], Colors[NumOfSets - 1], SymbolType::Circle);
+		Curve->Symbol->Fill->Color = Colors[NumOfSets - 1];
+		Curve->Symbol->Size = 8.0f;
+		Curve->Symbol->Fill->Type = FillType::Solid;
 		if (i > 0)
 		{
-			Curve->Label = String::Empty;
+			Curve->Label->Text = String::Empty;
 		}
 	}
 
@@ -1772,39 +1620,10 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 		_g = round(_g * 1000) / 1000;
 	}
 	LineItem ^Curve2;
-	switch (NumOfSets)
-	{
-	case 1:
-		Curve2 = panel2->AddCurve("1", Cl_list, Color::Red, SymbolType::Circle);
-		Curve2->Symbol->Fill->Color = Color::Red;
-		Curve2->Symbol->Fill->Type = FillType::Solid;
-		Curve2->Line->IsVisible = false;
-		break;
-	case 2:
-		Curve2 = panel2->AddCurve("2", Cl_list, Color::Green, SymbolType::Circle);
-		Curve2->Symbol->Fill->Color = Color::Green;
-		Curve2->Symbol->Fill->Type = FillType::Solid;
-		Curve2->Line->IsVisible = false;
-		break;
-	case 3:
-		Curve2 = panel2->AddCurve("3", Cl_list, Color::Blue, SymbolType::Circle);
-		Curve2->Symbol->Fill->Color = Color::Blue;
-		Curve2->Symbol->Fill->Type = FillType::Solid;
-		Curve2->Line->IsVisible = false;
-		break;
-	case 4:
-		Curve2 = panel2->AddCurve("4", Cl_list, Color::Black, SymbolType::Circle);
-		Curve2->Symbol->Fill->Color = Color::Black;
-		Curve2->Symbol->Fill->Type = FillType::Solid;
-		Curve2->Line->IsVisible = false;
-		break;
-	case 5:
-		Curve2 = panel2->AddCurve("5", Cl_list, Color::Pink, SymbolType::Circle);
-		Curve2->Symbol->Fill->Color = Color::Pink;
-		Curve2->Symbol->Fill->Type = FillType::Solid;
-		Curve2->Line->IsVisible = false;
-		break;
-	}	
+	Curve2 = panel2->AddCurve(Convert::ToString(NumOfSets), Cl_list, Colors[NumOfSets - 1], SymbolType::Circle);
+	Curve2->Symbol->Fill->Color = Colors[NumOfSets - 1];
+	Curve2->Symbol->Fill->Type = FillType::Solid;
+	Curve2->Line->IsVisible = false;
 
 	zedGraphControl1->AxisChange();
 	zedGraphControl1->Invalidate();
@@ -1842,43 +1661,20 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 	
 	n_Text3->ReadOnly = false;
 }
-private: System::Void button6_Click(System::Object^  sender, System::EventArgs^  e)
-{
-	GraphPane ^panel = zedGraphControl6->GraphPane;
-	double X1 = Convert::ToDouble(X1_Text->Text);
-	double X2 = Convert::ToDouble(X2_Text->Text);
 
-	panel->XAxis->Min = X1;
-	panel->XAxis->Max = X2;
-
-	zedGraphControl6->AxisChange();
-	zedGraphControl6->Invalidate();
-}
-private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e)
-{
-	GraphPane ^panel = zedGraphControl6->GraphPane;
-	double Y1 = Convert::ToDouble(Y1_Text->Text);
-	double Y2 = Convert::ToDouble(Y2_Text->Text);
-
-	panel->YAxis->Min = Y1;
-	panel->YAxis->Max = Y2;
-
-	zedGraphControl6->AxisChange();
-	zedGraphControl6->Invalidate();
-}
 private: System::Void Change_scale_Omega_Click(System::Object^  sender, System::EventArgs^  e)
 {
 	GraphPane ^panel = zedGraphControl2->GraphPane;
 	double Om1 = Convert::ToDouble(Omega1_Text->Text);
 	double Om2 = Convert::ToDouble(Omega2_Text->Text);
 
-	panel->YAxis->Min = Om1;
-	panel->YAxis->Max = Om2;
+	panel->YAxis->Scale->Min = Om1;
+	panel->YAxis->Scale->Max = Om2;
 
-	panel->YAxis->StepAuto = false;
-	panel->YAxis->MinorStepAuto = false;
-	panel->YAxis->Step = (Om2 - Om1)*0.1;
-	panel->YAxis->MinorStep = (Om2 - Om1)*0.02;
+	panel->YAxis->Scale->MajorStepAuto = false;
+	panel->YAxis->Scale->MinorStepAuto = false;
+	panel->YAxis->Scale->MajorStep = (Om2 - Om1)*0.1;
+	panel->YAxis->Scale->MinorStep = (Om2 - Om1)*0.02;
 	zedGraphControl2->AxisChange();
 	zedGraphControl2->Invalidate();
 }
@@ -1958,6 +1754,8 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 	Omega_vec->clear();
 	Clusters_vec->clear();
 	textBox3->Text = String::Empty;
+
+	MessageBox::Show("Графики очищены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 }
 private: System::Void backgroundWorker1_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
 {
@@ -2026,7 +1824,7 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 		}
 	}
 
-	for(int j = 0; j < Omega_vec->size(); j++)
+	for(int j = 0; j < (int)Omega_vec->size(); j++)
 	{
 		curOmega = Omega_vec->at(j);
 		om = new double[n];
@@ -2079,7 +1877,7 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 		FindMinMax(NumOfSets, MinMaxClus[i], &MinClus, &MaxClus);
 
 		MinMaxClusList->Add(g, MinClus, MaxClus);
-		AvgClusList->Add(g, (MinClus + MaxClus)*0.5);
+		AvgClusList->Add(g, (int)((MinClus + MaxClus)*0.5));
 
 		str += "g = ";
 		str += Convert::ToString(g);
@@ -2118,15 +1916,12 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 	Curve2->Symbol->Size = 10.0f;
 	Curve2->Symbol->Fill->Type = FillType::Solid;
 
-	
-	panel->CurveList->Move(panel->CurveList->Count - 1, 0);
-	panel->CurveList->Move(panel->CurveList->Count - 2, 1);
-	panel2->CurveList->Move(panel2->CurveList->Count - 1, 0);
-	panel2->CurveList->Move(panel2->CurveList->Count - 2, 1);
-	
-	zedGraphControl1->AxisChange();
+	panel->CurveList->Move(panel->CurveList->Count - 1, -9999);
+	panel->CurveList->Move(panel->CurveList->Count - 1, -10000);
+	panel2->CurveList->Move(panel2->CurveList->Count - 1, -9999);
+	panel2->CurveList->Move(panel2->CurveList->Count - 1, -10000);
+		
 	zedGraphControl1->Invalidate();
-	zedGraphControl6->AxisChange();
 	zedGraphControl6->Invalidate();
 
 	for (int i = 0; i < non; i++)
