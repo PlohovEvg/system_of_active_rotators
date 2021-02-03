@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <Windows.h>
-#include "Input_structure.h"
 #include "Calculating_functions.h"
 
 namespace WinForm {
@@ -74,6 +73,7 @@ namespace WinForm {
 			zedGraphControl6->GraphPane->YAxis->Title->Text = L"Ωᵢ";
 			zedGraphControl6->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			zedGraphControl6->GraphPane->XAxis->MajorGrid->IsVisible = true;
+			zedGraphControl6->GraphPane->YAxis->Type = AxisType::Log;
 
 			zedGraphControl1->GraphPane->Title->Text = L"График зависимости числа кластеров от различных значений силы связи g";
 			zedGraphControl1->GraphPane->XAxis->Title->Text = L"g";
@@ -1480,8 +1480,6 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 {
 	GraphPane ^panel = zedGraphControl6->GraphPane;
 	GraphPane ^panel2 = zedGraphControl1->GraphPane;
-
-	panel->YAxis->Type = AxisType::Log;
 
 	PointPairList ^Cl_list = gcnew PointPairList();
 
