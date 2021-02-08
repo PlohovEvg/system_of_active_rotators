@@ -3,15 +3,13 @@
 double* Set_Gamma(int _n, double gam1, double gam2)
 {
 	double *g = new double[_n];
+	random_device gen;
+	mt19937 me(gen());
+	uniform_real_distribution<> distr(gam1, gam2);
 
-	srand(time(NULL));
-
-	double m = (double)((rand() % (int)((gam2 - gam1) * 1000 + 1) + gam1 * 1000) / 1000.0);
 	for (int i = 0; i < _n; i++)
 	{
-		g[i] = m;
-
-		m = (double)((rand() % (int)((gam2 - gam1) * 1000 + 1) + gam1 * 1000) / 1000.0);
+		g[i] = round(distr(me) * 1000) / 1000;		
 
 	}
 	return g;
@@ -46,6 +44,7 @@ int GetNumberOfClusters(const double *_Omega, const int _n)
 	int *Classes = new int[_n];
 	double cur;
 	bool flag;
+	bool only_one_element_in_cluster;
 
 	for (int i = 0; i < _n; i++)
 	{
@@ -58,17 +57,24 @@ int GetNumberOfClusters(const double *_Omega, const int _n)
 		{
 			flag = false;
 			cur = _Omega[i];
+			only_one_element_in_cluster = true;
 
 			for (int j = i + 1; j < _n; j++)
 			{
-				if (((abs(cur - _Omega[j]) < 0.0005) || (cur == _Omega[j])) && (Classes[j] == 0))
+				if (((abs(cur - _Omega[j]) < 5e-07) || (cur == _Omega[j])) && (Classes[j] == 0))
 				{
 					Classes[i] = Classes[j] = ClusterNum + 1;
 					flag = true;
+					only_one_element_in_cluster = false;
 				}
 			}
 
-			if (flag == true)
+			if (only_one_element_in_cluster == true)
+			{
+				Classes[i] = ClusterNum + 1;
+			}
+
+			if ((flag == true) || (only_one_element_in_cluster))
 			{
 				ClusterNum++;
 			}
@@ -85,17 +91,12 @@ double RK4(double t, double ts, double vn, double h, double d, double g, double 
 	double vnplus1, k1, k2, k3, k4;
 
 	k1 = f(t, ts, vn, d, g, E0, E0_star, alpha);
-	k2 = f(t + (h / 4.0), ts, vn + (h / 4.0)*k1, d, g, E0, E0_star, alpha);
-	k3 = f(t + (h / 2.0), ts, vn + (h / 2.0)*k2, d, g, E0, E0_star, alpha);
-	k4 = f(t + h, ts, vn + (h / 2.0)*(k1 - 2 * k2 + 2 * k3), d, g, E0, E0_star, alpha);
+	k2 = f(t + (h*0.25), ts, vn + (h*0.25)*k1, d, g, E0, E0_star, alpha);
+	k3 = f(t + (h*0.5), ts, vn + (h*0.5)*k2, d, g, E0, E0_star, alpha);
+	k4 = f(t + h, ts, vn + (h*0.5)*(k1 - 2 * k2 + 2 * k3), d, g, E0, E0_star, alpha);
 	vnplus1 = vn + (h / 6.0)*(k1 + 4 * k3 + k4);
 
 	return vnplus1;
-}
-
-double xInc(double x, double h)
-{
-	return x + h;
 }
 
 double f(double t, double _ts, double fi, double d, double _g, double _E0, double _E0_star, double _alpha)
