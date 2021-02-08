@@ -712,9 +712,10 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->textBox1->Location = System::Drawing::Point(185, 287);
 			this->textBox1->Name = L"textBox1";
+			this->textBox1->ReadOnly = true;
 			this->textBox1->Size = System::Drawing::Size(100, 29);
 			this->textBox1->TabIndex = 91;
-			this->textBox1->Text = L"400000";
+			this->textBox1->Text = L"10000000";
 			// 
 			// button7
 			// 
@@ -1285,12 +1286,14 @@ namespace WinForm {
 		panel2->YAxis->Scale->MinorStepAuto = true;		
 	
 		PointPairList^ g_list = gcnew PointPairList();        //Список точек для графика средних частот Ω
-		PointPairList^ E_list = gcnew PointPairList();	      //Список точек для графика поля E(t)
-		PointPairList^ Spaik_list = gcnew PointPairList();
+		PointPairList^ E_list = gcnew PointPairList();	      //Список точек для графика поля E(t)		
 		
 		int n = Convert::ToInt32(n_Text3->Text);              //Число уравнений в системе
-		double h = Convert::ToDouble(h_Text3->Text);          //Шаг
 		int p = Convert::ToInt32(textBox1->Text);             //Число итераций, второй критерий остановки
+		int *k;                                               //Число спайков для каждого ротатора  
+		int it = 0;                                           //Индекс строк в таблице
+		int NumOfClusters;                                    //Число кластеров при t = T
+		double h = Convert::ToDouble(h_Text3->Text);          //Шаг
 		double T = Convert::ToDouble(b_Text3->Text);          //Максимальное время, до которого будет подсчет, первый критерий остановки
 		double T01 = Convert::ToDouble(T01_text->Text);       //Начальное время, от которого будет считаться частота
 		double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
@@ -1298,37 +1301,38 @@ namespace WinForm {
 		double alpha = Convert::ToDouble(Alpha_Text->Text);   //Число α
 		double E0 = Convert::ToDouble(E0_Text->Text);         //Начальное условие для E
 		double E0Star = Convert::ToDouble(E0Star_Text->Text); //Начальное условие для Ė
-		int *k;                                               //Число спайков для каждого ротатора  
-		int it = 0;                                           //Индекс строк в таблице
-		int NumOfClusters;                                    //Число кластеров при t = T
 		double t = 0.0;                                       //Текущее время       
 		double Et;                                            //Поле E(t)
 		double *Fi0;		                                  //Фазы при t = T₀₁
 		double *v, *vplus1;	                                  //Фазы φⱼ(t) j = 0,...,n - 1
 		double *Omega;                                        //Средние частоты Ω
-		double MaxOmega = -100000.0, MinOmega = 100000.0;     //Максимальная и минимальная средние частоты 		
+		double MaxOmega = -100000.0, MinOmega = 100000.0;     //Максимальная и минимальная средние частоты 	
+		double ts = 0.0;                                      //Время последнего спайка
 		String ^str = "";                                     //Строка для вывода справочных сведений
+
+		if (T01 > T || T02 > T)
+		{
+			MessageBox::Show(L"Параметры T, T₀₁ или T₀₂ заданы неверно", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			return;
+		}
 
 		//Технические переменные, используемые для расчетов 
 		int ind = 0;
 		int i;
-		double oldE0;		
-		bool flag1 = false;
+		double oldE0;			
 		bool spike_flag = false;
 		
 		v = new double[n];           
 		vplus1 = new double[n];		 
 		Omega = new double[n];       
 		Fi0 = new double[n];
-		k = new int[n];
-
-		double ts = 0.0; //Время последнего спайка				
+		k = new int[n];					
 
 		double tmin_limit = t - 0.05;
 
 		for (i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
 		{
-			v[i] = vplus1[i] = 0.0;			                      
+			v[i] = vplus1[i] = Fi0[i] = 0.0;
 			k[i] = 0;                          //Изначальное число спайков равно нулю
 		}			
 
@@ -1336,30 +1340,214 @@ namespace WinForm {
 		dataGridView2->Rows->Clear();
 
 		//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
-		for (i = 1; ((i < p) && (t < T)); i++)         
-		{					
+		if (T01 <= T02)
+		{
+			//t от 0 до T01 - h
+			for (t; t < T01 - h; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < n; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
+					v[j] = vplus1[j];
+
+					if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+						ts = t + h;                                    //Изменение времени последнего спайка
+						v[j] = 0.0;			                           //Обнуление значения ф												
+					}
+				}												
+			}
+			//---------------------------------------------------
+			//t от T01 - h до T01
 			t = round(t * 1000) / 1000;
 			for (int j = 0; j < n; j++)
 			{
 				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha); 
+				vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 				v[j] = vplus1[j];
 
-				if (v[j] >= 2 * M_PI)                           //В моемент импульса j-го ротатора
-				{				                 
-				    oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+				if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
 					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += (alpha*alpha) / n;                //Добавление α²/n к начальному значению производной
-					ts = t + h;                            //Изменение времени последнего спайка
-					v[j] = 0.0;			                        //Обнуление значения ф
-					if (t + h >= T01)
+					E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+					ts = t + h;                                    //Изменение времени последнего спайка
+					v[j] = 0.0;			                           //Обнуление значения ф					
+					k[j]++;                                        //Увеличение числа спайков на 1
+				}
+			}
+
+			t += h;			
+
+			for (int l = 0; l < n; l++)
+			{
+				Fi0[l] = v[l];                                     //Запоминание значений фаз при t = T₀₁
+			}
+			//---------------------------------------------------
+			//t от T01 до T02 - h
+			for (t; t < T02 - h; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < n; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
+					v[j] = vplus1[j];
+
+					if (v[j] >= 2 * M_PI)                               //В моемент импульса j-го ротатора
 					{
-						k[j]++;                                 //Увеличение числа спайков на 1
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += (alpha*alpha) / n;                    //Добавление α²/n к начальному значению производной
+						ts = t + h;                                     //Изменение времени последнего спайка
+						v[j] = 0.0;			                            //Обнуление значения ф						
+						k[j]++;                                         //Увеличение числа спайков на 1						
 					}
-					if ((ts >= T02)&&(!spike_flag))             //Отбражение нового спайка на графике
-					{						
-						Spaik_list->Clear();
+				}											
+			}
+			//---------------------------------------------------			
+			//t от T02 - h до T
+			for (t; t < T; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < n; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
+					v[j] = vplus1[j];
+
+					if (v[j] >= 2 * M_PI)                               //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += (alpha*alpha) / n;                    //Добавление α²/n к начальному значению производной
+						ts = t + h;                                     //Изменение времени последнего спайка
+						v[j] = 0.0;			                            //Обнуление значения ф						
+						k[j]++;                                         //Увеличение числа спайков на 1	
+						if (!spike_flag)                                //Отбражение нового спайка на графике
+						{
+							PointPairList^ Spaik_list = gcnew PointPairList();
+							Spaik_list->Add(ts, 0.0);
+							Spaik_list->Add(ts, 1.0);
+
+							LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+							zedGraphControl3->AxisChange();
+							zedGraphControl3->Invalidate();
+							spike_flag = true;
+						}
+					}
+				}
+				spike_flag = false;
+
+				Et = E(t + h, ts, E0, E0Star, alpha);
+				E_list->Add(t + h, Et);
+
+				//Заполнение таблицы E(t)
+				dataGridView2->Rows->Add();
+				dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
+				dataGridView2->Rows[ind]->Cells[1]->Value = Et;
+				ind++;
+			}
+			//---------------------------------------------------
+		}
+		else
+		{
+			//t от 0 до T02 - h
+			for (t; t < T02 - h; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < n; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
+					v[j] = vplus1[j];
+
+					if (v[j] >= 2 * M_PI)                           //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);       //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += (alpha*alpha) / n;                //Добавление α²/n к начальному значению производной
+						ts = t + h;                                 //Изменение времени последнего спайка
+						v[j] = 0.0;			                        //Обнуление значения ф												
+					}
+				}
+			}
+			//---------------------------------------------------
+			//t от T02 - h до T01 - h
+			for (t; t < T01 - h; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < n; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
+					v[j] = vplus1[j];
+
+					if (v[j] >= 2 * M_PI)                               //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += (alpha*alpha) / n;                    //Добавление α²/n к начальному значению производной
+						ts = t + h;                                     //Изменение времени последнего спайка
+						v[j] = 0.0;			                            //Обнуление значения ф						
+						if (!spike_flag)                                //Отбражение нового спайка на графике
+						{
+							PointPairList^ Spaik_list = gcnew PointPairList();
+							Spaik_list->Add(ts, 0.0);
+							Spaik_list->Add(ts, 1.0);
+
+							LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+							zedGraphControl3->AxisChange();
+							zedGraphControl3->Invalidate();
+							spike_flag = true;
+						}
+					}
+				}
+				spike_flag = false;
+
+				Et = E(t + h, ts, E0, E0Star, alpha);
+				E_list->Add(t + h, Et);
+
+				//Заполнение таблицы E(t)
+				dataGridView2->Rows->Add();
+				dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
+				dataGridView2->Rows[ind]->Cells[1]->Value = Et;
+				ind++;				
+			}
+			//---------------------------------------------------
+			//t от T01 - h до T01
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < n; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
+				v[j] = vplus1[j];
+
+				if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+					ts = t + h;                                    //Изменение времени последнего спайка
+					v[j] = 0.0;			                           //Обнуление значения ф					
+					k[j]++;                                        //Увеличение числа спайков на 1
+					if (!spike_flag)                                //Отбражение нового спайка на графике
+					{
+						PointPairList^ Spaik_list = gcnew PointPairList();
 						Spaik_list->Add(ts, 0.0);
 						Spaik_list->Add(ts, 1.0);
 
@@ -1371,34 +1559,70 @@ namespace WinForm {
 					}
 				}
 			}
-			t += h;                    //Увеличение времени на h
-			spike_flag = false;			
+			spike_flag = false;
 
-			if (t >= T02)                      //Заполнение таблицы точек для вывода графика E(t) 
+			Et = E(t + h, ts, E0, E0Star, alpha);
+			E_list->Add(t + h, Et);
+
+			//Заполнение таблицы E(t)
+			dataGridView2->Rows->Add();
+			dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
+			dataGridView2->Rows[ind]->Cells[1]->Value = Et;
+			ind++;
+			
+			for (int l = 0; l < n; l++)
 			{
-				Et = E(t, ts, E0, E0Star, alpha);
-				E_list->Add(t, Et);
+				Fi0[l] = v[l];                                     //Запоминание значений фаз при t = T₀₁
+			}
+			t += h;
+			//---------------------------------------------------
+			//t от T01 до T
+			for (t; t < T; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < n; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
+					v[j] = vplus1[j];
+
+					if (v[j] >= 2 * M_PI)                               //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += (alpha*alpha) / n;                    //Добавление α²/n к начальному значению производной
+						ts = t + h;                                     //Изменение времени последнего спайка
+						v[j] = 0.0;			                            //Обнуление значения ф						
+						k[j]++;                                         //Увеличение числа спайков на 1	
+						if (!spike_flag)                                //Отбражение нового спайка на графике
+						{
+							PointPairList^ Spaik_list = gcnew PointPairList();
+							Spaik_list->Add(ts, 0.0);
+							Spaik_list->Add(ts, 1.0);
+
+							LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+							zedGraphControl3->AxisChange();
+							zedGraphControl3->Invalidate();
+							spike_flag = true;
+						}
+					}
+				}
+				spike_flag = false;
+
+				Et = E(t + h, ts, E0, E0Star, alpha);
+				E_list->Add(t + h, Et);
 
 				//Заполнение таблицы E(t)
-				dataGridView2->Rows->Add();    
-				dataGridView2->Rows[ind]->Cells[0]->Value = t; 
+				dataGridView2->Rows->Add();
+				dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
 				dataGridView2->Rows[ind]->Cells[1]->Value = Et;
 				ind++;
 			}
-		
-			if ((t == T01)||((t > T01)&&(t - T01 < h*0.5))||(T01 == 0.0))  //Запоминание начальных значений ф для частоты Ω
-			{
-				flag1 = true;			
-
-			for (int l = 0; l < n; l++)
-				{
-					Fi0[l] = v[l];   //Запоминание значений фаз при t = T₀₁
-				}
-			}
+			//---------------------------------------------------			
 		}		
-		
-		if (flag1 == true)
-		{
+						
 			for (i = 0; i < n; i++)         //Вычисление частоты для всех ротаторов, заполнение таблицы
 			{
 				Omega[i] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
@@ -1417,8 +1641,7 @@ namespace WinForm {
 				dataGridView1->Rows->Add();     
 				dataGridView1->Rows[i]->Cells[0]->Value = i;
 				dataGridView1->Rows[i]->Cells[1]->Value = Omega[i];
-			}
-		}
+			}		
 
 		NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T		
 
@@ -1504,9 +1727,14 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	int *k = new int[n];                                  //Число спайков для каждого ротатора
 	double *Fi0 = new double[n];                          //Фазы при t = T₀₁
 
+	if (T01 > T)
+	{
+		MessageBox::Show(L"Параметры T, T₀₁ заданы неверно", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
+
 	//Технические переменные, используемые для расчетов
 	double oldE0;
-	bool flag1 = false;
 	double ts = 0.0;
 	int index = 0;
 
@@ -1537,7 +1765,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 		Omega[i] = new double[non];
 
 		//Начальное значение φⱼ(0) и число спайков равно 0
-		v[i] = vplus1[i] = 0.0;
+		v[i] = vplus1[i] = Fi0[i] = 0.0;
 		k[i] = 0;
 	}
 
@@ -1546,52 +1774,85 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	//Вычисляем φⱼ(t) методом Рунге-Кутта 4-го порядка
 	for (double g = g1; g <= g2; g = g + gh)
 	{
-		g = round(g * 1000) / 1000;		
-		for (int i = 1; ((i < p) && ((t < T))); i++)
+		g = round(g * 1000) / 1000;
+		//t от 0 до T01 - h
+		for (t; t < T01 - h; t += h)
 		{
 			t = round(t * 1000) / 1000;
 			for (int j = 0; j < n; j++)
 			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
 				vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
 				v[j] = vplus1[j];
 
-				if (v[j] >= 2 * M_PI)
+				if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
 				{
 					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);
+					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
 					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += (alpha*alpha) / n;
-					ts = t + h;
-					v[j] = 0.0;
-					if (t + h >= T01)
-					{
-						k[j]++;
-					}
-				}
-			}
-			t += h;
-
-			//Запоминаем начальные значения φⱼ(T₀₁)
-			if ((t == T01) || ((t > T01) && (t - T01 < h*0.5)) || (T01 == 0.0))
-			{
-				flag1 = true;
-
-				for (int l = 0; l < n; l++)
-				{
-					Fi0[l] = v[l];
+					E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+					ts = t + h;                                    //Изменение времени последнего спайка
+					v[j] = 0.0;			                           //Обнуление значения ф												
 				}
 			}
 		}
-
-		//Вычисление средних частот Ω
-		if (flag1 == true)
+		//---------------------------------------------------
+		//t от T01 - h до T01
+		t = round(t * 1000) / 1000;
+		for (int j = 0; j < n; j++)
 		{
+			//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+			vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+			v[j] = vplus1[j];
+
+			if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+			{
+				oldE0 = E0;
+				E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+				E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+				E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+				ts = t + h;                                    //Изменение времени последнего спайка
+				v[j] = 0.0;			                           //Обнуление значения ф					
+				k[j]++;                                        //Увеличение числа спайков на 1
+			}
+		}
+
+		t += h;
+
+		for (int l = 0; l < n; l++)
+		{
+			Fi0[l] = v[l];                                     //Запоминание значений фаз при t = T₀₁
+		}
+		//---------------------------------------------------
+		//t от T01 до T
+		for (t; t < T; t += h)
+		{
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < n; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+				v[j] = vplus1[j];
+
+				if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+					ts = t + h;                                    //Изменение времени последнего спайка
+					v[j] = 0.0;			                           //Обнуление значения ф
+					k[j]++;
+				}
+			}
+		}
+		//---------------------------------------------------		
+		//Вычисление средних частот Ω		
 			for (int i = 0; i < n; i++)
 			{
 				Omega[i][index] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
 				om[i] = Omega[i][index];
-			}
-		}
+			}		
 
 		//Вычисление числа кластеров
 		NumOfClusters[index] = GetNumberOfClusters(om, n);
@@ -1600,8 +1861,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 
 		//Обнуление переменных для повторного счета при другом значении силы связи g
 		t = 0.0;
-		ts = 0.0;
-		flag1 = false;
+		ts = 0.0;		
 		E0 = Convert::ToDouble(E0_Text->Text);
 		E0Star = Convert::ToDouble(E0Star_Text->Text);
 
