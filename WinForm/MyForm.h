@@ -26,9 +26,6 @@ namespace WinForm {
 	public: bool GraphsDrawn;
 	public: vector<int*> *Clusters_vec;
 	public: vector<double**> *Omega_vec;
-	private: System::Windows::Forms::CheckBox^  checkBox1;
-	public:
-	private: System::Windows::Forms::CheckBox^  checkBox4;
 	public: cli::array<Color> ^Colors;
 		MyForm(void)
 		{
@@ -99,6 +96,8 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::CheckBox^  checkBox1;
+	private: System::Windows::Forms::CheckBox^  checkBox4;
 	private: System::Windows::Forms::TextBox^  textBox6;
 	private: System::Windows::Forms::TextBox^  textBox5;
 	private: System::Windows::Forms::Panel^  panel1;
@@ -1082,7 +1081,7 @@ namespace WinForm {
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(132, 66);
 			this->button2->TabIndex = 1;
-			this->button2->Text = L"Добавить набор ";
+			this->button2->Text = L"Начать вычисления";
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			// 
@@ -2158,7 +2157,7 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 
 	Int32 NumOfSets = Convert::ToInt32(textBox4->Text);
 
-	if (NumOfSets == 51)
+	if (NumOfSets > 50)
 	{
 		MessageBox::Show("Максимальное число наборов: 50", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		return;
@@ -2257,7 +2256,6 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 
 	zedGraphControl6->GraphPane->CurveList->Clear();
 	zedGraphControl1->GraphPane->CurveList->Clear();
-	textBox4->Text = "0";
 	g1_Text->ReadOnly = false;
 	g2_Text->ReadOnly = false;
 	GShag_Text->ReadOnly = false;
