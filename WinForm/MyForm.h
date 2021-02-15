@@ -21,9 +21,7 @@ namespace WinForm {
 	public: double *gamma;    //Параметры γⱼ
 	public: double gamma1;    //Левая граница γ₁
 	public: double gamma2;    //Правая граница γ₂
-	public: bool gamma_generated;
 	public: bool AvgMaxMinAlreadyExists;
-	public: bool GraphsDrawn;
 	public: vector<int*> *Clusters_vec;
 	public: vector<double**> *Omega_vec;
 	public: cli::array<Color> ^Colors;
@@ -33,9 +31,7 @@ namespace WinForm {
 			//
 			//TODO: добавьте код конструктора
 			//									
-			gamma_generated = false;
 			AvgMaxMinAlreadyExists = false;
-			GraphsDrawn = false;
 			Clusters_vec = new vector<int*>;
 			Omega_vec = new vector<double**>;			
 
@@ -723,6 +719,7 @@ namespace WinForm {
 			// 
 			// button7
 			// 
+			this->button7->Enabled = false;
 			this->button7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button7->Location = System::Drawing::Point(766, 203);
@@ -872,6 +869,7 @@ namespace WinForm {
 			// 
 			// Change_scale_Omega
 			// 
+			this->Change_scale_Omega->Enabled = false;
 			this->Change_scale_Omega->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->Change_scale_Omega->Location = System::Drawing::Point(1300, 4);
@@ -1033,6 +1031,7 @@ namespace WinForm {
 			// 
 			// button5
 			// 
+			this->button5->Enabled = false;
 			this->button5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button5->Location = System::Drawing::Point(204, 52);
@@ -1117,6 +1116,7 @@ namespace WinForm {
 			// 
 			// button4
 			// 
+			this->button4->Enabled = false;
 			this->button4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button4->Location = System::Drawing::Point(350, 53);
@@ -1307,12 +1307,7 @@ namespace WinForm {
 		}
 #pragma endregion
 	private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e) 
-	{				
-		if (!gamma_generated)
-		{
-			MessageBox::Show(L"Набор γ еще не сгенерирован", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			return;
-		}
+	{						
 		GraphPane^ panel2 = zedGraphControl2->GraphPane;		
 		GraphPane^ panel4 = zedGraphControl4->GraphPane;
 		GraphPane^ panel3 = zedGraphControl3->GraphPane;
@@ -1734,6 +1729,7 @@ delete[]Fi0;
 delete[]k;
 
 n_Text3->ReadOnly = false;
+Change_scale_Omega->Enabled = true;
 	}
 
 private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) 
@@ -2169,10 +2165,9 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 	g2_Text->ReadOnly = true;
 	GShag_Text->ReadOnly = true;
 	label15->Visible = true;
+	button2->Enabled = false;
 
 	backgroundWorker1->RunWorkerAsync();
-
-	GraphsDrawn = true;
 	
 	n_Text3->ReadOnly = false;
 }
@@ -2242,18 +2237,12 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 		dataGridView4->Rows[i]->Cells[1]->Value = gamma[i];
 	}
 
-	gamma_generated = true;
 	n_Text3->ReadOnly = true;
+	button7->Enabled = true;
 	MessageBox::Show("Набор сгенерирован", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 }
 private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e) 
 {
-	if (!GraphsDrawn)
-	{
-		MessageBox::Show("Графики еще не построены", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
-	}
-
 	zedGraphControl6->GraphPane->CurveList->Clear();
 	zedGraphControl1->GraphPane->CurveList->Clear();
 	g1_Text->ReadOnly = false;
@@ -2274,6 +2263,9 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 	checkBox4->Checked = true;
 	checkBox1->Enabled = false;
 	checkBox4->Enabled = false;
+	button2->Enabled = true;
+	button5->Enabled = false;
+	button4->Enabled = false;
 
 	MessageBox::Show("Графики очищены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 }
@@ -2289,15 +2281,11 @@ private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  send
 	label15->Visible = false;
 	checkBox1->Enabled = true;
 	checkBox4->Enabled = true;
+	button5->Enabled = true;
+	button4->Enabled = true;
 }
 private: System::Void button5_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	if (!GraphsDrawn)
-	{
-		MessageBox::Show("Графики еще не построены", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
-	}
-
+{	
 	int n = Convert::ToInt32(n_Text3->Text);
 	int NumOfSets = Convert::ToInt32(textBox4->Text);
 	GraphPane ^panel = zedGraphControl6->GraphPane;
