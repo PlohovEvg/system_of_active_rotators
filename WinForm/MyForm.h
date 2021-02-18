@@ -87,6 +87,9 @@ namespace WinForm {
 		/// </summary>
 		~MyForm()
 		{
+			delete Omega_vec;
+			delete Clusters_vec;
+			delete gamma;
 			if (components)
 			{
 				delete components;
@@ -1346,7 +1349,7 @@ namespace WinForm {
 
 		if (T01 > T || T02 > T)
 		{
-			MessageBox::Show(L"Параметры T, T₀₁ или T₀₂ заданы неверно", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show(L"T₀₁ и T₀₂ должны быть меньше или равны T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 			return;
 		}
 
@@ -1737,9 +1740,9 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	GraphPane ^panel = zedGraphControl6->GraphPane;
 	GraphPane ^panel2 = zedGraphControl1->GraphPane;
 
-	gamma1 = Convert::ToDouble(Gamma1_Text->Text);
-	gamma2 = Convert::ToDouble(Gamma2_Text->Text);
-	int n = Convert::ToInt32(n_Text3->Text);
+	double gamma1Copy = Convert::ToDouble(Gamma1_Text->Text);
+	double gamma2Copy = Convert::ToDouble(Gamma2_Text->Text);
+	int n = Convert::ToInt32(n_Text3->Text);              //Число уравнений в системе
 	double g1 = Convert::ToDouble(g1_Text->Text);         //Начальное значение g
 	double g2 = Convert::ToDouble(g2_Text->Text);         //Конечное значение g
 	double gh = Convert::ToDouble(GShag_Text->Text);      //Шаг по g	
@@ -1750,23 +1753,21 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	int non = 0;                                          //Число точек на графике, в которых считаются средние частоты 
 	double alpha = Convert::ToDouble(Alpha_Text->Text);   //Число α
 	int NumOfSets = Convert::ToInt32(textBox4->Text);     //Число наборов
-	double E0;         //Начальное условие для E    
-	double E0Star; //Начальное условие для Ė
-	double t = 0.0;                                       //Время			
-	//double **Omega = new double*[n];                      //Двумерный массив для хранения средних частот
-	double **Omega;
+	double E0;                                            //Начальное условие для E    
+	double E0Star;                                        //Начальное условие для Ė
+	double t;                                             //Время			
+	double **Omega;                                       //Средние частоты
 	int *NumOfClusters;                                   //Массив для хранения числа кластеров
-	double *om = new double[n];                           //Технический массив для вычислений 
-	double *v = new double[n];                            //Фазы φⱼ(t) j = 0,...,n - 1
-	double *vplus1 = new double[n];                       //Фазы φⱼ(t) j = 0,...,n - 1
-	//double *cur_gamma = Set_Gamma(n, gamma1, gamma2);     //Задаем новый набор γⱼ
-	double *cur_gamma;
-	int *k = new int[n];                                  //Число спайков для каждого ротатора
-	double *Fi0 = new double[n];                          //Фазы при t = T₀₁
+	double *om;                                           //Технический массив для вычислений 
+	double *v;                                            //Фазы φⱼ(t) j = 0,...,n - 1
+	double *vplus1;                                       //Фазы φⱼ(t) j = 0,...,n - 1
+	double *cur_gamma;                                    //Набор γⱼ
+	int *k;                                               //Число спайков для каждого ротатора
+	double *Fi0;                                          //Фазы при t = T₀₁
 
 	if (T01 > T)
 	{
-		MessageBox::Show(L"Параметры T, T₀₁ заданы неверно", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		MessageBox::Show(L"T₀₁ должен быть меньше или равен T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		return;
 	}
 
@@ -1774,6 +1775,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	double oldE0;
 	double ts;
 	int index;
+	int counter = 0;
 
 	panel->XAxis->Scale->Min = g1 - 0.1;
 	panel->XAxis->Scale->Max = g2 + 0.1;
@@ -1795,357 +1797,210 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	
 	PointPairList ^Cl_list;
 	cli::array<PointPairList^> ^Omega_List;
-
-	//for (int i = 0; i < n; i++)
-	//{
-	//	Omega_List[i] = gcnew PointPairList();
-	//	Omega[i] = new double[non];
-
-	//	////Начальное значение φⱼ(0) и число спайков равно 0
-	//	//v[i] = vplus1[i] = Fi0[i] = 0.0;
-	//	//k[i] = 0;
-	//}
-
-	/*NumOfClusters = new int[non];*/
 	
-	for (int GlobalInd = 0; GlobalInd < NumOfSets; GlobalInd++)
+#pragma omp parallel private(om, v, vplus1, k, Fi0)
 	{
-		E0 = Convert::ToDouble(E0_Text->Text);
-		E0Star = Convert::ToDouble(E0Star_Text->Text);
-		index = 0;
-		ts = 0.0;
-		t = 0.0;
+			om = new double[n];
+			v = new double[n];
+			vplus1 = new double[n];
+			k = new int[n];
+			Fi0 = new double[n];
 
-		cur_gamma = Set_Gamma(n, gamma1, gamma2);
-		Cl_list = gcnew PointPairList();
-		Omega_List = gcnew cli::array<PointPairList^>(n);
-		Omega = new double*[n];
-		NumOfClusters = new int[non];
-
-		for (int i = 0; i < n; i++)
+#pragma omp for private(Cl_list, Omega_List, E0, E0Star, index, ts, t, cur_gamma, Omega, NumOfClusters, oldE0)
+		for (int GlobalInd = 0; GlobalInd < NumOfSets; GlobalInd++)
 		{
-			Omega_List[i] = gcnew PointPairList();
-			Omega[i] = new double[non];
-
-			//Начальное значение φⱼ(0) и число спайков равно 0
-			v[i] = vplus1[i] = Fi0[i] = 0.0;
-			k[i] = 0;
-		}
-
-		//Вычисляем φⱼ(t) методом Рунге-Кутта 4-го порядка
-		for (double g = g1; g <= g2; g = g + gh)
-		{
-			g = round(g * 1000) / 1000;
-			//t от 0 до T01 - h
-			for (t; t < T01 - h; t += h)
-			{
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
-					v[j] = vplus1[j];
-
-					if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
-						ts = t + h;                                    //Изменение времени последнего спайка
-						v[j] = 0.0;			                           //Обнуление значения ф												
-					}
-				}
-			}
-			//---------------------------------------------------
-			//t от T01 - h до T01
-			t = round(t * 1000) / 1000;
-			for (int j = 0; j < n; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
-				v[j] = vplus1[j];
-
-				if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					v[j] = 0.0;			                           //Обнуление значения ф					
-					k[j]++;                                        //Увеличение числа спайков на 1
-				}
-			}
-
-			for (int l = 0; l < n; l++)
-			{
-				Fi0[l] = v[l];                                     //Запоминание значений фаз при t = T₀₁
-			}
-			//---------------------------------------------------
-			//t от T01 до T
-			for (t; t < T; t += h)
-			{
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
-					v[j] = vplus1[j];
-
-					if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
-						ts = t + h;                                    //Изменение времени последнего спайка
-						v[j] = 0.0;			                           //Обнуление значения ф
-						k[j]++;
-					}
-				}
-			}
-			//---------------------------------------------------		
-			//Вычисление средних частот Ω		
-			for (int i = 0; i < n; i++)
-			{
-				Omega[i][index] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
-				om[i] = Omega[i][index];
-			}
-
-			//Вычисление числа кластеров
-			NumOfClusters[index] = GetNumberOfClusters(om, n);
-
-			index++;
-
-			//Обнуление переменных для повторного счета при другом значении силы связи g
-			t = 0.0;
-			ts = 0.0;
 			E0 = Convert::ToDouble(E0_Text->Text);
 			E0Star = Convert::ToDouble(E0Star_Text->Text);
+			index = 0;
+			ts = 0.0;
+			t = 0.0;
+
+			cur_gamma = Set_Gamma(n, gamma1Copy, gamma2Copy);
+			Cl_list = gcnew PointPairList();
+			Omega_List = gcnew cli::array<PointPairList^>(n);
+			Omega = new double*[n];
+			NumOfClusters = new int[non];
 
 			for (int i = 0; i < n; i++)
 			{
-				v[i] = vplus1[i] = 0.0;
+
+				Omega_List[i] = gcnew PointPairList();
+				Omega[i] = new double[non];
+
+				//Начальное значение φⱼ(0) и число спайков равно 0
+				v[i] = vplus1[i] = Fi0[i] = 0.0;
 				k[i] = 0;
 			}
-			//backgroundWorker1->ReportProgress((int)((float)(g - g1) / (g2 - g1) * 100));
-		}
 
-		Omega_vec->push_back(Omega);
-		Clusters_vec->push_back(NumOfClusters);
-
-		double _g = g1;
-
-		//Рисование графиков
-		for (int i = 0; i < n; i++)
-		{
-			_g = g1;
-			for (int j = 0; j < non; j++)
+			//Вычисляем φⱼ(t) методом Рунге-Кутта 4-го порядка
+			for (double g = g1; g <= g2; g = g + gh)
 			{
-				Omega_List[i]->Add(_g, Omega[i][j]);
-				if (_g <= g2)
+				g = round(g * 1000) / 1000;
+				//t от 0 до T01 - h
+				for (t; t < T01 - h; t += h)
 				{
-					_g += gh;
-					_g = round(_g * 1000) / 1000;
+					t = round(t * 1000) / 1000;
+					for (int j = 0; j < n; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+						v[j] = vplus1[j];
+
+						if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+							ts = t + h;                                    //Изменение времени последнего спайка
+							v[j] = 0.0;			                           //Обнуление значения ф												
+						}
+					}
+				}
+				//---------------------------------------------------
+				//t от T01 - h до T01
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < n; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+					v[j] = vplus1[j];
+
+					if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+						ts = t + h;                                    //Изменение времени последнего спайка
+						v[j] = 0.0;			                           //Обнуление значения ф					
+						k[j]++;                                        //Увеличение числа спайков на 1
+					}
+				}
+
+				t += h;
+
+				for (int l = 0; l < n; l++)
+				{
+					Fi0[l] = v[l];                                     //Запоминание значений фаз при t = T₀₁
+				}
+				//---------------------------------------------------
+				//t от T01 до T
+				for (t; t < T; t += h)
+				{
+					t = round(t * 1000) / 1000;
+					for (int j = 0; j < n; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+						v[j] = vplus1[j];
+
+						if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+							ts = t + h;                                    //Изменение времени последнего спайка
+							v[j] = 0.0;			                           //Обнуление значения ф
+							k[j]++;
+						}
+					}
+				}
+				//---------------------------------------------------		
+				//Вычисление средних частот Ω		
+				for (int i = 0; i < n; i++)
+				{
+					Omega[i][index] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
+					om[i] = Omega[i][index];
+				}
+
+				//Вычисление числа кластеров
+				NumOfClusters[index] = GetNumberOfClusters(om, n);
+
+				index++;
+
+				//Обнуление переменных для повторного счета при другом значении силы связи g
+				t = 0.0;
+				ts = 0.0;
+				E0 = Convert::ToDouble(E0_Text->Text);
+				E0Star = Convert::ToDouble(E0Star_Text->Text);
+
+				for (int i = 0; i < n; i++)
+				{
+					v[i] = vplus1[i] = 0.0;
+					k[i] = 0;
 				}
 			}
-			LineItem ^Curve;
-			Curve = panel->AddCurve(Convert::ToString(GlobalInd), Omega_List[i], Colors[GlobalInd], SymbolType::Circle);
-			Curve->Symbol->Fill->Color = Colors[GlobalInd];
-			Curve->Symbol->Size = 8.0f;
-			Curve->Symbol->Fill->Type = FillType::Solid;
-			if (i > 0)
+
+#pragma omp critical (pushing)
 			{
-				Curve->Label->Text = String::Empty;
+				Omega_vec->push_back(Omega);
+				Clusters_vec->push_back(NumOfClusters);
 			}
+
+			double _g = g1;
+
+			//Рисование графиков
+			for (int i = 0; i < n; i++)
+			{
+				_g = g1;
+				for (int j = 0; j < non; j++)
+				{
+					Omega_List[i]->Add(_g, Omega[i][j]);
+					if (_g <= g2)
+					{
+						_g += gh;
+						_g = round(_g * 1000) / 1000;
+					}
+				}
+				LineItem ^Curve;
+#pragma omp critical (DrawOmegaGraph)
+				Curve = panel->AddCurve(Convert::ToString(GlobalInd), Omega_List[i], Colors[GlobalInd], SymbolType::Circle);
+				Curve->Symbol->Fill->Color = Colors[GlobalInd];
+				Curve->Symbol->Size = 8.0f;
+				Curve->Symbol->Fill->Type = FillType::Solid;
+				if (i > 0)
+				{
+					Curve->Label->Text = String::Empty;
+				}
+			}
+
+			zedGraphControl6->AxisChange();
+			zedGraphControl6->Invalidate();
+
+			_g = g1;
+
+			for (int i = 0; i < non; i++)
+			{
+				Cl_list->Add(_g, NumOfClusters[i]);
+				_g += gh;
+				_g = round(_g * 1000) / 1000;
+			}
+			LineItem ^Curve2;
+#pragma omp critical (DrawClusGraph)
+			Curve2 = panel2->AddCurve(Convert::ToString(GlobalInd), Cl_list, Colors[GlobalInd], SymbolType::Circle);
+			Curve2->Symbol->Fill->Color = Colors[GlobalInd];
+			Curve2->Symbol->Fill->Type = FillType::Solid;
+			Curve2->Line->IsVisible = false;
+
+			zedGraphControl1->AxisChange();
+			zedGraphControl1->Invalidate();
+
+#pragma omp atomic
+			counter++;
+#pragma omp critical (report)
+			backgroundWorker1->ReportProgress((int)((float)counter / NumOfSets * 100));
 		}
-
-		zedGraphControl6->AxisChange();
-		zedGraphControl6->Invalidate();
-
-		_g = g1;
-
-		for (int i = 0; i < non; i++)
-		{
-			Cl_list->Add(_g, NumOfClusters[i]);
-			_g += gh;
-			_g = round(_g * 1000) / 1000;
-		}
-		LineItem ^Curve2;
-		Curve2 = panel2->AddCurve(Convert::ToString(GlobalInd), Cl_list, Colors[GlobalInd], SymbolType::Circle);
-		Curve2->Symbol->Fill->Color = Colors[GlobalInd];
-		Curve2->Symbol->Fill->Type = FillType::Solid;
-		Curve2->Line->IsVisible = false;
-
-		zedGraphControl1->AxisChange();
-		zedGraphControl1->Invalidate();
-
-		backgroundWorker1->ReportProgress((int)((float)(GlobalInd + 1) / NumOfSets * 100));
+		//Освобождение памяти
+		delete[]om;
+		delete[]v;
+		delete[]vplus1;
+		delete[]k;
+		delete[]Fi0;
 	}
-	//Освобождение памяти
+	//Конец параллельной секции------------------------------------------------------------------
 	delete[]cur_gamma;
-	delete[]om;
-	delete[]v;
-	delete[]vplus1;
-	delete[]k;
-	delete[]Fi0;
-	
-
-	//#pragma omp parallel for num_threads(2) firstprivate(t, E0, E0Star, oldE0, flag1, ts, index) shared(gamma1_Cpy, gamma2_Cpy, n, g1, g2, gh, h, T01, T, p, non, alpha, NumOfSets, panel, panel2)
-	//	for (int GlobalInd = 0; GlobalInd < NumOfSets; GlobalInd++)
-	//	{
-	//			double **Omega = new double*[n];                             //Двумерный массив для хранения средних частот
-	//			int *NumOfClusters = new int[non];                           //Массив для хранения числа кластеров
-	//			double *om = new double[n];                                  //Технический массив для вычислений
-	//			double *v = new double[n];                                   //Фазы φⱼ(t) j = 0,...,n - 1
-	//			double *vplus1 = new double[n];                              //Фазы φⱼ(t) j = 0,...,n - 1
-	//			int *k = new int[n];                                         //Число спайков для каждого ротатора
-	//			double *Fi0 = new double[n];                                 //Фазы при t = T₀₁
-	//			double *cur_gamma = Set_Gamma(n, gamma1_Cpy, gamma2_Cpy);    //Задаем новый набор γⱼ 	
-	//
-	//		cli::array<PointPairList^> ^Omega_List = gcnew cli::array<PointPairList^>(n);
-	//		PointPairList ^Cl_list = gcnew PointPairList();
-	//
-	//		for (int i = 0; i < n; i++)
-	//		{
-	//			Omega_List[i] = gcnew PointPairList();
-	//			Omega[i] = new double[non];
-	//
-	//			//Начальное значение φⱼ(0) и число спайков равно 0
-	//			v[i] = vplus1[i] = 0.0;
-	//			k[i] = 0;
-	//		}
-	//		//Вычисляем φⱼ(t) методом Рунге-Кутта 4-го порядка		
-	//			for (double g = g1; g <= g2; g = g + gh)
-	//			{
-	//				g = round(g * 1000) / 1000;
-	//				for (int i = 1; ((i < p) && ((t < T))); i++)
-	//				{
-	//					t = round(t * 1000) / 1000;
-	//					for (int j = 0; j < n; j++)
-	//					{
-	//						vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
-	//						v[j] = vplus1[j];
-	//
-	//						if (v[j] >= 2 * M_PI)
-	//						{
-	//							oldE0 = E0;
-	//							E0 = E(t + h, ts, E0, E0Star, alpha);
-	//							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-	//							E0Star += (alpha*alpha) / n;
-	//							ts = t + h;
-	//							v[j] = 0.0;
-	//							if (t + h >= T01)
-	//							{
-	//								k[j]++;
-	//							}
-	//						}
-	//					}
-	//					t += h;
-	//
-	//					//Запоминаем начальные значения φⱼ(T₀₁)
-	//					if ((t == T01) || ((t > T01) && (t - T01 < h*0.5)) || (T01 == 0.0))
-	//					{
-	//						flag1 = true;
-	//
-	//						for (int l = 0; l < n; l++)
-	//						{
-	//							Fi0[l] = v[l];
-	//						}
-	//					}
-	//				}
-	//
-	//				//Вычисление средних частот Ω
-	//				if (flag1 == true)
-	//				{
-	//					for (int i = 0; i < n; i++)
-	//					{
-	//						Omega[i][index] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
-	//						om[i] = Omega[i][index];
-	//					}
-	//				}
-	//
-	//				//Вычисление числа кластеров
-	//				NumOfClusters[index] = GetNumberOfClusters(om, n);
-	//
-	//				index++;
-	//
-	//				//Обнуление переменных для повторного счета при другом значении силы связи g
-	//				t = 0.0;
-	//				ts = 0.0;
-	//				flag1 = false;
-	////#pragma omp critical
-	//				{
-	//					E0 = Convert::ToDouble(E0_Text->Text);
-	//					E0Star = Convert::ToDouble(E0Star_Text->Text);
-	//				}
-	//
-	//				for (int i = 0; i < n; i++)
-	//				{
-	//					v[i] = vplus1[i] = 0.0;
-	//					k[i] = 0;
-	//				}
-	//			}
-	////#pragma omp critical 
-	//			{
-	//				Omega_vec->push_back(Omega);
-	//				Clusters_vec->push_back(NumOfClusters);
-	//			}
-	//
-	//		double _g = g1;
-	//
-	//		//Рисование графиков
-	//		for (int i = 0; i < n; i++)
-	//		{
-	//			_g = g1;
-	//			for (int j = 0; j < non; j++)
-	//			{
-	//				Omega_List[i]->Add(_g, Omega[i][j]);
-	//				if (_g <= g2)
-	//				{
-	//					_g += gh;
-	//					_g = round(_g * 1000) / 1000;
-	//				}
-	//			}
-	//			LineItem ^Curve;
-	//			Curve = panel->AddCurve(Convert::ToString(GlobalInd), Omega_List[i], Colors[GlobalInd], SymbolType::Circle);
-	//			Curve->Symbol->Fill->Color = Colors[GlobalInd];
-	//			Curve->Symbol->Size = 8.0f;
-	//			Curve->Symbol->Fill->Type = FillType::Solid;
-	//			if (i > 0)
-	//			{
-	//				Curve->Label->Text = String::Empty;
-	//			}
-	//		}
-	//
-	//		_g = g1;
-	//
-	//		for (int i = 0; i < non; i++)
-	//		{
-	//			Cl_list->Add(_g, NumOfClusters[i]);
-	//			_g += gh;
-	//			_g = round(_g * 1000) / 1000;
-	//		}
-	//		LineItem ^Curve2;
-	//		Curve2 = panel2->AddCurve(Convert::ToString(GlobalInd), Cl_list, Colors[GlobalInd], SymbolType::Circle);
-	//		Curve2->Symbol->Fill->Color = Colors[GlobalInd];
-	//		Curve2->Symbol->Fill->Type = FillType::Solid;
-	//		Curve2->Line->IsVisible = false;
-	//
-	//			//Освобождение памяти
-	//			delete[]cur_gamma;
-	//			delete[]om;
-	//			delete[]v;
-	//			delete[]vplus1;
-	//			delete[]k;
-	//			delete[]Fi0;
-	//	}//Конец параллельной секции
-
-	/*zedGraphControl6->AxisChange();
-	zedGraphControl6->Invalidate();
-	zedGraphControl1->AxisChange();
-	zedGraphControl1->Invalidate();*/
 }
 
 private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e)
@@ -2158,18 +2013,21 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 		MessageBox::Show("Максимальное число наборов: 50", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		return;
 	}
+	if (NumOfSets == 0)
+	{
+		MessageBox::Show("Число наборов должно быть больше 0", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
 
-	/*NumOfSets++;
-	textBox4->Text = Convert::ToString(NumOfSets);*/
 	g1_Text->ReadOnly = true;
 	g2_Text->ReadOnly = true;
 	GShag_Text->ReadOnly = true;
+	textBox4->ReadOnly = true;
+	label15->Text = "Идут вычисления... 0%";
 	label15->Visible = true;
 	button2->Enabled = false;
 
 	backgroundWorker1->RunWorkerAsync();
-	
-	n_Text3->ReadOnly = false;
 }
 
 private: System::Void Change_scale_Omega_Click(System::Object^  sender, System::EventArgs^  e)
@@ -2248,6 +2106,8 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 	g1_Text->ReadOnly = false;
 	g2_Text->ReadOnly = false;
 	GShag_Text->ReadOnly = false;
+	textBox4->ReadOnly = false;
+	AvgMaxMinAlreadyExists = false;
 
 	zedGraphControl1->AxisChange();
 	zedGraphControl1->Invalidate();
@@ -2406,12 +2266,11 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 
 	Curve->Symbol->Fill->Color = Color::DarkOrange;
 	Curve->Line->IsVisible = false;
-	Curve->Symbol->Size = 16.0f;
+	Curve->Symbol->Size = 8.0f;
 	Curve->Symbol->Fill->Type = FillType::Solid;
 
 	Curve2->Symbol->Fill->Color = Color::DarkOrange;
 	Curve2->Line->IsVisible = false;
-	Curve2->Symbol->Size = 10.0f;
 	Curve2->Symbol->Fill->Type = FillType::Solid;
 
 	panel->CurveList->Move(panel->CurveList->Count - 1, -9999);
