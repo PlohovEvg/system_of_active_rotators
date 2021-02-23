@@ -2026,6 +2026,8 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 	label15->Text = "Идут вычисления... 0%";
 	label15->Visible = true;
 	button2->Enabled = false;
+	Gamma1_Text->ReadOnly = true;
+	Gamma2_Text->ReadOnly = true;
 
 	backgroundWorker1->RunWorkerAsync();
 }
@@ -2108,6 +2110,8 @@ private: System::Void button4_Click(System::Object^  sender, System::EventArgs^ 
 	GShag_Text->ReadOnly = false;
 	textBox4->ReadOnly = false;
 	AvgMaxMinAlreadyExists = false;
+	Gamma1_Text->ReadOnly = false;
+	Gamma2_Text->ReadOnly = false;
 
 	zedGraphControl1->AxisChange();
 	zedGraphControl1->Invalidate();
@@ -2153,6 +2157,8 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 	double g1 = Convert::ToDouble(g1_Text->Text);         //Начальное значение g
 	double g2 = Convert::ToDouble(g2_Text->Text);         //Конечное значение g
 	double gh = Convert::ToDouble(GShag_Text->Text);      //Шаг по g
+	double gamma1Copy = Convert::ToDouble(Gamma1_Text->Text);
+	double gamma2Copy = Convert::ToDouble(Gamma2_Text->Text);
 	String ^str = L"Ω:\r\n";
 	String ^str1 = "Кластеры:\r\n";
 	String ^str2 = "";
@@ -2250,9 +2256,9 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 	}
 
 	str2 += L"γᵢ были взяты из интервала [";
-	str2 += Convert::ToString(gamma1);
+	str2 += Convert::ToString(gamma1Copy);
 	str2 += "; ";
-	str2 += Convert::ToString(gamma2);
+	str2 += Convert::ToString(gamma2Copy);
 	str2 += "]\r\n";
 
 	textBox3->Text = str;
