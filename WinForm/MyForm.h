@@ -1015,7 +1015,7 @@ namespace WinForm {
 			this->panel1->Controls->Add(this->label11);
 			this->panel1->Controls->Add(this->GShag_Text);
 			this->panel1->Controls->Add(this->label12);
-			this->panel1->Location = System::Drawing::Point(699, 187);
+			this->panel1->Location = System::Drawing::Point(700, 127);
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(529, 418);
 			this->panel1->TabIndex = 156;
@@ -1662,7 +1662,14 @@ namespace WinForm {
 						
 			for (i = 0; i < n; i++)         //Вычисление частоты для всех ротаторов, заполнение таблицы
 			{
-				Omega[i] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
+				if (k[i] != 0)
+				{
+					Omega[i] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
+				}
+				else
+				{
+					Omega[i] = (k[i] * 2 * M_PI + v[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
+				}
 				g_list->Add(i, Omega[i]);			
 
 				if (Omega[i] > MaxOmega)  //Вычисление максимальной средней частоты
@@ -1685,14 +1692,7 @@ namespace WinForm {
 //Заполнение справки
 str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n";
 str += "\r\n";
-str += L"γᵢ были взяты из интервала [";
-str += Convert::ToString(gamma1);
-str += "; ";
-str += Convert::ToString(gamma2);
-str += "]\r\n";
-str += "\r\n";
-str += "Число кластеров при t = T:";
-str += Convert::ToString(NumOfClusters);
+str += String::Format(L"γᵢ были взяты из интервала [{0}; {1}]\r\n\r\nЧисло кластеров при t = T:{2}", gamma1, gamma2, NumOfClusters);
 
 textBox2->Text = str;
 
@@ -1911,7 +1911,14 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 				//Вычисление средних частот Ω		
 				for (int i = 0; i < n; i++)
 				{
-					Omega[i][index] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
+					if (k[i] != 0)
+					{
+						Omega[i][index] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
+					}
+					else
+					{
+						Omega[i][index] = (k[i] * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
+					}
 					om[i] = Omega[i][index];
 				}
 
@@ -2026,8 +2033,8 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 	label15->Text = "Идут вычисления... 0%";
 	label15->Visible = true;
 	button2->Enabled = false;
-	Gamma1_Text->ReadOnly = true;
-	Gamma2_Text->ReadOnly = true;
+	Gamma1_Text->Enabled = false;
+	Gamma2_Text->Enabled = false;
 
 	backgroundWorker1->RunWorkerAsync();
 }
@@ -2147,6 +2154,8 @@ private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  send
 	checkBox4->Enabled = true;
 	button5->Enabled = true;
 	button4->Enabled = true;
+	Gamma1_Text->Enabled = true;
+	Gamma2_Text->Enabled = true;
 }
 private: System::Void button5_Click(System::Object^  sender, System::EventArgs^  e) 
 {	
@@ -2232,34 +2241,14 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 		MinMaxClusList->Add(g, MinClus, MaxClus);
 		AvgClusList->Add(g, (int)((MinClus + MaxClus)*0.5));
 
-		str += "g = ";
-		str += Convert::ToString(g);
-		str += "; Min = ";
-		str += Convert::ToString(round(MinOmega * 10000) / 10000);
-		str += ", Max = ";
-		str += Convert::ToString(round(MaxOmega * 10000) / 10000);
-		str += ", Avg = ";
-		str += Convert::ToString(round((MinOmega + MaxOmega)*0.5 * 10000) / 10000);		
-		str += "\r\n";
+		str += String::Format("g = {0}; Min = {1:G5}, Max = {2:G5}, Avg = {3:G5}\r\n", g, MinOmega, MaxOmega, (MinOmega + MaxOmega)*0.5);
 
-		str1 += "g = ";
-		str1 += Convert::ToString(g);
-		str1 += ";  Min = ";
-		str1 += Convert::ToString(round(MinClus * 10000) / 10000);
-		str1 += ", Max = ";
-		str1 += Convert::ToString(round(MaxClus * 10000) / 10000);
-		str1 += ", Avg = ";
-		str1 += Convert::ToString((int)(round((MinClus + MaxClus)*0.5 * 10000) / 10000));
-		str1 += "\r\n";
+		str1 += String::Format("g = {0}; Min = {1}, Max = {2}, Avg = {3}\r\n", g, MinClus, MaxClus, (int)((MinClus + MaxClus)*0.5));
 
 		g += gh;
 	}
 
-	str2 += L"γᵢ были взяты из интервала [";
-	str2 += Convert::ToString(gamma1Copy);
-	str2 += "; ";
-	str2 += Convert::ToString(gamma2Copy);
-	str2 += "]\r\n";
+	str2 += String::Format(L"γᵢ были взяты из интервала [{0}; {1}]", gamma1Copy, gamma2Copy);
 
 	textBox3->Text = str;
 	textBox5->Text = str1;
