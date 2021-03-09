@@ -2297,7 +2297,6 @@ private: System::Void checkBox1_CheckedChanged(System::Object^  sender, System::
 		panel->Legend->IsVisible = false;
 	}
 
-	zedGraphControl6->AxisChange();
 	zedGraphControl6->Invalidate();
 }
 private: System::Void checkBox4_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
