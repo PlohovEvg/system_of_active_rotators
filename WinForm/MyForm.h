@@ -1347,6 +1347,8 @@ namespace WinForm {
 		double ts = 0.0;                                      //Время последнего спайка
 		String ^str = "";                                     //Строка для вывода справочных сведений
 
+		const double D2PI = 2 * M_PI;
+
 		if (T01 > T || T02 > T)
 		{
 			MessageBox::Show(L"T₀₁ и T₀₂ должны быть меньше или равны T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
@@ -1389,7 +1391,7 @@ namespace WinForm {
 					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 					v[j] = vplus1[j];
 
-					if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+					if (v[j] >= D2PI)                              //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
@@ -1409,7 +1411,7 @@ namespace WinForm {
 				vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 				v[j] = vplus1[j];
 
-				if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+				if (v[j] >= D2PI)                              //В моемент импульса j-го ротатора
 				{
 					oldE0 = E0;
 					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
@@ -1438,7 +1440,7 @@ namespace WinForm {
 					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 					v[j] = vplus1[j];
 
-					if (v[j] >= 2 * M_PI)                               //В моемент импульса j-го ротатора
+					if (v[j] >= D2PI)                               //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
@@ -1461,7 +1463,7 @@ namespace WinForm {
 					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 					v[j] = vplus1[j];
 
-					if (v[j] >= 2 * M_PI)                               //В моемент импульса j-го ротатора
+					if (v[j] >= D2PI)                               //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
@@ -1509,7 +1511,7 @@ namespace WinForm {
 					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 					v[j] = vplus1[j];
 
-					if (v[j] >= 2 * M_PI)                           //В моемент импульса j-го ротатора
+					if (v[j] >= D2PI)                           //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);       //Пересчет начальных условий
@@ -1531,7 +1533,7 @@ namespace WinForm {
 					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 					v[j] = vplus1[j];
 
-					if (v[j] >= 2 * M_PI)                               //В моемент импульса j-го ротатора
+					if (v[j] >= D2PI)                               //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
@@ -1573,7 +1575,7 @@ namespace WinForm {
 				vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 				v[j] = vplus1[j];
 
-				if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+				if (v[j] >= D2PI)                              //В моемент импульса j-го ротатора
 				{
 					oldE0 = E0;
 					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
@@ -1623,7 +1625,7 @@ namespace WinForm {
 					vplus1[j] = RK4(t, ts, v[j], h, gamma[j], g, E0, E0Star, alpha);
 					v[j] = vplus1[j];
 
-					if (v[j] >= 2 * M_PI)                               //В моемент импульса j-го ротатора
+					if (v[j] >= D2PI)                               //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
@@ -1664,11 +1666,11 @@ namespace WinForm {
 			{
 				if (k[i] != 0)
 				{
-					Omega[i] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
+					Omega[i] = ((k[i] - 1) * D2PI + v[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
 				}
 				else
 				{
-					Omega[i] = (k[i] * 2 * M_PI + v[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
+					Omega[i] = (k[i] * D2PI + v[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
 				}
 				g_list->Add(i, Omega[i]);			
 
@@ -1765,6 +1767,8 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	int *k;                                               //Число спайков для каждого ротатора
 	double *Fi0;                                          //Фазы при t = T₀₁
 
+	const double D2PI = 2 * M_PI;
+
 	if (T01 > T)
 	{
 		MessageBox::Show(L"T₀₁ должен быть меньше или равен T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
@@ -1846,7 +1850,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 						vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
 						v[j] = vplus1[j];
 
-						if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+						if (v[j] >= D2PI)                              //В моемент импульса j-го ротатора
 						{
 							oldE0 = E0;
 							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
@@ -1866,7 +1870,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 					vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
 					v[j] = vplus1[j];
 
-					if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+					if (v[j] >= D2PI)                              //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
@@ -1895,7 +1899,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 						vplus1[j] = RK4(t, ts, v[j], h, cur_gamma[j], g, E0, E0Star, alpha);
 						v[j] = vplus1[j];
 
-						if (v[j] >= 2 * M_PI)                              //В моемент импульса j-го ротатора
+						if (v[j] >= D2PI)                              //В моемент импульса j-го ротатора
 						{
 							oldE0 = E0;
 							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
@@ -1913,11 +1917,11 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 				{
 					if (k[i] != 0)
 					{
-						Omega[i][index] = ((k[i] - 1) * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
+						Omega[i][index] = ((k[i] - 1) * D2PI + v[i] - Fi0[i]) / (t - T01);
 					}
 					else
 					{
-						Omega[i][index] = (k[i] * 2 * M_PI + v[i] - Fi0[i]) / (t - T01);
+						Omega[i][index] = (k[i] * D2PI + v[i] - Fi0[i]) / (t - T01);
 					}
 					om[i] = Omega[i][index];
 				}
