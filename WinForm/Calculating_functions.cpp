@@ -1,4 +1,5 @@
 #include "Calculating_functions.h"
+#define PRECISION 0.0005
 
 double* Set_Gamma(int _n, double gam1, double gam2)
 {
@@ -61,7 +62,7 @@ int GetNumberOfClusters(const double *_Omega, const int _n)
 
 			for (int j = i + 1; j < _n; j++)
 			{
-				if (((abs(cur - _Omega[j]) < 0.005) || (cur == _Omega[j])) && (Classes[j] == 0))
+				if (((abs(cur - _Omega[j]) < PRECISION) || (cur == _Omega[j])) && (Classes[j] == 0))
 				{
 					Classes[i] = Classes[j] = ClusterNum + 1;
 					flag = true;

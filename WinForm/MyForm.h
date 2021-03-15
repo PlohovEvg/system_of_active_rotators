@@ -67,15 +67,15 @@ namespace WinForm {
 			zedGraphControl4->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			zedGraphControl4->GraphPane->XAxis->MajorGrid->IsVisible = true;
 
-			zedGraphControl6->GraphPane->Title->Text = L"График зависимости средних частот Ωᵢ от различных значений силы связи g";
-			zedGraphControl6->GraphPane->XAxis->Title->Text = L"g";
+			zedGraphControl6->GraphPane->Title->Text = L"График зависимости средних частот Ωᵢ от параметра β";
+			zedGraphControl6->GraphPane->XAxis->Title->Text = L"β";
 			zedGraphControl6->GraphPane->YAxis->Title->Text = L"Ωᵢ";
 			zedGraphControl6->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			zedGraphControl6->GraphPane->XAxis->MajorGrid->IsVisible = true;
 			zedGraphControl6->GraphPane->YAxis->Type = AxisType::Log;
 
-			zedGraphControl1->GraphPane->Title->Text = L"График зависимости числа кластеров от различных значений силы связи g";
-			zedGraphControl1->GraphPane->XAxis->Title->Text = L"g";
+			zedGraphControl1->GraphPane->Title->Text = L"График зависимости числа кластеров от параметра β";
+			zedGraphControl1->GraphPane->XAxis->Title->Text = L"β";
 			zedGraphControl1->GraphPane->YAxis->Title->Text = L"Кол-во кластеров";
 			zedGraphControl1->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			zedGraphControl1->GraphPane->XAxis->MajorGrid->IsVisible = true;
@@ -95,6 +95,10 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::Label^  label13;
+	private: System::Windows::Forms::TextBox^  textBox7;
+	private: System::Windows::Forms::Button^  button3;
+	private: System::Windows::Forms::Label^  label16;
 	private: System::Windows::Forms::CheckBox^  checkBox1;
 	private: System::Windows::Forms::CheckBox^  checkBox4;
 	private: System::Windows::Forms::TextBox^  textBox6;
@@ -195,6 +199,8 @@ namespace WinForm {
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+			this->label13 = (gcnew System::Windows::Forms::Label());
+			this->textBox7 = (gcnew System::Windows::Forms::TextBox());
 			this->label30 = (gcnew System::Windows::Forms::Label());
 			this->label29 = (gcnew System::Windows::Forms::Label());
 			this->label28 = (gcnew System::Windows::Forms::Label());
@@ -255,6 +261,7 @@ namespace WinForm {
 			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
 			this->button5 = (gcnew System::Windows::Forms::Button());
 			this->label15 = (gcnew System::Windows::Forms::Label());
@@ -277,6 +284,7 @@ namespace WinForm {
 			this->checkBox4 = (gcnew System::Windows::Forms::CheckBox());
 			this->zedGraphControl1 = (gcnew ZedGraph::ZedGraphControl());
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->label16 = (gcnew System::Windows::Forms::Label());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView4))->BeginInit();
@@ -307,6 +315,8 @@ namespace WinForm {
 			// 
 			// tabPage1
 			// 
+			this->tabPage1->Controls->Add(this->label13);
+			this->tabPage1->Controls->Add(this->textBox7);
 			this->tabPage1->Controls->Add(this->label30);
 			this->tabPage1->Controls->Add(this->label29);
 			this->tabPage1->Controls->Add(this->label28);
@@ -354,29 +364,48 @@ namespace WinForm {
 			this->tabPage1->Text = L"Ввод данных";
 			this->tabPage1->UseVisualStyleBackColor = true;
 			// 
+			// label13
+			// 
+			this->label13->AutoSize = true;
+			this->label13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label13->Location = System::Drawing::Point(480, 530);
+			this->label13->Name = L"label13";
+			this->label13->Size = System::Drawing::Size(58, 29);
+			this->label13->TabIndex = 152;
+			this->label13->Text = L" β = ";
+			// 
+			// textBox7
+			// 
+			this->textBox7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->textBox7->Location = System::Drawing::Point(544, 531);
+			this->textBox7->Name = L"textBox7";
+			this->textBox7->Size = System::Drawing::Size(100, 29);
+			this->textBox7->TabIndex = 151;
+			this->textBox7->Text = L"0,02";
+			// 
 			// label30
 			// 
 			this->label30->AutoSize = true;
 			this->label30->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label30->Location = System::Drawing::Point(476, 580);
+			this->label30->Location = System::Drawing::Point(476, 607);
 			this->label30->Name = L"label30";
-			this->label30->Size = System::Drawing::Size(781, 24);
+			this->label30->Size = System::Drawing::Size(775, 24);
 			this->label30->TabIndex = 150;
-			this->label30->Text = L"T₀₂ - начиная с этого момента времени будут отрисовываться графики E(t) и спайков"
-				L"";
+			this->label30->Text = L"T₂ - начиная с этого момента времени будут отрисовываться графики E(t) и спайков";
 			// 
 			// label29
 			// 
 			this->label29->AutoSize = true;
 			this->label29->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label29->Location = System::Drawing::Point(476, 540);
+			this->label29->Location = System::Drawing::Point(476, 567);
 			this->label29->Name = L"label29";
-			this->label29->Size = System::Drawing::Size(716, 24);
+			this->label29->Size = System::Drawing::Size(704, 24);
 			this->label29->TabIndex = 149;
-			this->label29->Text = L"T₀₁ - φⱼ(T₀₁), j = 0,...,n - 1 будут использованы для вычисления средних частот Ω"
-				L"";
+			this->label29->Text = L"T₁ - φⱼ(T₁), j = 0,...,n - 1 будут использованы для вычисления средних частот Ω";
 			// 
 			// label28
 			// 
@@ -555,11 +584,11 @@ namespace WinForm {
 			this->label8->AutoSize = true;
 			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label8->Location = System::Drawing::Point(461, 426);
+			this->label8->Location = System::Drawing::Point(469, 426);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(77, 29);
+			this->label8->Size = System::Drawing::Size(69, 29);
 			this->label8->TabIndex = 119;
-			this->label8->Text = L" T₀₂ = ";
+			this->label8->Text = L" T₂ = ";
 			// 
 			// T02_text
 			// 
@@ -576,11 +605,11 @@ namespace WinForm {
 			this->label5->AutoSize = true;
 			this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label5->Location = System::Drawing::Point(461, 391);
+			this->label5->Location = System::Drawing::Point(469, 390);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(77, 29);
+			this->label5->Size = System::Drawing::Size(69, 29);
 			this->label5->TabIndex = 117;
-			this->label5->Text = L" T₀₁ = ";
+			this->label5->Text = L" T₁ = ";
 			// 
 			// T01_text
 			// 
@@ -639,7 +668,7 @@ namespace WinForm {
 			this->label3->AutoSize = true;
 			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label3->Location = System::Drawing::Point(474, 496);
+			this->label3->Location = System::Drawing::Point(478, 495);
 			this->label3->Name = L"label3";
 			this->label3->Size = System::Drawing::Size(60, 29);
 			this->label3->TabIndex = 108;
@@ -653,14 +682,14 @@ namespace WinForm {
 			this->Alpha_Text->Name = L"Alpha_Text";
 			this->Alpha_Text->Size = System::Drawing::Size(100, 29);
 			this->Alpha_Text->TabIndex = 107;
-			this->Alpha_Text->Text = L"0,6";
+			this->Alpha_Text->Text = L"1,5";
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
 			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label2->Location = System::Drawing::Point(475, 461);
+			this->label2->Location = System::Drawing::Point(479, 460);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(59, 29);
 			this->label2->TabIndex = 106;
@@ -674,7 +703,7 @@ namespace WinForm {
 			this->g_Text->Name = L"g_Text";
 			this->g_Text->Size = System::Drawing::Size(100, 29);
 			this->g_Text->TabIndex = 105;
-			this->g_Text->Text = L"6";
+			this->g_Text->Text = L"1";
 			// 
 			// pictureBox1
 			// 
@@ -1001,6 +1030,8 @@ namespace WinForm {
 			// 
 			// panel1
 			// 
+			this->panel1->Controls->Add(this->label16);
+			this->panel1->Controls->Add(this->button3);
 			this->panel1->Controls->Add(this->textBox6);
 			this->panel1->Controls->Add(this->button5);
 			this->panel1->Controls->Add(this->label15);
@@ -1017,8 +1048,22 @@ namespace WinForm {
 			this->panel1->Controls->Add(this->label12);
 			this->panel1->Location = System::Drawing::Point(700, 127);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(529, 418);
+			this->panel1->Size = System::Drawing::Size(795, 418);
 			this->panel1->TabIndex = 156;
+			// 
+			// button3
+			// 
+			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->button3->Location = System::Drawing::Point(552, 191);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(132, 66);
+			this->button3->TabIndex = 159;
+			this->button3->Text = L"Отмена\r\n\r\n";
+			this->button3->TextAlign = System::Drawing::ContentAlignment::BottomCenter;
+			this->button3->UseVisualStyleBackColor = true;
+			this->button3->Visible = false;
+			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
 			// 
 			// textBox6
 			// 
@@ -1095,7 +1140,7 @@ namespace WinForm {
 			this->g1_Text->Name = L"g1_Text";
 			this->g1_Text->Size = System::Drawing::Size(57, 29);
 			this->g1_Text->TabIndex = 2;
-			this->g1_Text->Text = L"0";
+			this->g1_Text->Text = L"0,01";
 			// 
 			// textBox4
 			// 
@@ -1105,7 +1150,7 @@ namespace WinForm {
 			this->textBox4->Name = L"textBox4";
 			this->textBox4->Size = System::Drawing::Size(29, 29);
 			this->textBox4->TabIndex = 152;
-			this->textBox4->Text = L"0";
+			this->textBox4->Text = L"20";
 			// 
 			// g2_Text
 			// 
@@ -1115,7 +1160,7 @@ namespace WinForm {
 			this->g2_Text->Name = L"g2_Text";
 			this->g2_Text->Size = System::Drawing::Size(57, 29);
 			this->g2_Text->TabIndex = 3;
-			this->g2_Text->Text = L"6";
+			this->g2_Text->Text = L"0,15";
 			// 
 			// button4
 			// 
@@ -1139,7 +1184,7 @@ namespace WinForm {
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(38, 24);
 			this->label4->TabIndex = 4;
-			this->label4->Text = L"g₁=";
+			this->label4->Text = L"β₁=";
 			// 
 			// label11
 			// 
@@ -1150,7 +1195,7 @@ namespace WinForm {
 			this->label11->Name = L"label11";
 			this->label11->Size = System::Drawing::Size(38, 24);
 			this->label11->TabIndex = 5;
-			this->label11->Text = L"g₂=";
+			this->label11->Text = L"β₂=";
 			// 
 			// GShag_Text
 			// 
@@ -1160,7 +1205,7 @@ namespace WinForm {
 			this->GShag_Text->Name = L"GShag_Text";
 			this->GShag_Text->Size = System::Drawing::Size(57, 29);
 			this->GShag_Text->TabIndex = 7;
-			this->GShag_Text->Text = L"0,5";
+			this->GShag_Text->Text = L"0,005";
 			// 
 			// label12
 			// 
@@ -1171,7 +1216,7 @@ namespace WinForm {
 			this->label12->Name = L"label12";
 			this->label12->Size = System::Drawing::Size(86, 24);
 			this->label12->TabIndex = 6;
-			this->label12->Text = L"Шаг по g";
+			this->label12->Text = L"Шаг по β";
 			// 
 			// textBox3
 			// 
@@ -1274,9 +1319,22 @@ namespace WinForm {
 			// backgroundWorker1
 			// 
 			this->backgroundWorker1->WorkerReportsProgress = true;
+			this->backgroundWorker1->WorkerSupportsCancellation = true;
 			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &MyForm::backgroundWorker1_DoWork);
 			this->backgroundWorker1->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::backgroundWorker1_ProgressChanged);
 			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::backgroundWorker1_RunWorkerCompleted);
+			// 
+			// label16
+			// 
+			this->label16->AutoSize = true;
+			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label16->Location = System::Drawing::Point(490, 260);
+			this->label16->Name = L"label16";
+			this->label16->Size = System::Drawing::Size(281, 24);
+			this->label16->TabIndex = 160;
+			this->label16->Text = L"Останавливаем вычисления...";
+			this->label16->Visible = false;
 			// 
 			// MyForm
 			// 
@@ -1333,6 +1391,7 @@ namespace WinForm {
 		const double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
 		const double g = Convert::ToDouble(g_Text->Text);           //Коэффициент связи
 		const double alpha = Convert::ToDouble(Alpha_Text->Text);   //Число α
+		const double beta = Convert::ToDouble(textBox7->Text);      //Число β
 		int it = 0;                                                 //Индекс строк в таблице
 		int NumOfClusters;                                          //Число кластеров при t = T
 		double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
@@ -1342,7 +1401,7 @@ namespace WinForm {
 		double MaxOmega = -100000.0, MinOmega = 100000.0;           //Максимальная и минимальная средние частоты 	
 		double ts = 0.0;                                            //Время последнего спайка
 		int *k;                                                     //Число спайков для каждого ротатора  
-		double *Fi0;		                                        //Фазы при t = T₀₁
+		double *Fi0;		                                        //Фазы при t = T₁
 		double *Fi, *Fiplus1;	                                    //Фазы φⱼ(t) j = 0,...,n - 1
 		double *Omega;                                              //Средние частоты Ω
 		String ^str = "";                                           //Строка для вывода справочных сведений
@@ -1351,7 +1410,7 @@ namespace WinForm {
 
 		if (T01 > T || T02 > T)
 		{
-			MessageBox::Show(L"T₀₁ и T₀₂ должны быть меньше или равны T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show(L"T₁ и T₂ должны быть меньше или равны T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 			return;
 		}
 
@@ -1396,7 +1455,7 @@ namespace WinForm {
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
 						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+						E0Star += beta;                                //Добавление β к начальному значению производной
 						ts = t + h;                                    //Изменение времени последнего спайка
 						Fi[j] = 0.0;			                       //Обнуление значения ф												
 					}
@@ -1416,9 +1475,9 @@ namespace WinForm {
 					oldE0 = E0;
 					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
 					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+					E0Star += beta;                                //Добавление β к начальному значению производной
 					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                           //Обнуление значения ф					
+					Fi[j] = 0.0;			                       //Обнуление значения ф					
 					k[j]++;                                        //Увеличение числа спайков на 1
 				}
 			}
@@ -1427,7 +1486,7 @@ namespace WinForm {
 
 			for (int l = 0; l < n; l++)
 			{
-				Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₀₁
+				Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
 			}
 			//---------------------------------------------------
 			//t от T01 до T02 - h
@@ -1445,7 +1504,7 @@ namespace WinForm {
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
 						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                    //Добавление α²/n к начальному значению производной
+						E0Star += beta;                                 //Добавление β к начальному значению производной
 						ts = t + h;                                     //Изменение времени последнего спайка
 						Fi[j] = 0.0;			                        //Обнуление значения ф						
 						k[j]++;                                         //Увеличение числа спайков на 1						
@@ -1468,7 +1527,7 @@ namespace WinForm {
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
 						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                    //Добавление α²/n к начальному значению производной
+						E0Star += beta;                                 //Добавление β к начальному значению производной
 						ts = t + h;                                     //Изменение времени последнего спайка
 						Fi[j] = 0.0;			                        //Обнуление значения ф						
 						k[j]++;                                         //Увеличение числа спайков на 1	
@@ -1516,7 +1575,7 @@ namespace WinForm {
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
 						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+						E0Star += beta;                                //Добавление β к начальному значению производной
 						ts = t + h;                                    //Изменение времени последнего спайка
 						Fi[j] = 0.0;			                       //Обнуление значения ф												
 					}
@@ -1533,12 +1592,12 @@ namespace WinForm {
 					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
 					Fi[j] = Fiplus1[j];
 
-					if (Fi[j] >= D2PI)                               //В моемент импульса j-го ротатора
+					if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
 						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                    //Добавление α²/n к начальному значению производной
+						E0Star += beta;                                 //Добавление β к начальному значению производной
 						ts = t + h;                                     //Изменение времени последнего спайка
 						Fi[j] = 0.0;			                        //Обнуление значения ф						
 						if (!spike_flag)                                //Отбражение нового спайка на графике
@@ -1580,7 +1639,7 @@ namespace WinForm {
 					oldE0 = E0;
 					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
 					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+					E0Star += beta;                                //Добавление β к начальному значению производной
 					ts = t + h;                                    //Изменение времени последнего спайка
 					Fi[j] = 0.0;			                       //Обнуление значения ф					
 					k[j]++;                                        //Увеличение числа спайков на 1
@@ -1611,7 +1670,7 @@ namespace WinForm {
 			
 			for (int l = 0; l < n; l++)
 			{
-				Fi0[l] = Fi[l];                                     //Запоминание значений фаз при t = T₀₁
+				Fi0[l] = Fi[l];                                     //Запоминание значений фаз при t = T₁
 			}
 			t += h;
 			//---------------------------------------------------
@@ -1630,7 +1689,7 @@ namespace WinForm {
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
 						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                    //Добавление α²/n к начальному значению производной
+						E0Star += beta;                                 //Добавление β к начальному значению производной
 						ts = t + h;                                     //Изменение времени последнего спайка
 						Fi[j] = 0.0;			                        //Обнуление значения ф						
 						k[j]++;                                         //Увеличение числа спайков на 1	
@@ -1747,13 +1806,14 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	const int NumOfSets = Convert::ToInt32(textBox4->Text);          //Число наборов
 	const double gamma1Copy = Convert::ToDouble(Gamma1_Text->Text);
 	const double gamma2Copy = Convert::ToDouble(Gamma2_Text->Text);
-	const double g1 = Convert::ToDouble(g1_Text->Text);              //Начальное значение g
-	const double g2 = Convert::ToDouble(g2_Text->Text);              //Конечное значение g
-	const double gh = Convert::ToDouble(GShag_Text->Text);           //Шаг по g	
+	const double beta1 = Convert::ToDouble(g1_Text->Text);           //Начальное значение β
+	const double beta2 = Convert::ToDouble(g2_Text->Text);           //Конечное значение β
+	const double betaStep = Convert::ToDouble(GShag_Text->Text);     //Шаг по β
 	const double h = Convert::ToDouble(h_Text3->Text);               //Шаг интегрирования
 	const double T01 = Convert::ToDouble(T01_text->Text);            //Начальное время, от которого будет считаться частота	
 	const double T = Convert::ToDouble(b_Text3->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
 	const double alpha = Convert::ToDouble(Alpha_Text->Text);        //Число α
+	const double g = Convert::ToDouble(g_Text->Text);                //Коэффициент связи
 	int non = 0;                                                     //Число точек на графике, в которых считаются средние частоты 
 	double E0;                                                       //Начальное условие для E    
 	double E0Star;                                                   //Начальное условие для Ė
@@ -1765,13 +1825,13 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	double *Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
 	double *Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
 	double *cur_gamma;                                               //Набор γⱼ
-	double *Fi0;                                                     //Фазы при t = T₀₁
+	double *Fi0;                                                     //Фазы при t = T₁
 
 	const double D2PI = 2 * M_PI;
 
 	if (T01 > T)
 	{
-		MessageBox::Show(L"T₀₁ должен быть меньше или равен T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		MessageBox::Show(L"T₁ должен быть меньше или равен T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		return;
 	}
 
@@ -1781,21 +1841,21 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	double oldE0;
 	double ts;
 
-	panel->XAxis->Scale->Min = g1 - 0.1;
-	panel->XAxis->Scale->Max = g2 + 0.1;
-	panel->XAxis->Scale->MajorStep = gh;
-	panel->XAxis->Scale->MinorStep = gh / 5;
-	panel2->XAxis->Scale->Min = g1 - 0.1;
-	panel2->XAxis->Scale->Max = g2 + 0.1;
+	panel->XAxis->Scale->Min = beta1 - 0.001;
+	panel->XAxis->Scale->Max = beta2 + 0.001;
+	panel->XAxis->Scale->MajorStep = betaStep;
+	panel->XAxis->Scale->MinorStep = betaStep / 5;
+	panel2->XAxis->Scale->Min = beta1 - 0.001;
+	panel2->XAxis->Scale->Max = beta2 + 0.001;
 	panel2->YAxis->Scale->MajorStep = 2;
 	panel2->YAxis->Scale->MinorStep = 1;
-	panel2->XAxis->Scale->MajorStep = gh;
-	panel2->XAxis->Scale->MinorStep = gh / 5;
+	panel2->XAxis->Scale->MajorStep = betaStep;
+	panel2->XAxis->Scale->MinorStep = betaStep / 5;
 
 	//Вычисляем количество вершин в графе
-	for (double g = g1; g <= g2; g = g + gh)
+	for (double beta = beta1; beta <= beta2; beta += betaStep)
 	{
-		g = round(g * 1000) / 1000;
+		beta = round(beta * 100000) / 100000;
 		non++;
 	}
 	
@@ -1813,6 +1873,11 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 #pragma omp for private(Cl_list, Omega_List, E0, E0Star, index, ts, t, cur_gamma, Omega, NumOfClusters, oldE0)
 		for (int GlobalInd = 0; GlobalInd < NumOfSets; GlobalInd++)
 		{
+			if (backgroundWorker1->CancellationPending)
+			{
+				e->Cancel = true;
+				break;
+			}
 			E0 = Convert::ToDouble(E0_Text->Text);
 			E0Star = Convert::ToDouble(E0Star_Text->Text);
 			index = 0;
@@ -1837,12 +1902,12 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 			}
 
 			//Вычисляем φⱼ(t) методом Рунге-Кутта 4-го порядка
-			for (double g = g1; g <= g2; g = g + gh)
+			for (double beta = beta1; beta <= beta2; beta += betaStep)
 			{
-				g = round(g * 1000) / 1000;
+				beta = round(beta * 100000) / 100000;
 				//t от 0 до T01 - h
 				for (t; t < T01 - h; t += h)
-				{
+				{					
 					t = round(t * 1000) / 1000;
 					for (int j = 0; j < n; j++)
 					{
@@ -1855,7 +1920,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 							oldE0 = E0;
 							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
 							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+							E0Star += beta;                                //Добавление β к начальному значению производной
 							ts = t + h;                                    //Изменение времени последнего спайка
 							Fi[j] = 0.0;			                       //Обнуление значения ф												
 						}
@@ -1875,7 +1940,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
 						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += (alpha*alpha) / n;                   //Добавление α²/n к начальному значению производной
+						E0Star += beta;                                //Добавление β к начальному значению производной
 						ts = t + h;                                    //Изменение времени последнего спайка
 						Fi[j] = 0.0;			                       //Обнуление значения ф					
 						k[j]++;                                        //Увеличение числа спайков на 1
@@ -1886,7 +1951,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 
 				for (int l = 0; l < n; l++)
 				{
-					Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₀₁
+					Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
 				}
 				//---------------------------------------------------
 				//t от T01 до T
@@ -1904,7 +1969,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 							oldE0 = E0;									     
 							E0 = E(t + h, ts, E0, E0Star, alpha);            //Пересчет начальных условий
 							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);  
-							E0Star += (alpha*alpha) / n;                     //Добавление α²/n к начальному значению производной
+							E0Star += beta;                                  //Добавление β к начальному значению производной
 							ts = t + h;                                      //Изменение времени последнего спайка
 							Fi[j] = 0.0;			                         //Обнуление значения ф
 							k[j]++;
@@ -1950,19 +2015,19 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 				Clusters_vec->push_back(NumOfClusters);
 			}
 
-			double _g = g1;
+			double _beta = beta1;
 
 			//Рисование графиков
 			for (int i = 0; i < n; i++)
 			{
-				_g = g1;
+				_beta = beta1;
 				for (int j = 0; j < non; j++)
 				{
-					Omega_List[i]->Add(_g, Omega[i][j]);
-					if (_g <= g2)
+					Omega_List[i]->Add(_beta, Omega[i][j]);
+					if (_beta <= beta2)
 					{
-						_g += gh;
-						_g = round(_g * 1000) / 1000;
+						_beta += betaStep;
+						_beta = round(_beta * 100000) / 100000;
 					}
 				}
 				LineItem ^Curve;
@@ -1980,13 +2045,13 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 			zedGraphControl6->AxisChange();
 			zedGraphControl6->Invalidate();
 
-			_g = g1;
+			_beta = beta1;
 
 			for (int i = 0; i < non; i++)
 			{
-				Cl_list->Add(_g, NumOfClusters[i]);
-				_g += gh;
-				_g = round(_g * 1000) / 1000;
+				Cl_list->Add(_beta, NumOfClusters[i]);
+				_beta += betaStep;
+				_beta = round(_beta * 1000) / 1000;
 			}
 			LineItem ^Curve2;
 #pragma omp critical (DrawClusGraph)
@@ -2002,7 +2067,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 			counter++;
 #pragma omp critical (report)
 			backgroundWorker1->ReportProgress((int)((float)counter / NumOfSets * 100));
-		}
+		}		
 		//Освобождение памяти
 		delete[]om;
 		delete[]Fi;
@@ -2039,6 +2104,7 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 	button2->Enabled = false;
 	Gamma1_Text->Enabled = false;
 	Gamma2_Text->Enabled = false;
+	button3->Visible = true;
 
 	backgroundWorker1->RunWorkerAsync();
 }
@@ -2151,7 +2217,15 @@ private: System::Void backgroundWorker1_ProgressChanged(System::Object^  sender,
 }
 private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
 {
-	MessageBox::Show("Вычисления закончены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+	if (e->Cancelled)
+	{
+		label16->Visible = false;
+		MessageBox::Show("Вычисления приостановлены пользователем", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+	}
+	else
+	{
+		MessageBox::Show("Вычисления закончены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+	}
 	progressBar1->Value = 0;
 	label15->Visible = false;
 	checkBox1->Enabled = true;
@@ -2160,14 +2234,15 @@ private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  send
 	button4->Enabled = true;
 	Gamma1_Text->Enabled = true;
 	Gamma2_Text->Enabled = true;
+	button3->Visible = false;
 }
 private: System::Void button5_Click(System::Object^  sender, System::EventArgs^  e) 
 {	
 	const int n = Convert::ToInt32(n_Text3->Text);
 	const int NumOfSets = Convert::ToInt32(textBox4->Text);
-	const double g1 = Convert::ToDouble(g1_Text->Text);         
-	const double g2 = Convert::ToDouble(g2_Text->Text);         
-	const double gh = Convert::ToDouble(GShag_Text->Text);      
+	const double beta1 = Convert::ToDouble(g1_Text->Text);         
+	const double beta2 = Convert::ToDouble(g2_Text->Text);         
+	const double betaStep = Convert::ToDouble(GShag_Text->Text);      
 	const double gamma1Copy = Convert::ToDouble(Gamma1_Text->Text);
 	const double gamma2Copy = Convert::ToDouble(Gamma2_Text->Text);
 	int* curClusters;
@@ -2189,9 +2264,9 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 	int k = 0;
 	int m = 0;
 
-	for (double g = g1; g <= g2; g = g + gh)
+	for (double beta = beta1; beta <= beta2; beta += betaStep)
 	{
-		g = round(g * 1000) / 1000;
+		beta = round(beta * 100000) / 100000;
 		non++;
 	}
 
@@ -2231,7 +2306,7 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 		k += 2;		
 	}
 
-	double g = g1;
+	double beta = beta1;
 	for (int i = 0; i < non; i++)
 	{
 		double MaxOmega, MinOmega;
@@ -2240,16 +2315,16 @@ private: System::Void button5_Click(System::Object^  sender, System::EventArgs^ 
 		FindMinMax(2 * NumOfSets, MinMaxOm[i], &MinOmega, &MaxOmega);
 		FindMinMax(NumOfSets, MinMaxClus[i], &MinClus, &MaxClus);
 
-		MinMaxOmList->Add(g, MinOmega, MaxOmega);
-		AvgOmList->Add(g, (MinOmega + MaxOmega)*0.5);
-		MinMaxClusList->Add(g, MinClus, MaxClus);
-		AvgClusList->Add(g, (int)((MinClus + MaxClus)*0.5));
+		MinMaxOmList->Add(beta, MinOmega, MaxOmega);
+		AvgOmList->Add(beta, (MinOmega + MaxOmega)*0.5);
+		MinMaxClusList->Add(beta, MinClus, MaxClus);
+		AvgClusList->Add(beta, (int)((MinClus + MaxClus)*0.5));
 
-		str += String::Format("g = {0}; Min = {1:G5}, Max = {2:G5}, Avg = {3:G5}\r\n", g, MinOmega, MaxOmega, (MinOmega + MaxOmega)*0.5);
+		str += String::Format(L"β = {0}; Min = {1:G5}, Max = {2:G5}, Avg = {3:G5}\r\n", beta, MinOmega, MaxOmega, (MinOmega + MaxOmega)*0.5);
 
-		str1 += String::Format("g = {0}; Min = {1}, Max = {2}, Avg = {3}\r\n", g, MinClus, MaxClus, (int)((MinClus + MaxClus)*0.5));
+		str1 += String::Format(L"β = {0}; Min = {1}, Max = {2}, Avg = {3}\r\n", beta, MinClus, MaxClus, (int)((MinClus + MaxClus)*0.5));
 
-		g += gh;
+		beta += betaStep;
 	}
 
 	str2 += String::Format(L"γᵢ были взяты из интервала [{0}; {1}]", gamma1Copy, gamma2Copy);
@@ -2318,6 +2393,11 @@ private: System::Void checkBox4_CheckedChanged(System::Object^  sender, System::
 
 	zedGraphControl1->AxisChange();
 	zedGraphControl1->Invalidate();
+}
+private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) 
+{
+	label16->Visible = true;
+	backgroundWorker1->CancelAsync();
 }
 };
 }
