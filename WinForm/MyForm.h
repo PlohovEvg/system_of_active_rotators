@@ -449,7 +449,7 @@ namespace WinForm {
 			this->textBox7->Name = L"textBox7";
 			this->textBox7->Size = System::Drawing::Size(100, 29);
 			this->textBox7->TabIndex = 151;
-			this->textBox7->Text = L"0,02";
+			this->textBox7->Text = L"0,005";
 			// 
 			// label30
 			// 
@@ -1216,7 +1216,7 @@ namespace WinForm {
 			this->g1_Text->Name = L"g1_Text";
 			this->g1_Text->Size = System::Drawing::Size(57, 29);
 			this->g1_Text->TabIndex = 2;
-			this->g1_Text->Text = L"0,15";
+			this->g1_Text->Text = L"0,001";
 			// 
 			// textBox4
 			// 
@@ -1226,7 +1226,7 @@ namespace WinForm {
 			this->textBox4->Name = L"textBox4";
 			this->textBox4->Size = System::Drawing::Size(29, 29);
 			this->textBox4->TabIndex = 152;
-			this->textBox4->Text = L"20";
+			this->textBox4->Text = L"50";
 			// 
 			// g2_Text
 			// 
@@ -1236,7 +1236,7 @@ namespace WinForm {
 			this->g2_Text->Name = L"g2_Text";
 			this->g2_Text->Size = System::Drawing::Size(57, 29);
 			this->g2_Text->TabIndex = 3;
-			this->g2_Text->Text = L"0,29";
+			this->g2_Text->Text = L"0,005";
 			// 
 			// button4
 			// 
@@ -1281,7 +1281,7 @@ namespace WinForm {
 			this->GShag_Text->Name = L"GShag_Text";
 			this->GShag_Text->Size = System::Drawing::Size(79, 29);
 			this->GShag_Text->TabIndex = 7;
-			this->GShag_Text->Text = L"0,025";
+			this->GShag_Text->Text = L"0,0002";
 			// 
 			// label12
 			// 
