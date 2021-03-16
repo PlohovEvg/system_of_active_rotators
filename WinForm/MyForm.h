@@ -25,6 +25,10 @@ namespace WinForm {
 	public: vector<int*> *Clusters_vec;
 	public: vector<double**> *Omega_vec;
 	public: cli::array<Color> ^Colors;
+	private: System::Windows::Forms::ProgressBar^  progressBar3;
+	public:
+	private: System::ComponentModel::BackgroundWorker^  backgroundWorker3;
+	public: String ^Str;
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -33,7 +37,8 @@ namespace WinForm {
 			//									
 			AvgMaxMinAlreadyExists = false;
 			Clusters_vec = new vector<int*>;
-			Omega_vec = new vector<double**>;			
+			Omega_vec = new vector<double**>;
+			Str = "";
 
 			Colors = gcnew cli::array<Color>(50);
 			random_device gen;
@@ -95,6 +100,11 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::Label^  label17;
+	private: System::Windows::Forms::Button^  button6;
+	private: System::Windows::Forms::Label^  label18;
+	private: System::Windows::Forms::ProgressBar^  progressBar2;
+	private: System::ComponentModel::BackgroundWorker^  backgroundWorker2;
 	private: System::Windows::Forms::Label^  label13;
 	private: System::Windows::Forms::TextBox^  textBox7;
 	private: System::Windows::Forms::Button^  button3;
@@ -199,6 +209,10 @@ namespace WinForm {
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+			this->label18 = (gcnew System::Windows::Forms::Label());
+			this->label17 = (gcnew System::Windows::Forms::Label());
+			this->button6 = (gcnew System::Windows::Forms::Button());
+			this->progressBar2 = (gcnew System::Windows::Forms::ProgressBar());
 			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->textBox7 = (gcnew System::Windows::Forms::TextBox());
 			this->label30 = (gcnew System::Windows::Forms::Label());
@@ -261,6 +275,7 @@ namespace WinForm {
 			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->progressBar3 = (gcnew System::Windows::Forms::ProgressBar());
 			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
 			this->button5 = (gcnew System::Windows::Forms::Button());
@@ -276,6 +291,7 @@ namespace WinForm {
 			this->label11 = (gcnew System::Windows::Forms::Label());
 			this->GShag_Text = (gcnew System::Windows::Forms::TextBox());
 			this->label12 = (gcnew System::Windows::Forms::Label());
+			this->label16 = (gcnew System::Windows::Forms::Label());
 			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
 			this->tabPage5 = (gcnew System::Windows::Forms::TabPage());
 			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
@@ -284,7 +300,8 @@ namespace WinForm {
 			this->checkBox4 = (gcnew System::Windows::Forms::CheckBox());
 			this->zedGraphControl1 = (gcnew ZedGraph::ZedGraphControl());
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
-			this->label16 = (gcnew System::Windows::Forms::Label());
+			this->backgroundWorker2 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->backgroundWorker3 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView4))->BeginInit();
@@ -315,6 +332,10 @@ namespace WinForm {
 			// 
 			// tabPage1
 			// 
+			this->tabPage1->Controls->Add(this->label18);
+			this->tabPage1->Controls->Add(this->label17);
+			this->tabPage1->Controls->Add(this->button6);
+			this->tabPage1->Controls->Add(this->progressBar2);
 			this->tabPage1->Controls->Add(this->label13);
 			this->tabPage1->Controls->Add(this->textBox7);
 			this->tabPage1->Controls->Add(this->label30);
@@ -363,6 +384,51 @@ namespace WinForm {
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Ввод данных";
 			this->tabPage1->UseVisualStyleBackColor = true;
+			// 
+			// label18
+			// 
+			this->label18->AutoSize = true;
+			this->label18->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label18->Location = System::Drawing::Point(857, 321);
+			this->label18->Name = L"label18";
+			this->label18->Size = System::Drawing::Size(212, 24);
+			this->label18->TabIndex = 162;
+			this->label18->Text = L"Идут вычисления... 0%";
+			this->label18->Visible = false;
+			// 
+			// label17
+			// 
+			this->label17->AutoSize = true;
+			this->label17->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label17->Location = System::Drawing::Point(831, 324);
+			this->label17->Name = L"label17";
+			this->label17->Size = System::Drawing::Size(281, 24);
+			this->label17->TabIndex = 164;
+			this->label17->Text = L"Останавливаем вычисления...";
+			this->label17->Visible = false;
+			// 
+			// button6
+			// 
+			this->button6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->button6->Location = System::Drawing::Point(956, 201);
+			this->button6->Name = L"button6";
+			this->button6->Size = System::Drawing::Size(184, 66);
+			this->button6->TabIndex = 163;
+			this->button6->Text = L"ОТМЕНА";
+			this->button6->UseVisualStyleBackColor = true;
+			this->button6->Visible = false;
+			this->button6->Click += gcnew System::EventHandler(this, &MyForm::button6_Click);
+			// 
+			// progressBar2
+			// 
+			this->progressBar2->Location = System::Drawing::Point(668, 280);
+			this->progressBar2->Name = L"progressBar2";
+			this->progressBar2->Size = System::Drawing::Size(598, 31);
+			this->progressBar2->TabIndex = 161;
+			this->progressBar2->Visible = false;
 			// 
 			// label13
 			// 
@@ -719,11 +785,11 @@ namespace WinForm {
 			// 
 			this->textBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->textBox2->Location = System::Drawing::Point(685, 323);
+			this->textBox2->Location = System::Drawing::Point(766, 351);
 			this->textBox2->Multiline = true;
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->ReadOnly = true;
-			this->textBox2->Size = System::Drawing::Size(384, 172);
+			this->textBox2->Size = System::Drawing::Size(394, 172);
 			this->textBox2->TabIndex = 93;
 			this->textBox2->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
@@ -1030,7 +1096,7 @@ namespace WinForm {
 			// 
 			// panel1
 			// 
-			this->panel1->Controls->Add(this->label16);
+			this->panel1->Controls->Add(this->progressBar3);
 			this->panel1->Controls->Add(this->button3);
 			this->panel1->Controls->Add(this->textBox6);
 			this->panel1->Controls->Add(this->button5);
@@ -1046,16 +1112,25 @@ namespace WinForm {
 			this->panel1->Controls->Add(this->label11);
 			this->panel1->Controls->Add(this->GShag_Text);
 			this->panel1->Controls->Add(this->label12);
-			this->panel1->Location = System::Drawing::Point(700, 127);
+			this->panel1->Controls->Add(this->label16);
+			this->panel1->Location = System::Drawing::Point(597, 115);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(795, 418);
+			this->panel1->Size = System::Drawing::Size(633, 532);
 			this->panel1->TabIndex = 156;
+			// 
+			// progressBar3
+			// 
+			this->progressBar3->Location = System::Drawing::Point(78, 265);
+			this->progressBar3->Name = L"progressBar3";
+			this->progressBar3->Size = System::Drawing::Size(390, 31);
+			this->progressBar3->TabIndex = 161;
+			this->progressBar3->Visible = false;
 			// 
 			// button3
 			// 
 			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->button3->Location = System::Drawing::Point(552, 191);
+			this->button3->Location = System::Drawing::Point(482, 52);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(132, 66);
 			this->button3->TabIndex = 159;
@@ -1069,7 +1144,7 @@ namespace WinForm {
 			// 
 			this->textBox6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->textBox6->Location = System::Drawing::Point(66, 343);
+			this->textBox6->Location = System::Drawing::Point(66, 424);
 			this->textBox6->Multiline = true;
 			this->textBox6->Name = L"textBox6";
 			this->textBox6->ReadOnly = true;
@@ -1095,7 +1170,7 @@ namespace WinForm {
 			this->label15->AutoSize = true;
 			this->label15->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label15->Location = System::Drawing::Point(177, 305);
+			this->label15->Location = System::Drawing::Point(175, 373);
 			this->label15->Name = L"label15";
 			this->label15->Size = System::Drawing::Size(212, 24);
 			this->label15->TabIndex = 155;
@@ -1115,10 +1190,11 @@ namespace WinForm {
 			// 
 			// progressBar1
 			// 
-			this->progressBar1->Location = System::Drawing::Point(80, 260);
+			this->progressBar1->Location = System::Drawing::Point(78, 328);
 			this->progressBar1->Name = L"progressBar1";
 			this->progressBar1->Size = System::Drawing::Size(390, 31);
 			this->progressBar1->TabIndex = 154;
+			this->progressBar1->Visible = false;
 			// 
 			// button2
 			// 
@@ -1140,7 +1216,7 @@ namespace WinForm {
 			this->g1_Text->Name = L"g1_Text";
 			this->g1_Text->Size = System::Drawing::Size(57, 29);
 			this->g1_Text->TabIndex = 2;
-			this->g1_Text->Text = L"0,01";
+			this->g1_Text->Text = L"0,15";
 			// 
 			// textBox4
 			// 
@@ -1160,7 +1236,7 @@ namespace WinForm {
 			this->g2_Text->Name = L"g2_Text";
 			this->g2_Text->Size = System::Drawing::Size(57, 29);
 			this->g2_Text->TabIndex = 3;
-			this->g2_Text->Text = L"0,15";
+			this->g2_Text->Text = L"0,29";
 			// 
 			// button4
 			// 
@@ -1203,9 +1279,9 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->GShag_Text->Location = System::Drawing::Point(246, 176);
 			this->GShag_Text->Name = L"GShag_Text";
-			this->GShag_Text->Size = System::Drawing::Size(57, 29);
+			this->GShag_Text->Size = System::Drawing::Size(79, 29);
 			this->GShag_Text->TabIndex = 7;
-			this->GShag_Text->Text = L"0,005";
+			this->GShag_Text->Text = L"0,025";
 			// 
 			// label12
 			// 
@@ -1217,6 +1293,18 @@ namespace WinForm {
 			this->label12->Size = System::Drawing::Size(86, 24);
 			this->label12->TabIndex = 6;
 			this->label12->Text = L"Шаг по β";
+			// 
+			// label16
+			// 
+			this->label16->AutoSize = true;
+			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label16->Location = System::Drawing::Point(137, 373);
+			this->label16->Name = L"label16";
+			this->label16->Size = System::Drawing::Size(281, 24);
+			this->label16->TabIndex = 160;
+			this->label16->Text = L"Останавливаем вычисления...";
+			this->label16->Visible = false;
 			// 
 			// textBox3
 			// 
@@ -1324,17 +1412,18 @@ namespace WinForm {
 			this->backgroundWorker1->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::backgroundWorker1_ProgressChanged);
 			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::backgroundWorker1_RunWorkerCompleted);
 			// 
-			// label16
+			// backgroundWorker2
 			// 
-			this->label16->AutoSize = true;
-			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->label16->Location = System::Drawing::Point(490, 260);
-			this->label16->Name = L"label16";
-			this->label16->Size = System::Drawing::Size(281, 24);
-			this->label16->TabIndex = 160;
-			this->label16->Text = L"Останавливаем вычисления...";
-			this->label16->Visible = false;
+			this->backgroundWorker2->WorkerReportsProgress = true;
+			this->backgroundWorker2->WorkerSupportsCancellation = true;
+			this->backgroundWorker2->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &MyForm::backgroundWorker2_DoWork);
+			this->backgroundWorker2->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::backgroundWorker2_ProgressChanged);
+			this->backgroundWorker2->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::backgroundWorker2_RunWorkerCompleted);
+			// 
+			// backgroundWorker3
+			// 
+			this->backgroundWorker3->WorkerReportsProgress = true;
+			this->backgroundWorker3->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::backgroundWorker3_ProgressChanged);
 			// 
 			// MyForm
 			// 
@@ -1367,434 +1456,6 @@ namespace WinForm {
 
 		}
 #pragma endregion
-	private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e) 
-	{						
-		GraphPane^ panel2 = zedGraphControl2->GraphPane;		
-		GraphPane^ panel4 = zedGraphControl4->GraphPane;
-		GraphPane^ panel3 = zedGraphControl3->GraphPane;
-		
-		panel2->CurveList->Clear();
-		panel3->CurveList->Clear();
-		panel4->CurveList->Clear();		
-
-		panel2->YAxis->Scale->MajorStepAuto = true;
-		panel2->YAxis->Scale->MinorStepAuto = true;		
-	
-		PointPairList^ g_list = gcnew PointPairList();              //Список точек для графика средних частот Ω
-		PointPairList^ E_list = gcnew PointPairList();	            //Список точек для графика поля E(t)		
-		
-		const int n = Convert::ToInt32(n_Text3->Text);              //Число уравнений в системе
-		const int p = Convert::ToInt32(textBox1->Text);             //Число итераций, второй критерий остановки
-		const double h = Convert::ToDouble(h_Text3->Text);          //Шаг
-		const double T = Convert::ToDouble(b_Text3->Text);          //Максимальное время, до которого будет подсчет, первый критерий остановки
-		const double T01 = Convert::ToDouble(T01_text->Text);       //Начальное время, от которого будет считаться частота
-		const double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
-		const double g = Convert::ToDouble(g_Text->Text);           //Коэффициент связи
-		const double alpha = Convert::ToDouble(Alpha_Text->Text);   //Число α
-		const double beta = Convert::ToDouble(textBox7->Text);      //Число β
-		int it = 0;                                                 //Индекс строк в таблице
-		int NumOfClusters;                                          //Число кластеров при t = T
-		double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
-		double E0Star = Convert::ToDouble(E0Star_Text->Text);       //Начальное условие для Ė
-		double t = 0.0;                                             //Текущее время       
-		double Et;                                                  //Поле E(t)
-		double MaxOmega = -100000.0, MinOmega = 100000.0;           //Максимальная и минимальная средние частоты 	
-		double ts = 0.0;                                            //Время последнего спайка
-		int *k;                                                     //Число спайков для каждого ротатора  
-		double *Fi0;		                                        //Фазы при t = T₁
-		double *Fi, *Fiplus1;	                                    //Фазы φⱼ(t) j = 0,...,n - 1
-		double *Omega;                                              //Средние частоты Ω
-		String ^str = "";                                           //Строка для вывода справочных сведений
-
-		const double D2PI = 2 * M_PI;
-
-		if (T01 > T || T02 > T)
-		{
-			MessageBox::Show(L"T₁ и T₂ должны быть меньше или равны T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			return;
-		}
-
-		//Технические переменные, используемые для расчетов 
-		int ind = 0;
-		int i;
-		double oldE0;			
-		bool spike_flag = false;
-		
-		Fi = new double[n];           
-		Fiplus1 = new double[n];		 
-		Omega = new double[n];       
-		Fi0 = new double[n];
-		k = new int[n];					
-
-		double tmin_limit = t - 0.05;
-
-		for (i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
-		{
-			Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
-			k[i] = 0;                          //Изначальное число спайков равно нулю
-		}			
-
-		dataGridView1->Rows->Clear();
-		dataGridView2->Rows->Clear();
-
-		//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
-		if (T01 <= T02)
-		{
-			//t от 0 до T01 - h
-			for (t; t < T01 - h; t += h)
-			{
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
-
-					if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                //Добавление β к начальному значению производной
-						ts = t + h;                                    //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                       //Обнуление значения ф												
-					}
-				}												
-			}
-			//---------------------------------------------------
-			//t от T01 - h до T01
-			t = round(t * 1000) / 1000;
-			for (int j = 0; j < n; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                //Добавление β к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                       //Обнуление значения ф					
-					k[j]++;                                        //Увеличение числа спайков на 1
-				}
-			}
-
-			t += h;			
-
-			for (int l = 0; l < n; l++)
-			{
-				Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
-			}
-			//---------------------------------------------------
-			//t от T01 до T02 - h
-			for (t; t < T02 - h; t += h)
-			{
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
-
-					if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                 //Добавление β к начальному значению производной
-						ts = t + h;                                     //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                        //Обнуление значения ф						
-						k[j]++;                                         //Увеличение числа спайков на 1						
-					}
-				}											
-			}
-			//---------------------------------------------------			
-			//t от T02 - h до T
-			for (t; t < T; t += h)
-			{
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
-
-					if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                 //Добавление β к начальному значению производной
-						ts = t + h;                                     //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                        //Обнуление значения ф						
-						k[j]++;                                         //Увеличение числа спайков на 1	
-						if (!spike_flag)                                //Отбражение нового спайка на графике
-						{
-							PointPairList^ Spaik_list = gcnew PointPairList();
-							Spaik_list->Add(ts, 0.0);
-							Spaik_list->Add(ts, 1.0);
-
-							LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-							zedGraphControl3->AxisChange();
-							zedGraphControl3->Invalidate();
-							spike_flag = true;
-						}
-					}
-				}
-				spike_flag = false;
-
-				Et = E(t + h, ts, E0, E0Star, alpha);
-				E_list->Add(t + h, Et);
-
-				//Заполнение таблицы E(t)
-				dataGridView2->Rows->Add();
-				dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
-				dataGridView2->Rows[ind]->Cells[1]->Value = Et;
-				ind++;
-			}
-			//---------------------------------------------------
-		}
-		else
-		{
-			//t от 0 до T02 - h
-			for (t; t < T02 - h; t += h)
-			{
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
-
-					if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                //Добавление β к начальному значению производной
-						ts = t + h;                                    //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                       //Обнуление значения ф												
-					}
-				}
-			}
-			//---------------------------------------------------
-			//t от T02 - h до T01 - h
-			for (t; t < T01 - h; t += h)
-			{
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
-
-					if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                 //Добавление β к начальному значению производной
-						ts = t + h;                                     //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                        //Обнуление значения ф						
-						if (!spike_flag)                                //Отбражение нового спайка на графике
-						{
-							PointPairList^ Spaik_list = gcnew PointPairList();
-							Spaik_list->Add(ts, 0.0);
-							Spaik_list->Add(ts, 1.0);
-
-							LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-							zedGraphControl3->AxisChange();
-							zedGraphControl3->Invalidate();
-							spike_flag = true;
-						}
-					}
-				}
-				spike_flag = false;
-
-				Et = E(t + h, ts, E0, E0Star, alpha);
-				E_list->Add(t + h, Et);
-
-				//Заполнение таблицы E(t)
-				dataGridView2->Rows->Add();
-				dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
-				dataGridView2->Rows[ind]->Cells[1]->Value = Et;
-				ind++;				
-			}
-			//---------------------------------------------------
-			//t от T01 - h до T01
-			t = round(t * 1000) / 1000;
-			for (int j = 0; j < n; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                //Добавление β к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                       //Обнуление значения ф					
-					k[j]++;                                        //Увеличение числа спайков на 1
-					if (!spike_flag)                               //Отбражение нового спайка на графике
-					{
-						PointPairList^ Spaik_list = gcnew PointPairList();
-						Spaik_list->Add(ts, 0.0);
-						Spaik_list->Add(ts, 1.0);
-
-						LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-						zedGraphControl3->AxisChange();
-						zedGraphControl3->Invalidate();
-						spike_flag = true;
-					}
-				}
-			}
-			spike_flag = false;
-
-			Et = E(t + h, ts, E0, E0Star, alpha);
-			E_list->Add(t + h, Et);
-
-			//Заполнение таблицы E(t)
-			dataGridView2->Rows->Add();
-			dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
-			dataGridView2->Rows[ind]->Cells[1]->Value = Et;
-			ind++;
-			
-			for (int l = 0; l < n; l++)
-			{
-				Fi0[l] = Fi[l];                                     //Запоминание значений фаз при t = T₁
-			}
-			t += h;
-			//---------------------------------------------------
-			//t от T01 до T
-			for (t; t < T; t += h)
-			{
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
-
-					if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                 //Добавление β к начальному значению производной
-						ts = t + h;                                     //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                        //Обнуление значения ф						
-						k[j]++;                                         //Увеличение числа спайков на 1	
-						if (!spike_flag)                                //Отбражение нового спайка на графике
-						{
-							PointPairList^ Spaik_list = gcnew PointPairList();
-							Spaik_list->Add(ts, 0.0);
-							Spaik_list->Add(ts, 1.0);
-
-							LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-							zedGraphControl3->AxisChange();
-							zedGraphControl3->Invalidate();
-							spike_flag = true;
-						}
-					}
-				}
-				spike_flag = false;
-
-				Et = E(t + h, ts, E0, E0Star, alpha);
-				E_list->Add(t + h, Et);
-
-				//Заполнение таблицы E(t)
-				dataGridView2->Rows->Add();
-				dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
-				dataGridView2->Rows[ind]->Cells[1]->Value = Et;
-				ind++;
-			}
-			//---------------------------------------------------			
-		}		
-						
-			for (i = 0; i < n; i++)         //Вычисление частоты для всех ротаторов, заполнение таблицы
-			{
-				if (k[i] != 0)
-				{
-					Omega[i] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
-				}
-				else
-				{
-					Omega[i] = (k[i] * D2PI + Fi[i] - Fi0[i]) / (t - T01);       //Вычисление значения частоты
-				}
-				g_list->Add(i, Omega[i]);			
-
-				if (Omega[i] > MaxOmega)  //Вычисление максимальной средней частоты
-				{
-					MaxOmega = Omega[i];
-				}
-				if (Omega[i] < MinOmega)  //Вычисление минимальной средней частоты
-				{
-					MinOmega = Omega[i];
-				}
-				
-				//Добавление значения частоты в таблицу
-				dataGridView1->Rows->Add();     
-				dataGridView1->Rows[i]->Cells[0]->Value = i;
-				dataGridView1->Rows[i]->Cells[1]->Value = Omega[i];
-			}		
-
-		NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T		
-
-//Заполнение справки
-str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n";
-str += "\r\n";
-str += String::Format(L"γᵢ были взяты из интервала [{0}; {1}]\r\n\r\nЧисло кластеров при t = T:{2}", gamma1, gamma2, NumOfClusters);
-
-textBox2->Text = str;
-
-double tmax_limit = t + 0.05;
-
-//Рисование графиков
-LineItem ^Curve6 = panel2->AddCurve(L"Ωᵢ", g_list, Color::Red, SymbolType::Circle);
-LineItem ^Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);
-
-Curve6->Line->IsVisible = false;
-Curve6->Symbol->Fill->Color = Color::Red;
-Curve6->Symbol->Fill->Type = FillType::Solid;
-Curve6->Symbol->Size = 6;
-
-panel2->XAxis->Scale->Min = -1;
-panel2->XAxis->Scale->Max = n;
-panel2->YAxis->Scale->Min = MinOmega - (MaxOmega - MinOmega) / 2;
-panel2->YAxis->Scale->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
-panel2->YAxis->Scale->Min = MinOmega - 0.1;
-panel2->YAxis->Scale->Max = MaxOmega + 0.1;
-
-panel3->XAxis->Scale->Max = t + 0.05;
-panel3->XAxis->Scale->Min = T02 - 0.05;
-
-panel4->XAxis->Scale->Max = t + 0.05;
-panel4->XAxis->Scale->Min = T02 - 0.05;
-
-zedGraphControl2->AxisChange();
-zedGraphControl2->Invalidate();
-zedGraphControl4->AxisChange();
-zedGraphControl4->Invalidate();
-
-delete[]Fi;
-delete[]Fiplus1;
-delete[]Omega;
-delete[]Fi0;
-delete[]k;
-
-n_Text3->ReadOnly = false;
-Change_scale_Omega->Enabled = true;
-	}
 
 private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) 
 {
@@ -1864,6 +1525,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	
 #pragma omp parallel private(om, Fi, Fiplus1, k, Fi0)
 	{
+		int threadid = omp_get_thread_num();
 			k = new int[n];
 			om = new double[n];
 			Fi = new double[n];
@@ -1905,6 +1567,10 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 			for (double beta = beta1; beta <= beta2; beta += betaStep)
 			{
 				beta = round(beta * 100000) / 100000;
+				if (threadid == 0)
+				{
+					backgroundWorker3->ReportProgress((int)((beta - beta1) / (beta2 - beta1) * 100));
+				}
 				//t от 0 до T01 - h
 				for (t; t < T01 - h; t += h)
 				{					
@@ -1986,7 +1652,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 					}
 					else
 					{
-						Omega[i][index] = (k[i] * D2PI + Fi[i] - Fi0[i]) / (t - T01);
+						Omega[i][index] = (Fi[i] - Fi0[i]) / (t - T01);
 					}
 					om[i] = Omega[i][index];
 				}
@@ -2095,6 +1761,8 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 		return;
 	}
 
+	progressBar1->Visible = true;
+	progressBar3->Visible = true;
 	g1_Text->ReadOnly = true;
 	g2_Text->ReadOnly = true;
 	GShag_Text->ReadOnly = true;
@@ -2227,6 +1895,9 @@ private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  send
 		MessageBox::Show("Вычисления закончены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 	}
 	progressBar1->Value = 0;
+	progressBar3->Value = 0;
+	progressBar1->Visible = false;
+	progressBar3->Visible = false;
 	label15->Visible = false;
 	checkBox1->Enabled = true;
 	checkBox4->Enabled = true;
@@ -2396,8 +2067,548 @@ private: System::Void checkBox4_CheckedChanged(System::Object^  sender, System::
 }
 private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) 
 {
+	label15->Visible = false;
 	label16->Visible = true;
 	backgroundWorker1->CancelAsync();
+}
+private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) 
+{
+	GraphPane^ panel2 = zedGraphControl2->GraphPane;
+	GraphPane^ panel3 = zedGraphControl3->GraphPane;
+	GraphPane^ panel4 = zedGraphControl4->GraphPane;
+
+	panel2->CurveList->Clear();
+	panel3->CurveList->Clear();
+	panel4->CurveList->Clear();
+
+	panel2->YAxis->Scale->MajorStepAuto = true;
+	panel2->YAxis->Scale->MinorStepAuto = true;
+
+	PointPairList^ g_list = gcnew PointPairList();              //Список точек для графика средних частот Ω
+	PointPairList^ E_list = gcnew PointPairList();	            //Список точек для графика поля E(t)		
+
+	const int n = Convert::ToInt32(n_Text3->Text);              //Число уравнений в системе
+	const int p = Convert::ToInt32(textBox1->Text);             //Число итераций, второй критерий остановки
+	const double h = Convert::ToDouble(h_Text3->Text);          //Шаг
+	const double T = Convert::ToDouble(b_Text3->Text);          //Максимальное время, до которого будет подсчет, первый критерий остановки
+	const double T01 = Convert::ToDouble(T01_text->Text);       //Начальное время, от которого будет считаться частота
+	const double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
+	const double g = Convert::ToDouble(g_Text->Text);           //Коэффициент связи
+	const double alpha = Convert::ToDouble(Alpha_Text->Text);   //Число α
+	const double beta = Convert::ToDouble(textBox7->Text);      //Число β
+	int it = 0;                                                 //Индекс строк в таблице
+	int NumOfClusters;                                          //Число кластеров при t = T
+	double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
+	double E0Star = Convert::ToDouble(E0Star_Text->Text);       //Начальное условие для Ė
+	double t = 0.0;                                             //Текущее время       
+	double Et;                                                  //Поле E(t)
+	double MaxOmega = -100000.0, MinOmega = 100000.0;           //Максимальная и минимальная средние частоты 	
+	double ts = 0.0;                                            //Время последнего спайка
+	int *k;                                                     //Число спайков для каждого ротатора  
+	double *Fi0;		                                        //Фазы при t = T₁
+	double *Fi, *Fiplus1;	                                    //Фазы φⱼ(t) j = 0,...,n - 1
+	double *Omega;                                              //Средние частоты Ω
+
+	Str = "";
+
+	const double D2PI = 2 * M_PI;
+
+	if (T01 > T || T02 > T)
+	{
+		MessageBox::Show(L"T₁ и T₂ должны быть меньше или равны T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		return;
+	}
+
+	//Технические переменные, используемые для расчетов 
+	int ind = 0;
+	int i;
+	double oldE0;
+	bool spike_flag = false;
+
+	Fi = new double[n];
+	Fiplus1 = new double[n];
+	Omega = new double[n];
+	Fi0 = new double[n];
+	k = new int[n];
+
+	double tmin_limit = t - 0.05;
+
+	for (i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
+	{
+		Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
+		k[i] = 0;                          //Изначальное число спайков равно нулю
+	}
+
+	dataGridView1->Rows->Clear();
+	dataGridView2->Rows->Clear();
+
+	//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
+	if (T01 <= T02)
+	{
+		//t от 0 до T01 - h
+		for (t; t < T01 - h; t += h)
+		{
+			if (backgroundWorker2->CancellationPending)
+			{
+				e->Cancel = true;
+				return;
+			}
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < n; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+				Fi[j] = Fiplus1[j];
+
+				if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += beta;                                //Добавление β к начальному значению производной
+					ts = t + h;                                    //Изменение времени последнего спайка
+					Fi[j] = 0.0;			                       //Обнуление значения ф												
+				}
+			}
+			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
+		}
+		//---------------------------------------------------
+		//t от T01 - h до T01
+		if (backgroundWorker2->CancellationPending)
+		{
+			e->Cancel = true;
+			return;
+		}
+		t = round(t * 1000) / 1000;
+		for (int j = 0; j < n; j++)
+		{
+			//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+			Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+			Fi[j] = Fiplus1[j];
+
+			if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
+			{
+				oldE0 = E0;
+				E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+				E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+				E0Star += beta;                                //Добавление β к начальному значению производной
+				ts = t + h;                                    //Изменение времени последнего спайка
+				Fi[j] = 0.0;			                       //Обнуление значения ф					
+				k[j]++;                                        //Увеличение числа спайков на 1
+			}
+		}
+
+		t += h;
+		backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
+
+		for (int l = 0; l < n; l++)
+		{
+			Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
+		}
+		//---------------------------------------------------
+		//t от T01 до T02 - h
+		for (t; t < T02 - h; t += h)
+		{
+			if (backgroundWorker2->CancellationPending)
+			{
+				e->Cancel = true;
+				return;
+			}
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < n; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+				Fi[j] = Fiplus1[j];
+
+				if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += beta;                                 //Добавление β к начальному значению производной
+					ts = t + h;                                     //Изменение времени последнего спайка
+					Fi[j] = 0.0;			                        //Обнуление значения ф						
+					k[j]++;                                         //Увеличение числа спайков на 1						
+				}
+			}
+			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
+		}
+		//---------------------------------------------------			
+		//t от T02 - h до T
+		for (t; t < T; t += h)
+		{
+			if (backgroundWorker2->CancellationPending)
+			{
+				e->Cancel = true;
+				return;
+			}
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < n; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+				Fi[j] = Fiplus1[j];
+
+				if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += beta;                                 //Добавление β к начальному значению производной
+					ts = t + h;                                     //Изменение времени последнего спайка
+					Fi[j] = 0.0;			                        //Обнуление значения ф						
+					k[j]++;                                         //Увеличение числа спайков на 1	
+					if (!spike_flag)                                //Отбражение нового спайка на графике
+					{
+						PointPairList^ Spaik_list = gcnew PointPairList();
+						Spaik_list->Add(ts, 0.0);
+						Spaik_list->Add(ts, 1.0);
+
+						LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+						zedGraphControl3->AxisChange();
+						zedGraphControl3->Invalidate();
+						spike_flag = true;
+					}
+				}
+			}
+			spike_flag = false;
+
+			Et = E(t + h, ts, E0, E0Star, alpha);
+			E_list->Add(t + h, Et);
+
+			//Заполнение таблицы E(t)
+			dataGridView2->Rows->Add();
+			dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
+			dataGridView2->Rows[ind]->Cells[1]->Value = Et;
+			ind++;
+			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
+		}
+		//---------------------------------------------------
+	}
+	else
+	{
+		//t от 0 до T02 - h
+		for (t; t < T02 - h; t += h)
+		{
+			if (backgroundWorker2->CancellationPending)
+			{
+				e->Cancel = true;
+				return;
+			}
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < n; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+				Fi[j] = Fiplus1[j];
+
+				if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += beta;                                //Добавление β к начальному значению производной
+					ts = t + h;                                    //Изменение времени последнего спайка
+					Fi[j] = 0.0;			                       //Обнуление значения ф												
+				}
+			}
+			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
+		}
+		//---------------------------------------------------
+		//t от T02 - h до T01 - h
+		for (t; t < T01 - h; t += h)
+		{
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < n; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+				Fi[j] = Fiplus1[j];
+
+				if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += beta;                                 //Добавление β к начальному значению производной
+					ts = t + h;                                     //Изменение времени последнего спайка
+					Fi[j] = 0.0;			                        //Обнуление значения ф						
+					if (!spike_flag)                                //Отбражение нового спайка на графике
+					{
+						PointPairList^ Spaik_list = gcnew PointPairList();
+						Spaik_list->Add(ts, 0.0);
+						Spaik_list->Add(ts, 1.0);
+
+						LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+						zedGraphControl3->AxisChange();
+						zedGraphControl3->Invalidate();
+						spike_flag = true;
+					}
+				}
+			}
+			spike_flag = false;
+
+			Et = E(t + h, ts, E0, E0Star, alpha);
+			E_list->Add(t + h, Et);
+
+			//Заполнение таблицы E(t)
+			dataGridView2->Rows->Add();
+			dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
+			dataGridView2->Rows[ind]->Cells[1]->Value = Et;
+			ind++;
+			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
+		}
+		//---------------------------------------------------
+		//t от T01 - h до T01
+		if (backgroundWorker2->CancellationPending)
+		{
+			e->Cancel = true;
+			return;
+		}
+		t = round(t * 1000) / 1000;
+		for (int j = 0; j < n; j++)
+		{
+			//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+			Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+			Fi[j] = Fiplus1[j];
+
+			if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
+			{
+				oldE0 = E0;
+				E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+				E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+				E0Star += beta;                                //Добавление β к начальному значению производной
+				ts = t + h;                                    //Изменение времени последнего спайка
+				Fi[j] = 0.0;			                       //Обнуление значения ф					
+				k[j]++;                                        //Увеличение числа спайков на 1
+				if (!spike_flag)                               //Отбражение нового спайка на графике
+				{
+					PointPairList^ Spaik_list = gcnew PointPairList();
+					Spaik_list->Add(ts, 0.0);
+					Spaik_list->Add(ts, 1.0);
+
+					LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+					zedGraphControl3->AxisChange();
+					zedGraphControl3->Invalidate();
+					spike_flag = true;
+				}
+			}
+		}
+		spike_flag = false;
+
+		Et = E(t + h, ts, E0, E0Star, alpha);
+		E_list->Add(t + h, Et);
+
+		//Заполнение таблицы E(t)
+		dataGridView2->Rows->Add();
+		dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
+		dataGridView2->Rows[ind]->Cells[1]->Value = Et;
+		ind++;
+
+		for (int l = 0; l < n; l++)
+		{
+			Fi0[l] = Fi[l];                                     //Запоминание значений фаз при t = T₁
+		}
+		t += h;
+		backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
+		//---------------------------------------------------
+		//t от T01 до T
+		for (t; t < T; t += h)
+		{
+			if (backgroundWorker2->CancellationPending)
+			{
+				e->Cancel = true;
+				return;
+			}
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < n; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+				Fi[j] = Fiplus1[j];
+
+				if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += beta;                                 //Добавление β к начальному значению производной
+					ts = t + h;                                     //Изменение времени последнего спайка
+					Fi[j] = 0.0;			                        //Обнуление значения ф						
+					k[j]++;                                         //Увеличение числа спайков на 1	
+					if (!spike_flag)                                //Отбражение нового спайка на графике
+					{
+						PointPairList^ Spaik_list = gcnew PointPairList();
+						Spaik_list->Add(ts, 0.0);
+						Spaik_list->Add(ts, 1.0);
+
+						LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+						zedGraphControl3->AxisChange();
+						zedGraphControl3->Invalidate();
+						spike_flag = true;
+					}
+				}
+			}
+			spike_flag = false;
+
+			Et = E(t + h, ts, E0, E0Star, alpha);
+			E_list->Add(t + h, Et);
+
+			//Заполнение таблицы E(t)
+			dataGridView2->Rows->Add();
+			dataGridView2->Rows[ind]->Cells[0]->Value = t + h;
+			dataGridView2->Rows[ind]->Cells[1]->Value = Et;
+			ind++;
+			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
+		}
+		//---------------------------------------------------			
+	}
+
+	for (i = 0; i < n; i++)         //Вычисление частоты для всех ротаторов, заполнение таблицы
+	{
+		if (k[i] != 0)
+		{
+			Omega[i] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (t - T01); //Вычисление значения частоты
+		}
+		else
+		{
+			Omega[i] = (Fi[i] - Fi0[i]) / (t - T01);       //Вычисление значения частоты
+		}
+		g_list->Add(i, Omega[i]);
+
+		if (Omega[i] > MaxOmega)  //Вычисление максимальной средней частоты
+		{
+			MaxOmega = Omega[i];
+		}
+		if (Omega[i] < MinOmega)  //Вычисление минимальной средней частоты
+		{
+			MinOmega = Omega[i];
+		}
+
+		//Добавление значения частоты в таблицу
+		dataGridView1->Rows->Add();
+		dataGridView1->Rows[i]->Cells[0]->Value = i;
+		dataGridView1->Rows[i]->Cells[1]->Value = Omega[i];
+	}
+
+	NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T		
+
+													 //Заполнение справки
+	Str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n";
+	Str += "\r\n";
+	Str += String::Format(L"γᵢ были взяты из интервала [{0}; {1}]\r\n\r\nЧисло кластеров при t = T:{2}", gamma1, gamma2, NumOfClusters);
+
+	double tmax_limit = t + 0.05;
+
+	//Рисование графиков
+	LineItem ^Curve6 = panel2->AddCurve(L"Ωᵢ", g_list, Color::Red, SymbolType::Circle);
+	LineItem ^Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);
+
+	Curve6->Line->IsVisible = false;
+	Curve6->Symbol->Fill->Color = Color::Red;
+	Curve6->Symbol->Fill->Type = FillType::Solid;
+	Curve6->Symbol->Size = 6;
+
+	panel2->XAxis->Scale->Min = -1;
+	panel2->XAxis->Scale->Max = n;
+	panel2->YAxis->Scale->Min = MinOmega - (MaxOmega - MinOmega) / 2;
+	panel2->YAxis->Scale->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
+	panel2->YAxis->Scale->Min = MinOmega - 0.1;
+	panel2->YAxis->Scale->Max = MaxOmega + 0.1;
+
+	panel3->XAxis->Scale->Max = t + 0.05;
+	panel3->XAxis->Scale->Min = T02 - 0.05;
+
+	panel4->XAxis->Scale->Max = t + 0.05;
+	panel4->XAxis->Scale->Min = T02 - 0.05;
+
+	zedGraphControl2->AxisChange();
+	zedGraphControl2->Invalidate();
+	zedGraphControl4->AxisChange();
+	zedGraphControl4->Invalidate();
+
+	delete[]Fi;
+	delete[]Fiplus1;
+	delete[]Omega;
+	delete[]Fi0;
+	delete[]k;
+
+}
+private: System::Void backgroundWorker2_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
+{
+	progressBar2->Value = e->ProgressPercentage;
+	label18->Text = "Идут вычисления... " + Convert::ToString(progressBar2->Value) + "%";
+}
+private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e)
+{
+	label18->Text = "Идут вычисления... 0%";
+	label18->Visible = true;
+	progressBar2->Visible = true;
+	b_Text3->ReadOnly = true;
+	h_Text3->ReadOnly = true;
+	E0_Text->ReadOnly = true;
+	E0Star_Text->ReadOnly = true;
+	T01_text->ReadOnly = true;
+	T02_text->ReadOnly = true;
+	g_Text->ReadOnly = true;
+	Alpha_Text->ReadOnly = true;
+	textBox7->ReadOnly = true;
+	button7->Enabled = false;
+	button1->Enabled = false;
+	Gamma1_Text->ReadOnly = true;
+	Gamma2_Text->ReadOnly = true;
+	checkBox2->Enabled = false;
+	checkBox3->Enabled = false;
+	backgroundWorker2->RunWorkerAsync();
+	button6->Visible = true;
+}
+private: System::Void backgroundWorker2_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
+{
+	if (e->Cancelled)
+	{
+		label17->Visible = false;
+		MessageBox::Show("Вычисления приостановлены пользователем", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+	}
+	else
+	{
+		MessageBox::Show("Вычисления закончены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+	}
+	progressBar2->Value = 0;
+	label18->Visible = false;
+	progressBar2->Visible = false;
+	n_Text3->ReadOnly = false;
+	b_Text3->ReadOnly = false;
+	h_Text3->ReadOnly = false;
+	E0_Text->ReadOnly = false;
+	E0Star_Text->ReadOnly = false;
+	T01_text->ReadOnly = false;
+	T02_text->ReadOnly = false;
+	g_Text->ReadOnly = false;
+	Alpha_Text->ReadOnly = false;
+	textBox7->ReadOnly = false;
+	button7->Enabled = true;
+	button1->Enabled = true;
+	Gamma1_Text->ReadOnly = false;
+	Gamma2_Text->ReadOnly = false;
+	checkBox2->Enabled = true;
+	checkBox3->Enabled = true;
+	button6->Visible = false;
+	Change_scale_Omega->Enabled = true;
+	textBox2->Text = Str;
+}
+private: System::Void button6_Click(System::Object^  sender, System::EventArgs^  e) 
+{
+	label17->Visible = true;
+	backgroundWorker2->CancelAsync();
+}
+private: System::Void backgroundWorker3_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
+{
+	progressBar3->Value = e->ProgressPercentage;
 }
 };
 }
