@@ -1,5 +1,5 @@
 #include "Calculating_functions.h"
-#define PRECISION 0.0005
+#define PRECISION 5e-07
 
 double* Set_Gamma(int _n, double gam1, double gam2)
 {
@@ -10,7 +10,7 @@ double* Set_Gamma(int _n, double gam1, double gam2)
 
 	for (int i = 0; i < _n; i++)
 	{
-		g[i] = round(distr(me) * 1000) / 1000;		
+		g[i] = distr(me);
 
 	}
 	return g;
@@ -92,10 +92,10 @@ double RK4(double t, double ts, double vn, double h, double d, double g, double 
 	double vnplus1, k1, k2, k3, k4;
 
 	k1 = f(t, ts, vn, d, g, E0, E0_star, alpha);
-	k2 = f(t + (h*0.25), ts, vn + (h*0.25)*k1, d, g, E0, E0_star, alpha);
+	k2 = f(t + (h*0.5), ts, vn + (h*0.5)*k1, d, g, E0, E0_star, alpha);
 	k3 = f(t + (h*0.5), ts, vn + (h*0.5)*k2, d, g, E0, E0_star, alpha);
-	k4 = f(t + h, ts, vn + (h*0.5)*(k1 - 2 * k2 + 2 * k3), d, g, E0, E0_star, alpha);
-	vnplus1 = vn + (h / 6.0)*(k1 + 4 * k3 + k4);
+	k4 = f(t + h, ts, vn + h*k3, d, g, E0, E0_star, alpha);
+	vnplus1 = vn + (h / 6.0)*(k1 + 2 * k2 + 2 * k3 + k4);
 
 	return vnplus1;
 }
