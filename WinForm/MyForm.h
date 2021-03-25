@@ -276,6 +276,8 @@ namespace WinForm {
 			this->Omega2_Text = (gcnew System::Windows::Forms::TextBox());
 			this->Change_scale_Omega = (gcnew System::Windows::Forms::Button());
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
+			this->dataGridViewTextBoxColumn1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->dataGridViewTextBoxColumn2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabPage3 = (gcnew System::Windows::Forms::TabPage());
 			this->dataGridView2 = (gcnew System::Windows::Forms::DataGridView());
 			this->dataGridViewTextBoxColumn3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
@@ -316,8 +318,6 @@ namespace WinForm {
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->backgroundWorker2 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->backgroundWorker3 = (gcnew System::ComponentModel::BackgroundWorker());
-			this->dataGridViewTextBoxColumn1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->dataGridViewTextBoxColumn2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView4))->BeginInit();
@@ -403,7 +403,7 @@ namespace WinForm {
 			this->comboBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->comboBox2->FormattingEnabled = true;
-			this->comboBox2->Items->AddRange(gcnew cli::array< System::Object^  >(5) { L"1,1", L"2,1", L"3,1", L"4,1", L"5,1" });
+			this->comboBox2->Items->AddRange(gcnew cli::array< System::Object^  >(6) { L"1,1", L"2,1", L"3,1", L"4,1", L"5,1", L"1,03" });
 			this->comboBox2->Location = System::Drawing::Point(1100, 70);
 			this->comboBox2->Name = L"comboBox2";
 			this->comboBox2->Size = System::Drawing::Size(100, 32);
@@ -415,7 +415,7 @@ namespace WinForm {
 			this->comboBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(5) { L"1", L"2", L"3", L"4", L"5" });
+			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(6) { L"1", L"2", L"3", L"4", L"5", L"1,03" });
 			this->comboBox1->Location = System::Drawing::Point(890, 70);
 			this->comboBox1->Name = L"comboBox1";
 			this->comboBox1->Size = System::Drawing::Size(100, 32);
@@ -965,6 +965,18 @@ namespace WinForm {
 			this->dataGridView1->Size = System::Drawing::Size(445, 647);
 			this->dataGridView1->TabIndex = 115;
 			// 
+			// dataGridViewTextBoxColumn1
+			// 
+			this->dataGridViewTextBoxColumn1->HeaderText = L"j";
+			this->dataGridViewTextBoxColumn1->Name = L"dataGridViewTextBoxColumn1";
+			this->dataGridViewTextBoxColumn1->Width = 200;
+			// 
+			// dataGridViewTextBoxColumn2
+			// 
+			this->dataGridViewTextBoxColumn2->HeaderText = L"Ωⱼ";
+			this->dataGridViewTextBoxColumn2->Name = L"dataGridViewTextBoxColumn2";
+			this->dataGridViewTextBoxColumn2->Width = 200;
+			// 
 			// tabPage3
 			// 
 			this->tabPage3->Controls->Add(this->dataGridView2);
@@ -1020,7 +1032,7 @@ namespace WinForm {
 			// zedGraphControl3
 			// 
 			this->zedGraphControl3->IsShowPointValues = true;
-			this->zedGraphControl3->Location = System::Drawing::Point(0, 351);
+			this->zedGraphControl3->Location = System::Drawing::Point(6, 351);
 			this->zedGraphControl3->Name = L"zedGraphControl3";
 			this->zedGraphControl3->ScrollGrace = 0;
 			this->zedGraphControl3->ScrollMaxX = 0;
@@ -1029,7 +1041,7 @@ namespace WinForm {
 			this->zedGraphControl3->ScrollMinX = 0;
 			this->zedGraphControl3->ScrollMinY = 0;
 			this->zedGraphControl3->ScrollMinY2 = 0;
-			this->zedGraphControl3->Size = System::Drawing::Size(1103, 370);
+			this->zedGraphControl3->Size = System::Drawing::Size(1097, 370);
 			this->zedGraphControl3->TabIndex = 0;
 			// 
 			// tabPage4
@@ -1090,7 +1102,7 @@ namespace WinForm {
 			this->comboBox3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->comboBox3->FormattingEnabled = true;
-			this->comboBox3->Items->AddRange(gcnew cli::array< System::Object^  >(5) { L"1,1", L"2,1", L"3,1", L"4,1", L"5,1" });
+			this->comboBox3->Items->AddRange(gcnew cli::array< System::Object^  >(6) { L"1,1", L"2,1", L"3,1", L"4,1", L"5,1", L"1,03" });
 			this->comboBox3->Location = System::Drawing::Point(404, 14);
 			this->comboBox3->Name = L"comboBox3";
 			this->comboBox3->Size = System::Drawing::Size(100, 32);
@@ -1102,7 +1114,7 @@ namespace WinForm {
 			this->comboBox4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->comboBox4->FormattingEnabled = true;
-			this->comboBox4->Items->AddRange(gcnew cli::array< System::Object^  >(5) { L"1", L"2", L"3", L"4", L"5" });
+			this->comboBox4->Items->AddRange(gcnew cli::array< System::Object^  >(6) { L"1", L"2", L"3", L"4", L"5", L"1,03" });
 			this->comboBox4->Location = System::Drawing::Point(194, 14);
 			this->comboBox4->Name = L"comboBox4";
 			this->comboBox4->Size = System::Drawing::Size(100, 32);
@@ -1436,18 +1448,6 @@ namespace WinForm {
 			this->backgroundWorker3->WorkerReportsProgress = true;
 			this->backgroundWorker3->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::backgroundWorker3_ProgressChanged);
 			// 
-			// dataGridViewTextBoxColumn1
-			// 
-			this->dataGridViewTextBoxColumn1->HeaderText = L"j";
-			this->dataGridViewTextBoxColumn1->Name = L"dataGridViewTextBoxColumn1";
-			this->dataGridViewTextBoxColumn1->Width = 200;
-			// 
-			// dataGridViewTextBoxColumn2
-			// 
-			this->dataGridViewTextBoxColumn2->HeaderText = L"Ωⱼ";
-			this->dataGridViewTextBoxColumn2->Name = L"dataGridViewTextBoxColumn2";
-			this->dataGridViewTextBoxColumn2->Width = 200;
-			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -1575,15 +1575,33 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 			Cl_list = gcnew PointPairList();
 			Omega_List = gcnew cli::array<PointPairList^>(n);
 
-			for (int i = 0; i < n; i++)
+			if (gamma1Copy != gamma2Copy)
 			{
+				for (int i = 0; i < n; i++)
+				{
 
-				Omega[i] = new double[non];
-				Omega_List[i] = gcnew PointPairList();
+					Omega[i] = new double[non];
+					Omega_List[i] = gcnew PointPairList();
 
-				//Начальное значение φⱼ(0) и число спайков равно 0
-				Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
-				k[i] = 0;
+					//Начальное значение φⱼ(0) и число спайков равно 0
+					Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
+					k[i] = 0;
+				}
+			}
+			else
+			{
+				random_device gen;
+				mt19937 me(gen());
+				uniform_real_distribution<> distr(0, M_PI);
+				for (int i = 0; i < n; i++)
+				{
+					Omega[i] = new double[non];
+					Omega_List[i] = gcnew PointPairList();
+
+					Fi[i] = Fi0[i] = distr(me);
+					Fiplus1[i] = 0.0;
+					k[i] = 0;                          //Изначальное число спайков равно нулю
+				}
 			}
 
 			//Вычисляем φⱼ(t) методом Рунге-Кутта 4-го порядка
@@ -2120,10 +2138,25 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 
 	double tmin_limit = t - 0.05;
 
-	for (i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
+	if (gamma1 != gamma2)
 	{
-		Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
-		k[i] = 0;                          //Изначальное число спайков равно нулю
+		for (i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
+		{
+			Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
+			k[i] = 0;                          //Изначальное число спайков равно нулю
+		}
+	}
+	else
+	{
+		random_device gen;
+		mt19937 me(gen());
+		uniform_real_distribution<> distr(0, M_PI);
+		for (i = 0; i < n; i++)                
+		{
+			Fi[i] = Fi0[i] = distr(me);
+			Fiplus1[i] = 0.0;
+			k[i] = 0;                          //Изначальное число спайков равно нулю
+		}
 	}
 
 	//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
@@ -2594,6 +2627,7 @@ private: System::Void backgroundWorker2_RunWorkerCompleted(System::Object^  send
 }
 private: System::Void button6_Click(System::Object^  sender, System::EventArgs^  e) 
 {
+	label18->Visible = false;
 	label17->Visible = true;
 	backgroundWorker2->CancelAsync();
 }
