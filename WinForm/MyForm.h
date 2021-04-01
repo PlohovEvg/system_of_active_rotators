@@ -69,11 +69,17 @@ namespace WinForm {
 			zedGraphControl3->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			zedGraphControl3->GraphPane->XAxis->MajorGrid->IsVisible = true;
 
-			zedGraphControl4->GraphPane->Title->Text = L"График внешнего поля E(t)";
+			zedGraphControl4->GraphPane->Title->Text = "График внешнего поля E(t)";
 			zedGraphControl4->GraphPane->XAxis->Title->Text = L"t";
 			zedGraphControl4->GraphPane->YAxis->Title->Text = L"E(t)";
 			zedGraphControl4->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			zedGraphControl4->GraphPane->XAxis->MajorGrid->IsVisible = true;
+
+			zedGraphControl5->GraphPane->Title->Text = L"График изменения модуля параметра фазовой синхронизации |μ| со временем";
+			zedGraphControl5->GraphPane->XAxis->Title->Text = "t";
+			zedGraphControl5->GraphPane->YAxis->Title->Text = L"|μ|";
+			zedGraphControl5->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			zedGraphControl5->GraphPane->XAxis->MajorGrid->IsVisible = true;
 
 			zedGraphControl6->GraphPane->Title->Text = L"График зависимости средних частот Ωⱼ от параметра β";
 			zedGraphControl6->GraphPane->XAxis->Title->Text = L"β";
@@ -103,6 +109,9 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: ZedGraph::ZedGraphControl^  zedGraphControl5;
+	private: System::Windows::Forms::RadioButton^  radioButton2;
+	private: System::Windows::Forms::RadioButton^  radioButton1;
 	private: System::Windows::Forms::ProgressBar^  progressBar3;
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorker3;
 	private: System::Windows::Forms::ComboBox^  comboBox2;
@@ -179,8 +188,6 @@ namespace WinForm {
 	private: ZedGraph::ZedGraphControl^  zedGraphControl4;
 	private: ZedGraph::ZedGraphControl^  zedGraphControl3;
 	private: System::Windows::Forms::DataGridView^  dataGridView1;
-
-
 	private: System::Windows::Forms::DataGridView^  dataGridView2;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn3;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^  dataGridViewTextBoxColumn4;
@@ -190,18 +197,11 @@ namespace WinForm {
 	private: System::Windows::Forms::TextBox^  Omega2_Text;
 	private: System::Windows::Forms::Button^  Change_scale_Omega;
 	private: System::Windows::Forms::Label^  label10;
-
 	private: System::Windows::Forms::Label^  Gamma1;
-
 	private: System::Windows::Forms::Label^  label9;
-
-
-
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::DataGridView^  dataGridView4;
-
-
 	private: System::Windows::Forms::Label^  label27;
 	private: System::Windows::Forms::Label^  label26;
 	private: System::Windows::Forms::Label^  label25;
@@ -279,11 +279,14 @@ namespace WinForm {
 			this->dataGridViewTextBoxColumn1 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn2 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabPage3 = (gcnew System::Windows::Forms::TabPage());
+			this->radioButton2 = (gcnew System::Windows::Forms::RadioButton());
+			this->radioButton1 = (gcnew System::Windows::Forms::RadioButton());
 			this->dataGridView2 = (gcnew System::Windows::Forms::DataGridView());
 			this->dataGridViewTextBoxColumn3 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->dataGridViewTextBoxColumn4 = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->zedGraphControl4 = (gcnew ZedGraph::ZedGraphControl());
 			this->zedGraphControl3 = (gcnew ZedGraph::ZedGraphControl());
+			this->zedGraphControl5 = (gcnew ZedGraph::ZedGraphControl());
 			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
@@ -454,7 +457,7 @@ namespace WinForm {
 			this->button6->Location = System::Drawing::Point(956, 201);
 			this->button6->Name = L"button6";
 			this->button6->Size = System::Drawing::Size(184, 66);
-			this->button6->TabIndex = 163;
+			this->button6->TabIndex = 153;
 			this->button6->Text = L"ОТМЕНА";
 			this->button6->UseVisualStyleBackColor = true;
 			this->button6->Click += gcnew System::EventHandler(this, &MyForm::button6_Click);
@@ -464,6 +467,7 @@ namespace WinForm {
 			this->progressBar2->Location = System::Drawing::Point(668, 280);
 			this->progressBar2->Name = L"progressBar2";
 			this->progressBar2->Size = System::Drawing::Size(598, 31);
+			this->progressBar2->Step = 1;
 			this->progressBar2->TabIndex = 161;
 			// 
 			// label13
@@ -979,9 +983,12 @@ namespace WinForm {
 			// 
 			// tabPage3
 			// 
+			this->tabPage3->Controls->Add(this->radioButton2);
+			this->tabPage3->Controls->Add(this->radioButton1);
 			this->tabPage3->Controls->Add(this->dataGridView2);
 			this->tabPage3->Controls->Add(this->zedGraphControl4);
 			this->tabPage3->Controls->Add(this->zedGraphControl3);
+			this->tabPage3->Controls->Add(this->zedGraphControl5);
 			this->tabPage3->Location = System::Drawing::Point(4, 22);
 			this->tabPage3->Name = L"tabPage3";
 			this->tabPage3->Padding = System::Windows::Forms::Padding(3);
@@ -989,6 +996,34 @@ namespace WinForm {
 			this->tabPage3->TabIndex = 2;
 			this->tabPage3->Text = L"Внешнее поле и спайки";
 			this->tabPage3->UseVisualStyleBackColor = true;
+			// 
+			// radioButton2
+			// 
+			this->radioButton2->AutoSize = true;
+			this->radioButton2->Checked = true;
+			this->radioButton2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->radioButton2->Location = System::Drawing::Point(1131, 514);
+			this->radioButton2->Name = L"radioButton2";
+			this->radioButton2->Size = System::Drawing::Size(423, 28);
+			this->radioButton2->TabIndex = 118;
+			this->radioButton2->TabStop = true;
+			this->radioButton2->Text = L"График параметра фазовой синхронизации";
+			this->radioButton2->UseVisualStyleBackColor = true;
+			this->radioButton2->CheckedChanged += gcnew System::EventHandler(this, &MyForm::radioButton2_CheckedChanged);
+			// 
+			// radioButton1
+			// 
+			this->radioButton1->AutoSize = true;
+			this->radioButton1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->radioButton1->Location = System::Drawing::Point(1131, 548);
+			this->radioButton1->Name = L"radioButton1";
+			this->radioButton1->Size = System::Drawing::Size(172, 28);
+			this->radioButton1->TabIndex = 117;
+			this->radioButton1->Text = L"График спайков";
+			this->radioButton1->UseVisualStyleBackColor = true;
+			this->radioButton1->CheckedChanged += gcnew System::EventHandler(this, &MyForm::radioButton1_CheckedChanged);
 			// 
 			// dataGridView2
 			// 
@@ -999,7 +1034,7 @@ namespace WinForm {
 			});
 			this->dataGridView2->Location = System::Drawing::Point(1109, 0);
 			this->dataGridView2->Name = L"dataGridView2";
-			this->dataGridView2->Size = System::Drawing::Size(445, 721);
+			this->dataGridView2->Size = System::Drawing::Size(445, 456);
 			this->dataGridView2->TabIndex = 116;
 			// 
 			// dataGridViewTextBoxColumn3
@@ -1043,6 +1078,22 @@ namespace WinForm {
 			this->zedGraphControl3->ScrollMinY2 = 0;
 			this->zedGraphControl3->Size = System::Drawing::Size(1097, 370);
 			this->zedGraphControl3->TabIndex = 0;
+			this->zedGraphControl3->Visible = false;
+			// 
+			// zedGraphControl5
+			// 
+			this->zedGraphControl5->IsShowPointValues = true;
+			this->zedGraphControl5->Location = System::Drawing::Point(6, 351);
+			this->zedGraphControl5->Name = L"zedGraphControl5";
+			this->zedGraphControl5->ScrollGrace = 0;
+			this->zedGraphControl5->ScrollMaxX = 0;
+			this->zedGraphControl5->ScrollMaxY = 0;
+			this->zedGraphControl5->ScrollMaxY2 = 0;
+			this->zedGraphControl5->ScrollMinX = 0;
+			this->zedGraphControl5->ScrollMinY = 0;
+			this->zedGraphControl5->ScrollMinY2 = 0;
+			this->zedGraphControl5->Size = System::Drawing::Size(1097, 370);
+			this->zedGraphControl5->TabIndex = 119;
 			// 
 			// tabPage4
 			// 
@@ -1153,12 +1204,12 @@ namespace WinForm {
 			// button3
 			// 
 			this->button3->Enabled = false;
-			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button3->Location = System::Drawing::Point(489, 82);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(132, 66);
-			this->button3->TabIndex = 159;
+			this->button3->TabIndex = 169;
 			this->button3->Text = L"Отмена\r\n\r\n";
 			this->button3->TextAlign = System::Drawing::ContentAlignment::BottomCenter;
 			this->button3->UseVisualStyleBackColor = true;
@@ -1221,7 +1272,7 @@ namespace WinForm {
 			// 
 			// button2
 			// 
-			this->button2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->button2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button2->Location = System::Drawing::Point(73, 82);
 			this->button2->Name = L"button2";
@@ -1264,7 +1315,7 @@ namespace WinForm {
 			// button4
 			// 
 			this->button4->Enabled = false;
-			this->button4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->button4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button4->Location = System::Drawing::Point(357, 83);
 			this->button4->Name = L"button4";
@@ -1466,6 +1517,7 @@ namespace WinForm {
 			this->tabPage2->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->tabPage3->ResumeLayout(false);
+			this->tabPage3->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
 			this->tabPage4->ResumeLayout(false);
 			this->tabPage4->PerformLayout();
@@ -1812,6 +1864,7 @@ private: System::Void button2_Click(System::Object^  sender, System::EventArgs^ 
 	comboBox3->Enabled = false;
 	comboBox4->Enabled = false;
 	button3->Enabled = true;
+	button3->Focus();
 
 	backgroundWorker1->RunWorkerAsync();
 }
@@ -2081,16 +2134,19 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	GraphPane^ panel2 = zedGraphControl2->GraphPane;
 	GraphPane^ panel3 = zedGraphControl3->GraphPane;
 	GraphPane^ panel4 = zedGraphControl4->GraphPane;
+	GraphPane^ panel5 = zedGraphControl5->GraphPane;
 
 	panel2->CurveList->Clear();
 	panel3->CurveList->Clear();
 	panel4->CurveList->Clear();
+	panel5->CurveList->Clear();
 
 	panel2->YAxis->Scale->MajorStepAuto = true;
 	panel2->YAxis->Scale->MinorStepAuto = true;
 
 	PointPairList^ g_list = gcnew PointPairList();              //Список точек для графика средних частот Ω
-	PointPairList^ E_list = gcnew PointPairList();	            //Список точек для графика поля E(t)		
+	PointPairList^ E_list = gcnew PointPairList();	            //Список точек для графика поля E(t)
+	PointPairList^ Mu_list = gcnew PointPairList();             //Список точек для графика |μ| от t
 
 	const int n = Convert::ToInt32(n_Text3->Text);              //Число уравнений в системе
 	const int p = Convert::ToInt32(textBox1->Text);             //Число итераций, второй критерий остановки
@@ -2113,6 +2169,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	double *Fi0;		                                        //Фазы при t = T₁
 	double *Fi, *Fiplus1;	                                    //Фазы φⱼ(t) j = 0,...,n - 1
 	double *Omega;                                              //Средние частоты Ω
+	complex<double> Mu;                                         //Параметр фазовой синхронизации μ
 
 	Str = "";
 
@@ -2129,6 +2186,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	int i;
 	double oldE0;
 	bool spike_flag = false;
+	complex<double> CompFi;
+	const complex<double> CompN((double)n, 0.0);
 
 	Fi = new double[n];
 	Fiplus1 = new double[n];
@@ -2262,6 +2321,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 				return;
 			}
 			t = round(t * 1000) / 1000;
+			Mu = complex<double>(0.0, 0.0);
 			for (int j = 0; j < n; j++)
 			{
 				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
@@ -2290,6 +2350,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 						spike_flag = true;
 					}
 				}
+				CompFi = polar<double>(1.0, Fi[j]);
+				Mu += CompFi;
 			}
 			spike_flag = false;
 
@@ -2297,6 +2359,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			E_list->Add(t + h, Et);
 			VE->push_back(Et);
 			VT->push_back(t + h);
+			Mu = Mu / CompN;
+			Mu_list->Add(t + h, abs(Mu));
 
 			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
 		}
@@ -2336,6 +2400,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 		for (t; t < T01 - h; t += h)
 		{
 			t = round(t * 1000) / 1000;
+			Mu = complex<double>(0.0, 0.0);
 			for (int j = 0; j < n; j++)
 			{
 				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
@@ -2363,6 +2428,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 						spike_flag = true;
 					}
 				}
+				CompFi = polar<double>(1.0, Fi[j]);
+				Mu += CompFi;
 			}
 			spike_flag = false;
 
@@ -2370,6 +2437,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			E_list->Add(t + h, Et);
 			VE->push_back(Et);
 			VT->push_back(t + h);
+			Mu = Mu / CompN;
+			Mu_list->Add(t + h, abs(Mu));
 
 			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
 		}
@@ -2381,6 +2450,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			return;
 		}
 		t = round(t * 1000) / 1000;
+		Mu = complex<double>(0.0, 0.0);
 		for (int j = 0; j < n; j++)
 		{
 			//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
@@ -2409,6 +2479,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 					spike_flag = true;
 				}
 			}
+			CompFi = polar<double>(1.0, Fi[j]);
+			Mu += CompFi;
 		}
 		spike_flag = false;
 
@@ -2416,6 +2488,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 		E_list->Add(t + h, Et);
 		VE->push_back(Et);
 		VT->push_back(t + h);
+		Mu = Mu / CompN;
+		Mu_list->Add(t + h, abs(Mu));
 
 		for (int l = 0; l < n; l++)
 		{
@@ -2434,6 +2508,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 				return;
 			}
 			t = round(t * 1000) / 1000;
+			Mu = complex<double>(0.0, 0.0);
 			for (int j = 0; j < n; j++)
 			{
 				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
@@ -2460,8 +2535,10 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 						zedGraphControl3->AxisChange();
 						zedGraphControl3->Invalidate();
 						spike_flag = true;
-					}
+					}					
 				}
+				CompFi = polar<double>(1.0, Fi[j]);
+				Mu += CompFi;
 			}
 			spike_flag = false;
 
@@ -2469,6 +2546,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			E_list->Add(t + h, Et);
 			VE->push_back(Et);
 			VT->push_back(t + h);
+			Mu = Mu / CompN;
+			Mu_list->Add(t + h, abs(Mu));
 
 			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
 		}
@@ -2515,6 +2594,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	//Рисование графиков
 	LineItem ^Curve6 = panel2->AddCurve(L"Ωⱼ", g_list, Color::Red, SymbolType::Circle);
 	LineItem ^Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);
+	LineItem ^Curve8 = panel5->AddCurve(L"|μ|(t)", Mu_list, Color::Red, SymbolType::None);
 
 	Curve6->Line->IsVisible = false;
 	Curve6->Symbol->Fill->Color = Color::Red;
@@ -2534,10 +2614,15 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	panel4->XAxis->Scale->Max = t + 0.05;
 	panel4->XAxis->Scale->Min = T02 - 0.05;
 
+	panel5->XAxis->Scale->Max = t + 0.05;
+	panel5->XAxis->Scale->Min = T02 - 0.05;
+
 	zedGraphControl2->AxisChange();
 	zedGraphControl2->Invalidate();
 	zedGraphControl4->AxisChange();
 	zedGraphControl4->Invalidate();
+	zedGraphControl5->AxisChange();
+	zedGraphControl5->Invalidate();
 
 	delete[]Fi;
 	delete[]Fiplus1;
@@ -2571,8 +2656,10 @@ private: System::Void button7_Click(System::Object^  sender, System::EventArgs^ 
 	button1->Enabled = false;
 	comboBox1->Enabled = false;
 	comboBox2->Enabled = false;
-	backgroundWorker2->RunWorkerAsync();
 	button6->Enabled = true;
+	button6->Focus();
+
+	backgroundWorker2->RunWorkerAsync();
 }
 private: System::Void backgroundWorker2_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
 {
@@ -2634,6 +2721,16 @@ private: System::Void button6_Click(System::Object^  sender, System::EventArgs^ 
 private: System::Void backgroundWorker3_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
 {
 	progressBar3->Value = e->ProgressPercentage;
+}
+private: System::Void radioButton1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
+{
+		zedGraphControl3->Visible = true;
+		zedGraphControl5->Visible = false;
+}
+private: System::Void radioButton2_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
+{
+	zedGraphControl5->Visible = true;
+	zedGraphControl3->Visible = false;
 }
 };
 }

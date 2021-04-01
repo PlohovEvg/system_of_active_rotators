@@ -6,6 +6,7 @@
 #include <string>
 #include <random>
 #include <vector>
+#include <complex>
 #include <omp.h>
 
 using namespace std;

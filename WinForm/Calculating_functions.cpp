@@ -1,5 +1,5 @@
 #include "Calculating_functions.h"
-#define PRECISION 5e-07
+#define PRECISION 5e-05
 
 double* Set_Gamma(int _n, double gam1, double gam2)
 {
