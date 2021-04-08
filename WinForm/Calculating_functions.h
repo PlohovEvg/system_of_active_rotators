@@ -11,7 +11,8 @@
 
 using namespace std;
 
-double* Set_Gamma(int _n, double gam1, double gam2);
+double* Set_Gamma(const int _n, const double gam0, const double delt);
+double* Set_Gamma_in_range(const int _n, const double gam1, const double gam2);
 int __clrcall compare(const void * val1, const void * val2);
 int GetNumberOfClusters(const double *_Omega, const int _n);
 double RK4(double t, double ts, double vn, double h, double d, double g, double E0, double E0_star, double alpha);

@@ -1,7 +1,22 @@
 #include "Calculating_functions.h"
-#define PRECISION 5e-05
+#define PRECISION 5e-04
 
-double* Set_Gamma(int _n, double gam1, double gam2)
+double* Set_Gamma(const int _n, const double gam0, const double delt)
+{
+	double *g = new double[_n];
+	random_device gen;
+	mt19937 me(gen());
+	uniform_real_distribution<> distr(-0.5, 0.5);
+
+	for (int i = 0; i < _n; i++)
+	{
+		g[i] = gam0 + delt*distr(me);
+
+	}
+	return g;
+}
+
+double* Set_Gamma_in_range(const int _n, const double gam1, const double gam2)
 {
 	double *g = new double[_n];
 	random_device gen;

@@ -109,6 +109,7 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::PictureBox^  pictureBox2;
 	private: ZedGraph::ZedGraphControl^  zedGraphControl5;
 	private: System::Windows::Forms::RadioButton^  radioButton2;
 	private: System::Windows::Forms::RadioButton^  radioButton1;
@@ -198,7 +199,7 @@ namespace WinForm {
 	private: System::Windows::Forms::Button^  Change_scale_Omega;
 	private: System::Windows::Forms::Label^  label10;
 	private: System::Windows::Forms::Label^  Gamma1;
-	private: System::Windows::Forms::Label^  label9;
+
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::DataGridView^  dataGridView4;
@@ -224,6 +225,7 @@ namespace WinForm {
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
 			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
 			this->label18 = (gcnew System::Windows::Forms::Label());
@@ -244,7 +246,6 @@ namespace WinForm {
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->label10 = (gcnew System::Windows::Forms::Label());
 			this->Gamma1 = (gcnew System::Windows::Forms::Label());
-			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->T02_text = (gcnew System::Windows::Forms::TextBox());
 			this->label5 = (gcnew System::Windows::Forms::Label());
@@ -323,6 +324,7 @@ namespace WinForm {
 			this->backgroundWorker3 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView4))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->tabPage2->SuspendLayout();
@@ -351,6 +353,7 @@ namespace WinForm {
 			// 
 			// tabPage1
 			// 
+			this->tabPage1->Controls->Add(this->pictureBox2);
 			this->tabPage1->Controls->Add(this->comboBox2);
 			this->tabPage1->Controls->Add(this->comboBox1);
 			this->tabPage1->Controls->Add(this->label18);
@@ -369,7 +372,6 @@ namespace WinForm {
 			this->tabPage1->Controls->Add(this->button1);
 			this->tabPage1->Controls->Add(this->label10);
 			this->tabPage1->Controls->Add(this->Gamma1);
-			this->tabPage1->Controls->Add(this->label9);
 			this->tabPage1->Controls->Add(this->label8);
 			this->tabPage1->Controls->Add(this->T02_text);
 			this->tabPage1->Controls->Add(this->label5);
@@ -401,29 +403,42 @@ namespace WinForm {
 			this->tabPage1->Text = L"Ввод данных";
 			this->tabPage1->UseVisualStyleBackColor = true;
 			// 
+			// pictureBox2
+			// 
+			this->pictureBox2->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox2.Image")));
+			this->pictureBox2->Location = System::Drawing::Point(791, 0);
+			this->pictureBox2->Name = L"pictureBox2";
+			this->pictureBox2->Size = System::Drawing::Size(292, 114);
+			this->pictureBox2->SizeMode = System::Windows::Forms::PictureBoxSizeMode::AutoSize;
+			this->pictureBox2->TabIndex = 167;
+			this->pictureBox2->TabStop = false;
+			// 
 			// comboBox2
 			// 
 			this->comboBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->comboBox2->FormattingEnabled = true;
-			this->comboBox2->Items->AddRange(gcnew cli::array< System::Object^  >(6) { L"1,1", L"2,1", L"3,1", L"4,1", L"5,1", L"1,03" });
-			this->comboBox2->Location = System::Drawing::Point(1100, 70);
+			this->comboBox2->Items->AddRange(gcnew cli::array< System::Object^  >(11) {
+				L"0", L"0,01", L"0,02", L"0,03", L"0,04", L"0,05",
+					L"0,06", L"0,07", L"0,08", L"0,09", L"0,1"
+			});
+			this->comboBox2->Location = System::Drawing::Point(1012, 120);
 			this->comboBox2->Name = L"comboBox2";
 			this->comboBox2->Size = System::Drawing::Size(100, 32);
 			this->comboBox2->TabIndex = 166;
-			this->comboBox2->Text = L"1,1";
+			this->comboBox2->Text = L"0";
 			// 
 			// comboBox1
 			// 
 			this->comboBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(6) { L"1", L"2", L"3", L"4", L"5", L"1,03" });
-			this->comboBox1->Location = System::Drawing::Point(890, 70);
+			this->comboBox1->Items->AddRange(gcnew cli::array< System::Object^  >(6) { L"1", L"1,03", L"2", L"3", L"4", L"5" });
+			this->comboBox1->Location = System::Drawing::Point(802, 120);
 			this->comboBox1->Name = L"comboBox1";
 			this->comboBox1->Size = System::Drawing::Size(100, 32);
 			this->comboBox1->TabIndex = 165;
-			this->comboBox1->Text = L"1";
+			this->comboBox1->Text = L"1,03";
 			// 
 			// label18
 			// 
@@ -489,7 +504,7 @@ namespace WinForm {
 			this->textBox7->Name = L"textBox7";
 			this->textBox7->Size = System::Drawing::Size(100, 29);
 			this->textBox7->TabIndex = 151;
-			this->textBox7->Text = L"0,005";
+			this->textBox7->Text = L"0,07";
 			// 
 			// label30
 			// 
@@ -566,7 +581,7 @@ namespace WinForm {
 			});
 			this->dataGridView4->Location = System::Drawing::Point(1302, 10);
 			this->dataGridView4->Name = L"dataGridView4";
-			this->dataGridView4->Size = System::Drawing::Size(244, 711);
+			this->dataGridView4->Size = System::Drawing::Size(260, 711);
 			this->dataGridView4->TabIndex = 144;
 			// 
 			// Column3
@@ -583,7 +598,7 @@ namespace WinForm {
 			// 
 			this->button1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->button1->Location = System::Drawing::Point(1085, 119);
+			this->button1->Location = System::Drawing::Point(1116, 33);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(165, 55);
 			this->button1->TabIndex = 141;
@@ -596,33 +611,22 @@ namespace WinForm {
 			this->label10->AutoSize = true;
 			this->label10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label10->Location = System::Drawing::Point(1030, 69);
+			this->label10->Location = System::Drawing::Point(942, 119);
 			this->label10->Name = L"label10";
-			this->label10->Size = System::Drawing::Size(64, 29);
+			this->label10->Size = System::Drawing::Size(60, 29);
 			this->label10->TabIndex = 137;
-			this->label10->Text = L" γ₂ = ";
+			this->label10->Text = L"Δ  = ";
 			// 
 			// Gamma1
 			// 
 			this->Gamma1->AutoSize = true;
 			this->Gamma1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->Gamma1->Location = System::Drawing::Point(820, 69);
+			this->Gamma1->Location = System::Drawing::Point(732, 119);
 			this->Gamma1->Name = L"Gamma1";
 			this->Gamma1->Size = System::Drawing::Size(64, 29);
 			this->Gamma1->TabIndex = 135;
-			this->Gamma1->Text = L" γ₁ = ";
-			// 
-			// label9
-			// 
-			this->label9->AutoSize = true;
-			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->label9->Location = System::Drawing::Point(820, 10);
-			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(447, 25);
-			this->label9->TabIndex = 133;
-			this->label9->Text = L"Задайте диапазон изменения параметра γⱼ";
+			this->Gamma1->Text = L" γ₀ = ";
 			// 
 			// label8
 			// 
@@ -643,7 +647,7 @@ namespace WinForm {
 			this->T02_text->Name = L"T02_text";
 			this->T02_text->Size = System::Drawing::Size(100, 29);
 			this->T02_text->TabIndex = 118;
-			this->T02_text->Text = L"999";
+			this->T02_text->Text = L"990";
 			// 
 			// label5
 			// 
@@ -1179,9 +1183,9 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->label14->Location = System::Drawing::Point(334, 13);
 			this->label14->Name = L"label14";
-			this->label14->Size = System::Drawing::Size(64, 29);
+			this->label14->Size = System::Drawing::Size(70, 29);
 			this->label14->TabIndex = 168;
-			this->label14->Text = L" γ₂ = ";
+			this->label14->Text = L"  γ₂ = ";
 			// 
 			// label19
 			// 
@@ -1511,6 +1515,7 @@ namespace WinForm {
 			this->tabControl1->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
 			this->tabPage1->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView4))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->tabPage2->ResumeLayout(false);
@@ -1621,7 +1626,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 			ts = 0.0;
 			t = 0.0;
 
-			cur_gamma = Set_Gamma(n, gamma1Copy, gamma2Copy);
+			cur_gamma = Set_Gamma_in_range(n, gamma1Copy, gamma2Copy);
 			NumOfClusters = new int[non];
 			Omega = new double*[n];
 			Cl_list = gcnew PointPairList();
@@ -1890,22 +1895,33 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 	dataGridView4->Rows->Clear();
 
 	const int n = Convert::ToInt32(n_Text3->Text);
-	gamma1 = Convert::ToDouble(comboBox1->Text);
-	gamma2 = Convert::ToDouble(comboBox2->Text);
-	gamma = new double[n];
-	gamma = Set_Gamma(n, gamma1, gamma2);
+	const double gamma0 = Convert::ToDouble(comboBox1->Text);
+	const double delta = Convert::ToDouble(comboBox2->Text);
+	gamma = Set_Gamma(n, gamma0, delta);
+	gamma1 = gamma2 = gamma[0];
 	//qsort((void *)gamma, (size_t)n, sizeof(double), compare);
 
 	dataGridView4->Rows->Add(n);
+	dataGridView4->Rows[0]->Cells[0]->Value = 0;
+	dataGridView4->Rows[0]->Cells[1]->Value = gamma[0];
 
-	for (int i = 0; i < n; i++)
+	for (int i = 1; i < n; i++)
 	{
+		if (gamma[i] > gamma2)
+		{
+			gamma2 = gamma[i];
+		}
+		if (gamma[i] < gamma1)
+		{
+			gamma1 = gamma[i];
+		}
+
 		dataGridView4->Rows[i]->Cells[0]->Value = i;
 		dataGridView4->Rows[i]->Cells[1]->Value = gamma[i];
 	}
 
-	n_Text3->ReadOnly = true;
 	button7->Enabled = true;
+
 	MessageBox::Show("Набор сгенерирован", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 }
 private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e) 
@@ -2585,9 +2601,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T		
 
 													 //Заполнение справки
-	Str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n";
-	Str += "\r\n";
-	Str += String::Format(L"γⱼ были взяты из интервала [{0}; {1}]\r\n\r\nЧисло кластеров при t = T:{2}", gamma1, gamma2, NumOfClusters);
+	Str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n\r\n";
+	Str += String::Format(L"γⱼ были взяты из интервала [{0:G3}; {1:G3}]\r\n\r\nЧисло кластеров при t = T:{2}", gamma1, gamma2, NumOfClusters);
 
 	double tmax_limit = t + 0.05;
 
