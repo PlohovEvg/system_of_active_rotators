@@ -22,6 +22,7 @@ namespace WinForm {
 	public: double gamma1;    //Левая граница γ₁
 	public: double gamma2;    //Правая граница γ₂
 	public: bool AvgMaxMinAlreadyExists;
+	public: bool InProcessOfDrawingCritBetaGraph;
 	public: vector<int*> *Clusters_vec;
 	public: vector<double**> *Omega_vec;
 	public: vector<double> *VO;
@@ -29,6 +30,7 @@ namespace WinForm {
 	public: vector<double> *VT;
 	public: cli::array<Color> ^Colors;
 	public: String ^Str;
+
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -36,6 +38,7 @@ namespace WinForm {
 			//TODO: добавьте код конструктора
 			//									
 			AvgMaxMinAlreadyExists = false;
+			InProcessOfDrawingCritBetaGraph = false;
 			Clusters_vec = new vector<int*>;
 			Omega_vec = new vector<double**>;
 			VO = new vector<double>;
@@ -88,6 +91,12 @@ namespace WinForm {
 			zedGraphControl6->GraphPane->XAxis->MajorGrid->IsVisible = true;
 			zedGraphControl6->GraphPane->YAxis->Type = AxisType::Log;
 
+			zedGraphControl7->GraphPane->Title->Text = L"График изменения параметра β⃰ от числа элементов N";
+			zedGraphControl7->GraphPane->XAxis->Title->Text = "N";
+			zedGraphControl7->GraphPane->YAxis->Title->Text = L"β⃰";
+			zedGraphControl7->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			zedGraphControl7->GraphPane->XAxis->MajorGrid->IsVisible = true;
+
 			zedGraphControl1->GraphPane->Title->Text = L"График зависимости числа кластеров от параметра β";
 			zedGraphControl1->GraphPane->XAxis->Title->Text = L"β";
 			zedGraphControl1->GraphPane->YAxis->Title->Text = L"Кол-во кластеров";
@@ -109,6 +118,9 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::TabPage^  tabPage7;
+	private: System::Windows::Forms::Label^  label9;
+	private: ZedGraph::ZedGraphControl^  zedGraphControl7;
 	private: System::Windows::Forms::PictureBox^  pictureBox2;
 	private: ZedGraph::ZedGraphControl^  zedGraphControl5;
 	private: System::Windows::Forms::RadioButton^  radioButton2;
@@ -288,6 +300,9 @@ namespace WinForm {
 			this->zedGraphControl4 = (gcnew ZedGraph::ZedGraphControl());
 			this->zedGraphControl3 = (gcnew ZedGraph::ZedGraphControl());
 			this->zedGraphControl5 = (gcnew ZedGraph::ZedGraphControl());
+			this->tabPage7 = (gcnew System::Windows::Forms::TabPage());
+			this->label9 = (gcnew System::Windows::Forms::Label());
+			this->zedGraphControl7 = (gcnew ZedGraph::ZedGraphControl());
 			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
@@ -331,6 +346,7 @@ namespace WinForm {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->tabPage3->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->BeginInit();
+			this->tabPage7->SuspendLayout();
 			this->tabPage4->SuspendLayout();
 			this->panel1->SuspendLayout();
 			this->tabPage5->SuspendLayout();
@@ -342,13 +358,14 @@ namespace WinForm {
 			this->tabControl1->Controls->Add(this->tabPage1);
 			this->tabControl1->Controls->Add(this->tabPage2);
 			this->tabControl1->Controls->Add(this->tabPage3);
+			this->tabControl1->Controls->Add(this->tabPage7);
 			this->tabControl1->Controls->Add(this->tabPage4);
 			this->tabControl1->Controls->Add(this->tabPage5);
 			this->tabControl1->Controls->Add(this->tabPage6);
 			this->tabControl1->Location = System::Drawing::Point(3, 3);
 			this->tabControl1->Name = L"tabControl1";
 			this->tabControl1->SelectedIndex = 0;
-			this->tabControl1->Size = System::Drawing::Size(1570, 929);
+			this->tabControl1->Size = System::Drawing::Size(1572, 754);
 			this->tabControl1->TabIndex = 0;
 			// 
 			// tabPage1
@@ -398,7 +415,7 @@ namespace WinForm {
 			this->tabPage1->Location = System::Drawing::Point(4, 22);
 			this->tabPage1->Name = L"tabPage1";
 			this->tabPage1->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage1->Size = System::Drawing::Size(1562, 903);
+			this->tabPage1->Size = System::Drawing::Size(1564, 728);
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Ввод данных";
 			this->tabPage1->UseVisualStyleBackColor = true;
@@ -647,7 +664,7 @@ namespace WinForm {
 			this->T02_text->Name = L"T02_text";
 			this->T02_text->Size = System::Drawing::Size(100, 29);
 			this->T02_text->TabIndex = 118;
-			this->T02_text->Text = L"990";
+			this->T02_text->Text = L"10900";
 			// 
 			// label5
 			// 
@@ -668,7 +685,7 @@ namespace WinForm {
 			this->T01_text->Name = L"T01_text";
 			this->T01_text->Size = System::Drawing::Size(100, 29);
 			this->T01_text->TabIndex = 116;
-			this->T01_text->Text = L"500";
+			this->T01_text->Text = L"5000";
 			// 
 			// label7
 			// 
@@ -830,7 +847,7 @@ namespace WinForm {
 			this->b_Text3->Name = L"b_Text3";
 			this->b_Text3->Size = System::Drawing::Size(100, 29);
 			this->b_Text3->TabIndex = 88;
-			this->b_Text3->Text = L"1000";
+			this->b_Text3->Text = L"11000";
 			// 
 			// label23
 			// 
@@ -886,7 +903,7 @@ namespace WinForm {
 			this->tabPage2->Location = System::Drawing::Point(4, 22);
 			this->tabPage2->Name = L"tabPage2";
 			this->tabPage2->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage2->Size = System::Drawing::Size(1562, 903);
+			this->tabPage2->Size = System::Drawing::Size(1564, 728);
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"Средние частоты";
 			this->tabPage2->UseVisualStyleBackColor = true;
@@ -996,7 +1013,7 @@ namespace WinForm {
 			this->tabPage3->Location = System::Drawing::Point(4, 22);
 			this->tabPage3->Name = L"tabPage3";
 			this->tabPage3->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage3->Size = System::Drawing::Size(1562, 903);
+			this->tabPage3->Size = System::Drawing::Size(1564, 728);
 			this->tabPage3->TabIndex = 2;
 			this->tabPage3->Text = L"Внешнее поле и спайки";
 			this->tabPage3->UseVisualStyleBackColor = true;
@@ -1099,6 +1116,46 @@ namespace WinForm {
 			this->zedGraphControl5->Size = System::Drawing::Size(1097, 370);
 			this->zedGraphControl5->TabIndex = 119;
 			// 
+			// tabPage7
+			// 
+			this->tabPage7->Controls->Add(this->label9);
+			this->tabPage7->Controls->Add(this->zedGraphControl7);
+			this->tabPage7->Location = System::Drawing::Point(4, 22);
+			this->tabPage7->Name = L"tabPage7";
+			this->tabPage7->Padding = System::Windows::Forms::Padding(3);
+			this->tabPage7->Size = System::Drawing::Size(1564, 728);
+			this->tabPage7->TabIndex = 6;
+			this->tabPage7->Text = L"Частотная синхронизация";
+			this->tabPage7->UseVisualStyleBackColor = true;
+			// 
+			// label9
+			// 
+			this->label9->AutoSize = true;
+			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label9->Location = System::Drawing::Point(436, 698);
+			this->label9->Name = L"label9";
+			this->label9->Size = System::Drawing::Size(791, 24);
+			this->label9->TabIndex = 1;
+			this->label9->Text = L"β ⃰ - значение параметра β, при котором наступает фазовая синхронизация ротаторов"
+				L"";
+			// 
+			// zedGraphControl7
+			// 
+			this->zedGraphControl7->Dock = System::Windows::Forms::DockStyle::Top;
+			this->zedGraphControl7->IsShowPointValues = true;
+			this->zedGraphControl7->Location = System::Drawing::Point(3, 3);
+			this->zedGraphControl7->Name = L"zedGraphControl7";
+			this->zedGraphControl7->ScrollGrace = 0;
+			this->zedGraphControl7->ScrollMaxX = 0;
+			this->zedGraphControl7->ScrollMaxY = 0;
+			this->zedGraphControl7->ScrollMaxY2 = 0;
+			this->zedGraphControl7->ScrollMinX = 0;
+			this->zedGraphControl7->ScrollMinY = 0;
+			this->zedGraphControl7->ScrollMinY2 = 0;
+			this->zedGraphControl7->Size = System::Drawing::Size(1558, 692);
+			this->zedGraphControl7->TabIndex = 0;
+			// 
 			// tabPage4
 			// 
 			this->tabPage4->Controls->Add(this->textBox5);
@@ -1107,7 +1164,7 @@ namespace WinForm {
 			this->tabPage4->Location = System::Drawing::Point(4, 22);
 			this->tabPage4->Name = L"tabPage4";
 			this->tabPage4->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage4->Size = System::Drawing::Size(1562, 903);
+			this->tabPage4->Size = System::Drawing::Size(1564, 728);
 			this->tabPage4->TabIndex = 3;
 			this->tabPage4->Text = L"Серия экспериментов";
 			this->tabPage4->UseVisualStyleBackColor = true;
@@ -1403,7 +1460,7 @@ namespace WinForm {
 			this->tabPage5->Location = System::Drawing::Point(4, 22);
 			this->tabPage5->Name = L"tabPage5";
 			this->tabPage5->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage5->Size = System::Drawing::Size(1562, 903);
+			this->tabPage5->Size = System::Drawing::Size(1564, 728);
 			this->tabPage5->TabIndex = 4;
 			this->tabPage5->Text = L"Средние частоты для серии";
 			this->tabPage5->UseVisualStyleBackColor = true;
@@ -1446,7 +1503,7 @@ namespace WinForm {
 			this->tabPage6->Location = System::Drawing::Point(4, 22);
 			this->tabPage6->Name = L"tabPage6";
 			this->tabPage6->Padding = System::Windows::Forms::Padding(3);
-			this->tabPage6->Size = System::Drawing::Size(1562, 903);
+			this->tabPage6->Size = System::Drawing::Size(1564, 728);
 			this->tabPage6->TabIndex = 5;
 			this->tabPage6->Text = L"Число кластеров для серии";
 			this->tabPage6->UseVisualStyleBackColor = true;
@@ -1524,6 +1581,8 @@ namespace WinForm {
 			this->tabPage3->ResumeLayout(false);
 			this->tabPage3->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
+			this->tabPage7->ResumeLayout(false);
+			this->tabPage7->PerformLayout();
 			this->tabPage4->ResumeLayout(false);
 			this->tabPage4->PerformLayout();
 			this->panel1->ResumeLayout(false);
@@ -1897,6 +1956,36 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 	const int n = Convert::ToInt32(n_Text3->Text);
 	const double gamma0 = Convert::ToDouble(comboBox1->Text);
 	const double delta = Convert::ToDouble(comboBox2->Text);
+
+	if (delta == 0)
+	{
+		if (!InProcessOfDrawingCritBetaGraph)
+		{
+			MessageBox::Show(L"Начался сбор данных для построения графика β ⃰ от числа элементов N", "Сообщение",
+				MessageBoxButtons::OK, MessageBoxIcon::Information);
+			InProcessOfDrawingCritBetaGraph = true;
+		}
+	}
+	else
+	{
+		if (InProcessOfDrawingCritBetaGraph)
+		{
+			if (MessageBox::Show(L"Идет сбор данных для построения графика  β ⃰ от числа элементов N. Вы действительно хотите прервать его?", 
+				"Внимание", MessageBoxButtons::YesNo, MessageBoxIcon::Warning) == System::Windows::Forms::DialogResult::Yes)
+			{
+				InProcessOfDrawingCritBetaGraph = false;
+				zedGraphControl7->GraphPane->CurveList->Clear();
+				zedGraphControl7->Invalidate();
+			}
+			else
+			{
+				MessageBox::Show(L"Для продолжения сбора данных, сгенерируйте набор со значением Δ равным 0", "Сообщение",
+					MessageBoxButtons::OK, MessageBoxIcon::Information);
+				return;
+			}
+		}
+	}
+
 	gamma = Set_Gamma(n, gamma0, delta);
 	gamma1 = gamma2 = gamma[0];
 	//qsort((void *)gamma, (size_t)n, sizeof(double), compare);
@@ -2201,7 +2290,9 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	int ind = 0;
 	int i;
 	double oldE0;
+	double counter = 0.0;
 	bool spike_flag = false;
+	bool start_countdown = false;
 	complex<double> CompFi;
 	const complex<double> CompN((double)n, 0.0);
 
@@ -2376,7 +2467,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			VE->push_back(Et);
 			VT->push_back(t + h);
 			Mu = Mu / CompN;
-			Mu_list->Add(t + h, abs(Mu));
+			Mu_list->Add(t + h, abs(Mu));			
 
 			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
 		}
@@ -2512,7 +2603,8 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			Fi0[l] = Fi[l];                                     //Запоминание значений фаз при t = T₁
 		}
 
-		t += h;
+		t += h;		
+
 		backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
 		//---------------------------------------------------
 		//t от T01 до T
@@ -2563,12 +2655,45 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			VE->push_back(Et);
 			VT->push_back(t + h);
 			Mu = Mu / CompN;
-			Mu_list->Add(t + h, abs(Mu));
+			Mu_list->Add(t + h, abs(Mu));			
 
 			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
 		}
 		//---------------------------------------------------			
 	}
+
+	if (InProcessOfDrawingCritBetaGraph)
+		if (1 - abs(Mu) < 1e-03)
+		{
+			if (zedGraphControl7->GraphPane->CurveList->Count != 0)
+			{
+				bool contains = false;
+				for (int i = 0; i < zedGraphControl7->GraphPane->CurveList[0]->Points->Count; i++)
+					if (zedGraphControl7->GraphPane->CurveList[0]->Points[i]->X == n)
+					{
+						contains = true;
+						if (beta < zedGraphControl7->GraphPane->CurveList[0]->Points[i]->Y)
+						{
+							zedGraphControl7->GraphPane->CurveList[0]->Points[i]->Y = beta;
+							break;
+						}
+					}
+				if (!contains)
+				{
+					zedGraphControl7->GraphPane->CurveList[0]->AddPoint(n, beta);
+				}
+			}
+			else
+			{
+				PointPairList ^BetaList = gcnew PointPairList();
+				BetaList->Add(n, beta);
+				LineItem ^curve = zedGraphControl7->GraphPane->AddCurve("", BetaList, Color::Red, SymbolType::Circle);
+				curve->Symbol->Fill->Color = Color::Red;
+				curve->Symbol->Fill->Type = FillType::Solid;
+			}
+			zedGraphControl7->AxisChange();
+			zedGraphControl7->Invalidate();
+		}
 
 	//Вычисление средних частот
 	for (i = 0; i < n; i++)         
