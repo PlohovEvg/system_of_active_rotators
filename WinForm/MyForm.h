@@ -30,6 +30,7 @@ namespace WinForm {
 	public: vector<double> *VT;
 	public: cli::array<Color> ^Colors;
 	public: String ^Str;
+	public:PointPairList ^BetaCrList;
 
 		MyForm(void)
 		{
@@ -44,6 +45,7 @@ namespace WinForm {
 			VO = new vector<double>;
 			VE = new vector<double>;
 			VT = new vector<double>;
+			BetaCrList = gcnew PointPairList();
 			Str = "";
 
 			Colors = gcnew cli::array<Color>(50);
@@ -118,6 +120,8 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::Button^  button8;
+	private: System::Windows::Forms::TextBox^  textBox8;
 	private: System::Windows::Forms::TabPage^  tabPage7;
 	private: System::Windows::Forms::Label^  label9;
 	private: ZedGraph::ZedGraphControl^  zedGraphControl7;
@@ -301,6 +305,8 @@ namespace WinForm {
 			this->zedGraphControl3 = (gcnew ZedGraph::ZedGraphControl());
 			this->zedGraphControl5 = (gcnew ZedGraph::ZedGraphControl());
 			this->tabPage7 = (gcnew System::Windows::Forms::TabPage());
+			this->textBox8 = (gcnew System::Windows::Forms::TextBox());
+			this->button8 = (gcnew System::Windows::Forms::Button());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->zedGraphControl7 = (gcnew ZedGraph::ZedGraphControl());
 			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
@@ -1118,6 +1124,8 @@ namespace WinForm {
 			// 
 			// tabPage7
 			// 
+			this->tabPage7->Controls->Add(this->textBox8);
+			this->tabPage7->Controls->Add(this->button8);
 			this->tabPage7->Controls->Add(this->label9);
 			this->tabPage7->Controls->Add(this->zedGraphControl7);
 			this->tabPage7->Location = System::Drawing::Point(4, 22);
@@ -1127,6 +1135,31 @@ namespace WinForm {
 			this->tabPage7->TabIndex = 6;
 			this->tabPage7->Text = L"Частотная синхронизация";
 			this->tabPage7->UseVisualStyleBackColor = true;
+			// 
+			// textBox8
+			// 
+			this->textBox8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->textBox8->Location = System::Drawing::Point(1209, 192);
+			this->textBox8->Multiline = true;
+			this->textBox8->Name = L"textBox8";
+			this->textBox8->ReadOnly = true;
+			this->textBox8->Size = System::Drawing::Size(352, 119);
+			this->textBox8->TabIndex = 3;
+			this->textBox8->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			// 
+			// button8
+			// 
+			this->button8->Enabled = false;
+			this->button8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->button8->Location = System::Drawing::Point(1302, 80);
+			this->button8->Name = L"button8";
+			this->button8->Size = System::Drawing::Size(168, 71);
+			this->button8->TabIndex = 2;
+			this->button8->Text = L"Построить аппроксимацию";
+			this->button8->UseVisualStyleBackColor = true;
+			this->button8->Click += gcnew System::EventHandler(this, &MyForm::button8_Click);
 			// 
 			// label9
 			// 
@@ -1142,7 +1175,6 @@ namespace WinForm {
 			// 
 			// zedGraphControl7
 			// 
-			this->zedGraphControl7->Dock = System::Windows::Forms::DockStyle::Top;
 			this->zedGraphControl7->IsShowPointValues = true;
 			this->zedGraphControl7->Location = System::Drawing::Point(3, 3);
 			this->zedGraphControl7->Name = L"zedGraphControl7";
@@ -1153,7 +1185,7 @@ namespace WinForm {
 			this->zedGraphControl7->ScrollMinX = 0;
 			this->zedGraphControl7->ScrollMinY = 0;
 			this->zedGraphControl7->ScrollMinY2 = 0;
-			this->zedGraphControl7->Size = System::Drawing::Size(1558, 692);
+			this->zedGraphControl7->Size = System::Drawing::Size(1200, 692);
 			this->zedGraphControl7->TabIndex = 0;
 			// 
 			// tabPage4
@@ -1976,6 +2008,7 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 				InProcessOfDrawingCritBetaGraph = false;
 				zedGraphControl7->GraphPane->CurveList->Clear();
 				zedGraphControl7->Invalidate();
+				button8->Enabled = false;
 			}
 			else
 			{
@@ -2668,28 +2701,31 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			if (zedGraphControl7->GraphPane->CurveList->Count != 0)
 			{
 				bool contains = false;
-				for (int i = 0; i < zedGraphControl7->GraphPane->CurveList[0]->Points->Count; i++)
+				for (int i = 0; i < zedGraphControl7->GraphPane->CurveList[0]->NPts; i++)
 					if (zedGraphControl7->GraphPane->CurveList[0]->Points[i]->X == n)
 					{
 						contains = true;
 						if (beta < zedGraphControl7->GraphPane->CurveList[0]->Points[i]->Y)
 						{
 							zedGraphControl7->GraphPane->CurveList[0]->Points[i]->Y = beta;
+							BetaCrList[i]->Y = beta;
 							break;
 						}
 					}
 				if (!contains)
 				{
-					zedGraphControl7->GraphPane->CurveList[0]->AddPoint(n, beta);
+					BetaCrList->Add(n, beta);
+					BetaCrList->Sort();
+					zedGraphControl7->GraphPane->CurveList[0]->Points = BetaCrList;
 				}
 			}
 			else
 			{
-				PointPairList ^BetaList = gcnew PointPairList();
-				BetaList->Add(n, beta);
-				LineItem ^curve = zedGraphControl7->GraphPane->AddCurve("", BetaList, Color::Red, SymbolType::Circle);
+				BetaCrList->Add(n, beta);				
+				LineItem ^curve = zedGraphControl7->GraphPane->AddCurve("", BetaCrList, Color::Red, SymbolType::Circle);
 				curve->Symbol->Fill->Color = Color::Red;
 				curve->Symbol->Fill->Type = FillType::Solid;
+				button8->Enabled = true;
 			}
 			zedGraphControl7->AxisChange();
 			zedGraphControl7->Invalidate();
@@ -2871,6 +2907,60 @@ private: System::Void radioButton2_CheckedChanged(System::Object^  sender, Syste
 {
 	zedGraphControl5->Visible = true;
 	zedGraphControl3->Visible = false;
+}
+private: System::Void button8_Click(System::Object^  sender, System::EventArgs^  e) 
+{
+	GraphPane ^panel = zedGraphControl7->GraphPane;
+	PointPairList ^ApprPoints = gcnew PointPairList();
+	CurveItem ^curve = panel->CurveList[0];
+	double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0;
+	double a, b;
+	double minX, maxX;
+	double Q = 0.0;
+
+	minX = maxX = curve->Points[0]->X;
+
+	if (panel->CurveList->Count > 1)
+	{
+		panel->CurveList->RemoveAt(panel->CurveList->Count - 1);
+	}
+
+	for (int i = 0; i < curve->NPts; i++)
+	{
+		PointPair ^curPoint = curve->Points[i];
+		sum1 += 1 / pow(curPoint->X, 2);
+		sum2 += curPoint->Y / curPoint->X;
+		sum3 += curPoint->Y;
+		sum4 += 1 / curPoint->X;
+
+		if (curPoint->X < minX)
+		{
+			minX = curPoint->X;
+		}
+		if (curPoint->X > maxX)
+		{
+			maxX = curPoint->X;
+		}
+	}
+	a = sum2 / sum1;
+	b = 1 / curve->NPts*(sum3 - a*sum4);
+
+	for (int i = 0; i < curve->NPts; i++)
+	{
+		PointPair ^curPoint = curve->Points[i];
+		Q += pow(curPoint->Y - (a / curPoint->X + b), 2);
+	}
+
+	for (double x = minX - 0.1; x <= maxX + 0.1; x += 0.01)
+	{
+		ApprPoints->Add(x, a / x + b);
+	}
+
+	LineItem ^ApprCurve = panel->AddCurve("Аппроксимация", ApprPoints, Color::Blue, SymbolType::None);
+	textBox8->Text = String::Format("Уравнение аппроксимации:\r\ny = {0}/x + {1}\r\nНевязка:{2:G5}", a, b, Q);
+
+	zedGraphControl7->AxisChange();
+	zedGraphControl7->Invalidate();
 }
 };
 }
