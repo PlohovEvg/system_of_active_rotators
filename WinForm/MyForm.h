@@ -23,6 +23,7 @@ namespace WinForm {
 	public: double gamma2;    //Правая граница γ₂
 	public: bool AvgMaxMinAlreadyExists;
 	public: bool InProcessOfDrawingCritBetaGraph;
+	public: bool InProcessOfDrawingDeltaGraph;
 	public: vector<int*> *Clusters_vec;
 	public: vector<double**> *Omega_vec;
 	public: vector<double> *VO;
@@ -31,7 +32,7 @@ namespace WinForm {
 	public: cli::array<Color> ^Colors;
 	public: String ^Str;
 	public:PointPairList ^BetaCrList;
-
+	public:PointPairList ^DeltaCrList;
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -40,12 +41,14 @@ namespace WinForm {
 			//									
 			AvgMaxMinAlreadyExists = false;
 			InProcessOfDrawingCritBetaGraph = false;
+			InProcessOfDrawingDeltaGraph = false;
 			Clusters_vec = new vector<int*>;
 			Omega_vec = new vector<double**>;
 			VO = new vector<double>;
 			VE = new vector<double>;
 			VT = new vector<double>;
 			BetaCrList = gcnew PointPairList();
+			DeltaCrList = gcnew PointPairList();
 			Str = "";
 
 			Colors = gcnew cli::array<Color>(50);
@@ -99,6 +102,12 @@ namespace WinForm {
 			zedGraphControl7->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			zedGraphControl7->GraphPane->XAxis->MajorGrid->IsVisible = true;
 
+			zedGraphControl8->GraphPane->Title->Text = L"График зависимости разброса Δ от параметра β";
+			zedGraphControl8->GraphPane->XAxis->Title->Text = L"β";
+			zedGraphControl8->GraphPane->YAxis->Title->Text = L"Δ";
+			zedGraphControl8->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			zedGraphControl8->GraphPane->XAxis->MajorGrid->IsVisible = true;
+
 			zedGraphControl1->GraphPane->Title->Text = L"График зависимости числа кластеров от параметра β";
 			zedGraphControl1->GraphPane->XAxis->Title->Text = L"β";
 			zedGraphControl1->GraphPane->YAxis->Title->Text = L"Кол-во кластеров";
@@ -120,6 +129,11 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::CheckBox^  checkBox2;
+	private: System::Windows::Forms::TabPage^  tabPage8;
+	private: System::Windows::Forms::TextBox^  textBox9;
+	private: System::Windows::Forms::Button^  button9;
+	private: ZedGraph::ZedGraphControl^  zedGraphControl8;
 	private: System::Windows::Forms::Button^  button8;
 	private: System::Windows::Forms::TextBox^  textBox8;
 	private: System::Windows::Forms::TabPage^  tabPage7;
@@ -241,6 +255,7 @@ namespace WinForm {
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
 			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
 			this->comboBox2 = (gcnew System::Windows::Forms::ComboBox());
 			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
@@ -309,6 +324,10 @@ namespace WinForm {
 			this->button8 = (gcnew System::Windows::Forms::Button());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->zedGraphControl7 = (gcnew ZedGraph::ZedGraphControl());
+			this->tabPage8 = (gcnew System::Windows::Forms::TabPage());
+			this->textBox9 = (gcnew System::Windows::Forms::TextBox());
+			this->button9 = (gcnew System::Windows::Forms::Button());
+			this->zedGraphControl8 = (gcnew ZedGraph::ZedGraphControl());
 			this->tabPage4 = (gcnew System::Windows::Forms::TabPage());
 			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
@@ -353,6 +372,7 @@ namespace WinForm {
 			this->tabPage3->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->BeginInit();
 			this->tabPage7->SuspendLayout();
+			this->tabPage8->SuspendLayout();
 			this->tabPage4->SuspendLayout();
 			this->panel1->SuspendLayout();
 			this->tabPage5->SuspendLayout();
@@ -365,6 +385,7 @@ namespace WinForm {
 			this->tabControl1->Controls->Add(this->tabPage2);
 			this->tabControl1->Controls->Add(this->tabPage3);
 			this->tabControl1->Controls->Add(this->tabPage7);
+			this->tabControl1->Controls->Add(this->tabPage8);
 			this->tabControl1->Controls->Add(this->tabPage4);
 			this->tabControl1->Controls->Add(this->tabPage5);
 			this->tabControl1->Controls->Add(this->tabPage6);
@@ -376,6 +397,7 @@ namespace WinForm {
 			// 
 			// tabPage1
 			// 
+			this->tabPage1->Controls->Add(this->checkBox2);
 			this->tabPage1->Controls->Add(this->pictureBox2);
 			this->tabPage1->Controls->Add(this->comboBox2);
 			this->tabPage1->Controls->Add(this->comboBox1);
@@ -425,6 +447,19 @@ namespace WinForm {
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Ввод данных";
 			this->tabPage1->UseVisualStyleBackColor = true;
+			// 
+			// checkBox2
+			// 
+			this->checkBox2->AutoSize = true;
+			this->checkBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->checkBox2->Location = System::Drawing::Point(747, 167);
+			this->checkBox2->Name = L"checkBox2";
+			this->checkBox2->Size = System::Drawing::Size(549, 28);
+			this->checkBox2->TabIndex = 168;
+			this->checkBox2->Text = L"Собирать данные для графика частотной синхронизации";
+			this->checkBox2->UseVisualStyleBackColor = true;
+			this->checkBox2->CheckedChanged += gcnew System::EventHandler(this, &MyForm::checkBox2_CheckedChanged);
 			// 
 			// pictureBox2
 			// 
@@ -1133,7 +1168,7 @@ namespace WinForm {
 			this->tabPage7->Padding = System::Windows::Forms::Padding(3);
 			this->tabPage7->Size = System::Drawing::Size(1564, 728);
 			this->tabPage7->TabIndex = 6;
-			this->tabPage7->Text = L"Частотная синхронизация";
+			this->tabPage7->Text = L"Фазовая синхронизация";
 			this->tabPage7->UseVisualStyleBackColor = true;
 			// 
 			// textBox8
@@ -1187,6 +1222,58 @@ namespace WinForm {
 			this->zedGraphControl7->ScrollMinY2 = 0;
 			this->zedGraphControl7->Size = System::Drawing::Size(1200, 692);
 			this->zedGraphControl7->TabIndex = 0;
+			// 
+			// tabPage8
+			// 
+			this->tabPage8->Controls->Add(this->textBox9);
+			this->tabPage8->Controls->Add(this->button9);
+			this->tabPage8->Controls->Add(this->zedGraphControl8);
+			this->tabPage8->Location = System::Drawing::Point(4, 22);
+			this->tabPage8->Name = L"tabPage8";
+			this->tabPage8->Size = System::Drawing::Size(1564, 728);
+			this->tabPage8->TabIndex = 7;
+			this->tabPage8->Text = L"Частотная синхронизация";
+			this->tabPage8->UseVisualStyleBackColor = true;
+			// 
+			// textBox9
+			// 
+			this->textBox9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->textBox9->Location = System::Drawing::Point(1209, 194);
+			this->textBox9->Multiline = true;
+			this->textBox9->Name = L"textBox9";
+			this->textBox9->ReadOnly = true;
+			this->textBox9->Size = System::Drawing::Size(352, 119);
+			this->textBox9->TabIndex = 7;
+			this->textBox9->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			// 
+			// button9
+			// 
+			this->button9->Enabled = false;
+			this->button9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->button9->Location = System::Drawing::Point(1302, 82);
+			this->button9->Name = L"button9";
+			this->button9->Size = System::Drawing::Size(168, 71);
+			this->button9->TabIndex = 6;
+			this->button9->Text = L"Построить аппроксимацию";
+			this->button9->UseVisualStyleBackColor = true;
+			this->button9->Click += gcnew System::EventHandler(this, &MyForm::button9_Click);
+			// 
+			// zedGraphControl8
+			// 
+			this->zedGraphControl8->IsShowPointValues = true;
+			this->zedGraphControl8->Location = System::Drawing::Point(3, 5);
+			this->zedGraphControl8->Name = L"zedGraphControl8";
+			this->zedGraphControl8->ScrollGrace = 0;
+			this->zedGraphControl8->ScrollMaxX = 0;
+			this->zedGraphControl8->ScrollMaxY = 0;
+			this->zedGraphControl8->ScrollMaxY2 = 0;
+			this->zedGraphControl8->ScrollMinX = 0;
+			this->zedGraphControl8->ScrollMinY = 0;
+			this->zedGraphControl8->ScrollMinY2 = 0;
+			this->zedGraphControl8->Size = System::Drawing::Size(1200, 720);
+			this->zedGraphControl8->TabIndex = 4;
 			// 
 			// tabPage4
 			// 
@@ -1615,6 +1702,8 @@ namespace WinForm {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->EndInit();
 			this->tabPage7->ResumeLayout(false);
 			this->tabPage7->PerformLayout();
+			this->tabPage8->ResumeLayout(false);
+			this->tabPage8->PerformLayout();
 			this->tabPage4->ResumeLayout(false);
 			this->tabPage4->PerformLayout();
 			this->panel1->ResumeLayout(false);
@@ -1995,7 +2084,7 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 		{
 			MessageBox::Show(L"Начался сбор данных для построения графика β ⃰ от числа элементов N", "Сообщение",
 				MessageBoxButtons::OK, MessageBoxIcon::Information);
-			InProcessOfDrawingCritBetaGraph = true;
+			InProcessOfDrawingCritBetaGraph = true;			
 		}
 	}
 	else
@@ -2007,6 +2096,7 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 			{
 				InProcessOfDrawingCritBetaGraph = false;
 				zedGraphControl7->GraphPane->CurveList->Clear();
+				BetaCrList->Clear();
 				zedGraphControl7->Invalidate();
 				button8->Enabled = false;
 			}
@@ -2015,7 +2105,7 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 				MessageBox::Show(L"Для продолжения сбора данных, сгенерируйте набор со значением Δ равным 0", "Сообщение",
 					MessageBoxButtons::OK, MessageBoxIcon::Information);
 				return;
-			}
+			}			
 		}
 	}
 
@@ -2294,7 +2384,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	const double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
 	const double g = Convert::ToDouble(g_Text->Text);           //Коэффициент связи
 	const double alpha = Convert::ToDouble(Alpha_Text->Text);   //Число α
-	const double beta = Convert::ToDouble(textBox7->Text);      //Число β
+	const double beta = Convert::ToDouble(textBox7->Text);      //Число β	
 	int it = 0;                                                 //Индекс строк в таблице
 	int NumOfClusters;                                          //Число кластеров при t = T
 	double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
@@ -2319,7 +2409,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 		return;
 	}
 
-	//Технические переменные, используемые для расчетов 
+	//Технические переменные, используемые для расчетов
 	int ind = 0;
 	int i;
 	double oldE0;
@@ -2759,7 +2849,44 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 		VO->push_back(Omega[i]);
 	}
 
-	NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T		
+	NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T
+
+	if (InProcessOfDrawingDeltaGraph)
+		if (NumOfClusters == 1)
+		{
+			if (zedGraphControl8->GraphPane->CurveList->Count != 0)
+			{
+				bool contains = false;
+				for (int i = 0; i < zedGraphControl8->GraphPane->CurveList[0]->NPts; i++)
+					if (zedGraphControl8->GraphPane->CurveList[0]->Points[i]->Y == (double)e->Argument)
+					{
+						contains = true;
+						if (beta < zedGraphControl8->GraphPane->CurveList[0]->Points[i]->X)
+						{
+							zedGraphControl8->GraphPane->CurveList[0]->Points[i]->X = beta;
+							DeltaCrList[i]->X = beta;
+							break;
+						}
+					}
+				if (!contains)
+				{
+					DeltaCrList->Add(beta, (double)e->Argument);
+					DeltaCrList->Sort(SortType::YValues);
+					zedGraphControl8->GraphPane->CurveList[0]->Points = DeltaCrList;
+				}
+			}
+			else
+			{
+				DeltaCrList->Add(beta, (double)e->Argument);
+				LineItem ^curve = zedGraphControl8->GraphPane->AddCurve("", DeltaCrList, Color::Red, SymbolType::Circle);
+				curve->Symbol->Fill->Color = Color::Red;
+				curve->Symbol->Fill->Type = FillType::Solid;
+				button9->Enabled = true;
+			}
+			zedGraphControl8->AxisChange();
+			zedGraphControl8->Invalidate();
+		}
+	
 
 													 //Заполнение справки
 	Str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n\r\n";
@@ -2814,6 +2941,7 @@ private: System::Void backgroundWorker2_ProgressChanged(System::Object^  sender,
 }
 private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e)
 {
+	const double delta = Convert::ToDouble(comboBox2->Text);
 	label18->Text = "Идут вычисления... 0%";
 	dataGridView1->Rows->Clear();
 	dataGridView2->Rows->Clear();
@@ -2835,7 +2963,7 @@ private: System::Void button7_Click(System::Object^  sender, System::EventArgs^ 
 	button6->Enabled = true;
 	button6->Focus();
 
-	backgroundWorker2->RunWorkerAsync();
+	backgroundWorker2->RunWorkerAsync(delta);
 }
 private: System::Void backgroundWorker2_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
 {
@@ -2911,6 +3039,90 @@ private: System::Void radioButton2_CheckedChanged(System::Object^  sender, Syste
 private: System::Void button8_Click(System::Object^  sender, System::EventArgs^  e) 
 {
 	GraphPane ^panel = zedGraphControl7->GraphPane;
+	PointPairList ^ApprPoints = gcnew PointPairList();
+	CurveItem ^curve = panel->CurveList[0];
+	double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0;
+	double a, b;
+	double minX, maxX;
+	double Q = 0.0;
+
+	minX = maxX = curve->Points[0]->X;
+
+	if (panel->CurveList->Count > 1)
+	{
+		panel->CurveList->RemoveAt(panel->CurveList->Count - 1);
+	}
+
+	for (int i = 0; i < curve->NPts; i++)
+	{
+		PointPair ^curPoint = curve->Points[i];
+		sum1 += 1 / pow(curPoint->X, 2);
+		sum2 += curPoint->Y / curPoint->X;
+		sum3 += curPoint->Y;
+		sum4 += 1 / curPoint->X;
+
+		if (curPoint->X < minX)
+		{
+			minX = curPoint->X;
+		}
+		if (curPoint->X > maxX)
+		{
+			maxX = curPoint->X;
+		}
+	}
+	a = sum2 / sum1;
+	b = 1 / curve->NPts*(sum3 - a*sum4);
+
+	for (int i = 0; i < curve->NPts; i++)
+	{
+		PointPair ^curPoint = curve->Points[i];
+		Q += pow(curPoint->Y - (a / curPoint->X + b), 2);
+	}
+
+	for (double x = minX - 0.1; x <= maxX + 0.1; x += 0.01)
+	{
+		ApprPoints->Add(x, a / x + b);
+	}
+
+	LineItem ^ApprCurve = panel->AddCurve("Аппроксимация", ApprPoints, Color::Blue, SymbolType::None);
+	textBox8->Text = String::Format("Уравнение аппроксимации:\r\ny = {0}/x + {1}\r\nНевязка:{2:G5}", a, b, Q);
+
+	zedGraphControl7->AxisChange();
+	zedGraphControl7->Invalidate();
+}
+private: System::Void checkBox2_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
+{
+	if (checkBox2->Checked)
+	{
+		InProcessOfDrawingDeltaGraph = true;
+		MessageBox::Show(L"Начался сбор данных для построения графика разброса Δ от параметра β", "Сообщение",
+			MessageBoxButtons::OK, MessageBoxIcon::Information);
+	}
+	else
+	{
+		if (DeltaCrList->Count != 0)
+		{
+			if (MessageBox::Show(L"Идет сбор данных для построения графика  разброса Δ от параметра β. Вы действительно хотите прервать его?",
+				"Внимание", MessageBoxButtons::YesNo, MessageBoxIcon::Warning) == System::Windows::Forms::DialogResult::Yes)
+			{
+				InProcessOfDrawingDeltaGraph = false;
+				zedGraphControl8->GraphPane->CurveList->Clear();
+				zedGraphControl8->Invalidate();
+				DeltaCrList->Clear();
+				button9->Enabled = false;
+			}
+			else
+			{
+				MessageBox::Show(L"Для продолжения сбора данных не убирайте флажок", "Сообщение",
+					MessageBoxButtons::OK, MessageBoxIcon::Information);
+				return;
+			}
+		}
+	}
+}
+private: System::Void button9_Click(System::Object^  sender, System::EventArgs^  e) 
+{
+	GraphPane ^panel = zedGraphControl8->GraphPane;
 	PointPairList ^ApprPoints = gcnew PointPairList();
 	CurveItem ^curve = panel->CurveList[0];
 	double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0;
