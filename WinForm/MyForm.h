@@ -133,7 +133,7 @@ namespace WinForm {
 				delete components;
 			}
 		}
-
+	private: System::Windows::Forms::CheckBox^  checkBox2;
 	private: System::Windows::Forms::TabPage^  tabPage8;
 	private: System::Windows::Forms::TabPage^  tabPage9;
 	private: System::Windows::Forms::Button^  button9;
@@ -341,6 +341,7 @@ namespace WinForm {
 			this->label21 = (gcnew System::Windows::Forms::Label());
 			this->n_Text3 = (gcnew System::Windows::Forms::TextBox());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
+			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
 			this->radioButton3 = (gcnew System::Windows::Forms::RadioButton());
 			this->radioButton4 = (gcnew System::Windows::Forms::RadioButton());
 			this->Omega1_Text = (gcnew System::Windows::Forms::TextBox());
@@ -1001,6 +1002,7 @@ namespace WinForm {
 			// 
 			// tabPage2
 			// 
+			this->tabPage2->Controls->Add(this->checkBox2);
 			this->tabPage2->Controls->Add(this->radioButton3);
 			this->tabPage2->Controls->Add(this->radioButton4);
 			this->tabPage2->Controls->Add(this->Omega1_Text);
@@ -1019,6 +1021,20 @@ namespace WinForm {
 			this->tabPage2->Text = L"Средние частоты";
 			this->tabPage2->UseVisualStyleBackColor = true;
 			// 
+			// checkBox2
+			// 
+			this->checkBox2->AutoSize = true;
+			this->checkBox2->Enabled = false;
+			this->checkBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->checkBox2->Location = System::Drawing::Point(1129, 142);
+			this->checkBox2->Name = L"checkBox2";
+			this->checkBox2->Size = System::Drawing::Size(349, 28);
+			this->checkBox2->TabIndex = 149;
+			this->checkBox2->Text = L"Показывать подписи для Max и Min";
+			this->checkBox2->UseVisualStyleBackColor = true;
+			this->checkBox2->CheckedChanged += gcnew System::EventHandler(this, &MyForm::checkBox2_CheckedChanged);
+			// 
 			// radioButton3
 			// 
 			this->radioButton3->AutoSize = true;
@@ -1033,9 +1049,9 @@ namespace WinForm {
 			this->radioButton3->Text = L"Средние частоты Ωⱼ";
 			this->radioButton3->UseVisualStyleBackColor = true;
 			this->radioButton3->CheckedChanged += gcnew System::EventHandler(this, &MyForm::radioButton3_CheckedChanged);
-			//
+			// 
 			// radioButton4
-			//
+			// 
 			this->radioButton4->AutoSize = true;
 			this->radioButton4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1107,9 +1123,9 @@ namespace WinForm {
 				this->dataGridViewTextBoxColumn1,
 					this->dataGridViewTextBoxColumn2
 			});
-			this->dataGridView1->Location = System::Drawing::Point(1109, 142);
+			this->dataGridView1->Location = System::Drawing::Point(1109, 176);
 			this->dataGridView1->Name = L"dataGridView1";
-			this->dataGridView1->Size = System::Drawing::Size(445, 579);
+			this->dataGridView1->Size = System::Drawing::Size(445, 545);
 			this->dataGridView1->TabIndex = 115;
 			// 
 			// dataGridViewTextBoxColumn1
@@ -1125,7 +1141,7 @@ namespace WinForm {
 			this->dataGridViewTextBoxColumn2->Width = 200;
 			// 
 			// zedGraphControl2
-			//
+			// 
 			this->zedGraphControl2->ImeMode = System::Windows::Forms::ImeMode::On;
 			this->zedGraphControl2->IsShowPointValues = true;
 			this->zedGraphControl2->Location = System::Drawing::Point(0, 3);
@@ -1140,9 +1156,9 @@ namespace WinForm {
 			this->zedGraphControl2->ScrollMinY2 = 0;
 			this->zedGraphControl2->Size = System::Drawing::Size(1103, 718);
 			this->zedGraphControl2->TabIndex = 114;
-			//
+			// 
 			// zedGraphControl10
-			//
+			// 
 			this->zedGraphControl10->ImeMode = System::Windows::Forms::ImeMode::On;
 			this->zedGraphControl10->IsShowPointValues = true;
 			this->zedGraphControl10->Location = System::Drawing::Point(0, 3);
@@ -1158,7 +1174,7 @@ namespace WinForm {
 			this->zedGraphControl10->Size = System::Drawing::Size(1103, 718);
 			this->zedGraphControl10->TabIndex = 148;
 			this->zedGraphControl10->Visible = false;
-			//
+			// 
 			// tabPage3
 			// 
 			this->tabPage3->Controls->Add(this->radioButton2);
@@ -1292,7 +1308,7 @@ namespace WinForm {
 			this->tabPage7->UseVisualStyleBackColor = true;
 			// 
 			// panel2
-			//
+			// 
 			this->panel2->Controls->Add(this->button11);
 			this->panel2->Controls->Add(this->button8);
 			this->panel2->Controls->Add(this->button9);
@@ -1311,9 +1327,9 @@ namespace WinForm {
 			this->panel2->Name = L"panel2";
 			this->panel2->Size = System::Drawing::Size(360, 369);
 			this->panel2->TabIndex = 179;
-			//
+			// 
 			// button11
-			//
+			// 
 			this->button11->Enabled = false;
 			this->button11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1339,7 +1355,7 @@ namespace WinForm {
 			this->button8->Click += gcnew System::EventHandler(this, &MyForm::button8_Click);
 			// 
 			// button9
-			//
+			// 
 			this->button9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button9->Location = System::Drawing::Point(3, 139);
@@ -1349,16 +1365,16 @@ namespace WinForm {
 			this->button9->Text = L"Начать построение";
 			this->button9->UseVisualStyleBackColor = true;
 			this->button9->Click += gcnew System::EventHandler(this, &MyForm::button9_Click);
-			//
+			// 
 			// progressBar4
-			//
+			// 
 			this->progressBar4->Location = System::Drawing::Point(2, 293);
 			this->progressBar4->Name = L"progressBar4";
 			this->progressBar4->Size = System::Drawing::Size(352, 31);
 			this->progressBar4->TabIndex = 163;
-			//
+			// 
 			// label20
-			//
+			// 
 			this->label20->AutoSize = true;
 			this->label20->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1368,9 +1384,9 @@ namespace WinForm {
 			this->label20->TabIndex = 164;
 			this->label20->Text = L"Идёт построение... 0%";
 			this->label20->Visible = false;
-			//
+			// 
 			// label33
-			//
+			// 
 			this->label33->AutoSize = true;
 			this->label33->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1379,9 +1395,9 @@ namespace WinForm {
 			this->label33->Size = System::Drawing::Size(168, 24);
 			this->label33->TabIndex = 169;
 			this->label33->Text = L"Число измерений";
-			//
+			// 
 			// button10
-			//
+			// 
 			this->button10->Enabled = false;
 			this->button10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1392,9 +1408,9 @@ namespace WinForm {
 			this->button10->Text = L"Очистить графики";
 			this->button10->UseVisualStyleBackColor = true;
 			this->button10->Click += gcnew System::EventHandler(this, &MyForm::button10_Click);
-			//
+			// 
 			// textBox11
-			//
+			// 
 			this->textBox11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox11->Location = System::Drawing::Point(222, 96);
@@ -1402,9 +1418,9 @@ namespace WinForm {
 			this->textBox11->Size = System::Drawing::Size(57, 29);
 			this->textBox11->TabIndex = 170;
 			this->textBox11->Text = L"9";
-			//
+			// 
 			// textBox12
-			//
+			// 
 			this->textBox12->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox12->Location = System::Drawing::Point(161, 7);
@@ -1412,9 +1428,9 @@ namespace WinForm {
 			this->textBox12->Size = System::Drawing::Size(57, 29);
 			this->textBox12->TabIndex = 171;
 			this->textBox12->Text = L"1,03";
-			//
+			// 
 			// label32
-			//
+			// 
 			this->label32->AutoSize = true;
 			this->label32->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1423,9 +1439,9 @@ namespace WinForm {
 			this->label32->Size = System::Drawing::Size(51, 24);
 			this->label32->TabIndex = 168;
 			this->label32->Text = L"N₂ = ";
-			//
+			// 
 			// label34
-			//
+			// 
 			this->label34->AutoSize = true;
 			this->label34->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1434,9 +1450,9 @@ namespace WinForm {
 			this->label34->Size = System::Drawing::Size(40, 24);
 			this->label34->TabIndex = 172;
 			this->label34->Text = L"γ = ";
-			//
+			// 
 			// label31
-			//
+			// 
 			this->label31->AutoSize = true;
 			this->label31->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1445,9 +1461,9 @@ namespace WinForm {
 			this->label31->Size = System::Drawing::Size(51, 24);
 			this->label31->TabIndex = 167;
 			this->label31->Text = L"N₁ = ";
-			//
+			// 
 			// textBox9
-			//
+			// 
 			this->textBox9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox9->Location = System::Drawing::Point(78, 50);
@@ -1455,9 +1471,9 @@ namespace WinForm {
 			this->textBox9->Size = System::Drawing::Size(57, 29);
 			this->textBox9->TabIndex = 165;
 			this->textBox9->Text = L"10";
-			//
+			// 
 			// textBox10
-			//
+			// 
 			this->textBox10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox10->Location = System::Drawing::Point(244, 47);
@@ -1465,9 +1481,9 @@ namespace WinForm {
 			this->textBox10->Size = System::Drawing::Size(57, 29);
 			this->textBox10->TabIndex = 166;
 			this->textBox10->Text = L"100";
-			//
+			// 
 			// label36
-			//
+			// 
 			this->label36->AutoSize = true;
 			this->label36->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1477,9 +1493,9 @@ namespace WinForm {
 			this->label36->TabIndex = 178;
 			this->label36->Text = L"Идут вычисления...";
 			this->label36->Visible = false;
-			//
+			// 
 			// button12
-			//
+			// 
 			this->button12->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button12->Location = System::Drawing::Point(1297, 570);
@@ -1490,9 +1506,9 @@ namespace WinForm {
 			this->button12->UseVisualStyleBackColor = true;
 			this->button12->Visible = false;
 			this->button12->Click += gcnew System::EventHandler(this, &MyForm::button12_Click);
-			//
+			// 
 			// textBox13
-			//
+			// 
 			this->textBox13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox13->Location = System::Drawing::Point(1367, 535);
@@ -1501,9 +1517,9 @@ namespace WinForm {
 			this->textBox13->TabIndex = 175;
 			this->textBox13->Text = L"10";
 			this->textBox13->Visible = false;
-			//
+			// 
 			// label35
-			//
+			// 
 			this->label35->AutoSize = true;
 			this->label35->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1513,9 +1529,9 @@ namespace WinForm {
 			this->label35->TabIndex = 176;
 			this->label35->Text = L"N = ";
 			this->label35->Visible = false;
-			//
+			// 
 			// textBox8
-			//
+			// 
 			this->textBox8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox8->Location = System::Drawing::Point(1208, 378);
@@ -1526,9 +1542,9 @@ namespace WinForm {
 			this->textBox8->TabIndex = 3;
 			this->textBox8->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			this->textBox8->Visible = false;
-			//
+			// 
 			// label9
-			//
+			// 
 			this->label9->AutoSize = true;
 			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1538,9 +1554,9 @@ namespace WinForm {
 			this->label9->TabIndex = 1;
 			this->label9->Text = L"β ⃰ - значение параметра β, при котором наступает фазовая синхронизация ротаторов"
 				L"";
-			//
+			// 
 			// zedGraphControl7
-			//
+			// 
 			this->zedGraphControl7->IsShowPointValues = true;
 			this->zedGraphControl7->Location = System::Drawing::Point(3, 3);
 			this->zedGraphControl7->Name = L"zedGraphControl7";
@@ -1553,9 +1569,9 @@ namespace WinForm {
 			this->zedGraphControl7->ScrollMinY2 = 0;
 			this->zedGraphControl7->Size = System::Drawing::Size(1200, 692);
 			this->zedGraphControl7->TabIndex = 0;
-			//
+			// 
 			// tabPage9
-			//
+			// 
 			this->tabPage9->Controls->Add(this->panel3);
 			this->tabPage9->Controls->Add(this->zedGraphControl9);
 			this->tabPage9->Location = System::Drawing::Point(4, 22);
@@ -1564,9 +1580,9 @@ namespace WinForm {
 			this->tabPage9->TabIndex = 8;
 			this->tabPage9->Text = L"График мю от бета";
 			this->tabPage9->UseVisualStyleBackColor = true;
-			//
+			// 
 			// panel3
-			//
+			// 
 			this->panel3->Controls->Add(this->button15);
 			this->panel3->Controls->Add(this->progressBar5);
 			this->panel3->Controls->Add(this->label37);
@@ -1583,9 +1599,9 @@ namespace WinForm {
 			this->panel3->Name = L"panel3";
 			this->panel3->Size = System::Drawing::Size(360, 288);
 			this->panel3->TabIndex = 180;
-			//
+			// 
 			// button15
-			//
+			// 
 			this->button15->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->button15->Location = System::Drawing::Point(3, 139);
@@ -1595,16 +1611,16 @@ namespace WinForm {
 			this->button15->Text = L"Начать построение";
 			this->button15->UseVisualStyleBackColor = true;
 			this->button15->Click += gcnew System::EventHandler(this, &MyForm::button15_Click);
-			//
+			// 
 			// progressBar5
-			//
+			// 
 			this->progressBar5->Location = System::Drawing::Point(3, 216);
 			this->progressBar5->Name = L"progressBar5";
 			this->progressBar5->Size = System::Drawing::Size(352, 31);
 			this->progressBar5->TabIndex = 163;
-			//
+			// 
 			// label37
-			//
+			// 
 			this->label37->AutoSize = true;
 			this->label37->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1614,9 +1630,9 @@ namespace WinForm {
 			this->label37->TabIndex = 164;
 			this->label37->Text = L"Идёт построение... 0%";
 			this->label37->Visible = false;
-			//
+			// 
 			// label38
-			//
+			// 
 			this->label38->AutoSize = true;
 			this->label38->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1625,9 +1641,9 @@ namespace WinForm {
 			this->label38->Size = System::Drawing::Size(168, 24);
 			this->label38->TabIndex = 169;
 			this->label38->Text = L"Число измерений";
-			//
+			// 
 			// button16
-			//
+			// 
 			this->button16->Enabled = false;
 			this->button16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1638,9 +1654,9 @@ namespace WinForm {
 			this->button16->Text = L"Удалить график";
 			this->button16->UseVisualStyleBackColor = true;
 			this->button16->Click += gcnew System::EventHandler(this, &MyForm::button16_Click);
-			//
+			// 
 			// textBox14
-			//
+			// 
 			this->textBox14->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox14->Location = System::Drawing::Point(222, 96);
@@ -1648,9 +1664,9 @@ namespace WinForm {
 			this->textBox14->Size = System::Drawing::Size(57, 29);
 			this->textBox14->TabIndex = 170;
 			this->textBox14->Text = L"30";
-			//
+			// 
 			// textBox15
-			//
+			// 
 			this->textBox15->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox15->Location = System::Drawing::Point(161, 7);
@@ -1658,9 +1674,9 @@ namespace WinForm {
 			this->textBox15->Size = System::Drawing::Size(57, 29);
 			this->textBox15->TabIndex = 171;
 			this->textBox15->Text = L"1,03";
-			//
+			// 
 			// label39
-			//
+			// 
 			this->label39->AutoSize = true;
 			this->label39->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1669,9 +1685,9 @@ namespace WinForm {
 			this->label39->Size = System::Drawing::Size(48, 24);
 			this->label39->TabIndex = 168;
 			this->label39->Text = L"β₂ = ";
-			//
+			// 
 			// label40
-			//
+			// 
 			this->label40->AutoSize = true;
 			this->label40->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1680,9 +1696,9 @@ namespace WinForm {
 			this->label40->Size = System::Drawing::Size(40, 24);
 			this->label40->TabIndex = 172;
 			this->label40->Text = L"γ = ";
-			//
+			// 
 			// label41
-			//
+			// 
 			this->label41->AutoSize = true;
 			this->label41->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -1691,9 +1707,9 @@ namespace WinForm {
 			this->label41->Size = System::Drawing::Size(48, 24);
 			this->label41->TabIndex = 167;
 			this->label41->Text = L"β₁ = ";
-			//
+			// 
 			// textBox16
-			//
+			// 
 			this->textBox16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox16->Location = System::Drawing::Point(78, 50);
@@ -1701,9 +1717,9 @@ namespace WinForm {
 			this->textBox16->Size = System::Drawing::Size(57, 29);
 			this->textBox16->TabIndex = 165;
 			this->textBox16->Text = L"0,005";
-			//
+			// 
 			// textBox17
-			//
+			// 
 			this->textBox17->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox17->Location = System::Drawing::Point(244, 47);
@@ -1711,9 +1727,9 @@ namespace WinForm {
 			this->textBox17->Size = System::Drawing::Size(57, 29);
 			this->textBox17->TabIndex = 166;
 			this->textBox17->Text = L"0,13";
-			//
+			// 
 			// zedGraphControl9
-			//
+			// 
 			this->zedGraphControl9->IsShowPointValues = true;
 			this->zedGraphControl9->Location = System::Drawing::Point(3, 4);
 			this->zedGraphControl9->Name = L"zedGraphControl9";
@@ -1726,9 +1742,9 @@ namespace WinForm {
 			this->zedGraphControl9->ScrollMinY2 = 0;
 			this->zedGraphControl9->Size = System::Drawing::Size(1200, 720);
 			this->zedGraphControl9->TabIndex = 5;
-			//
+			// 
 			// tabPage8
-			//
+			// 
 			this->tabPage8->Controls->Add(this->zedGraphControl8);
 			this->tabPage8->Location = System::Drawing::Point(4, 22);
 			this->tabPage8->Name = L"tabPage8";
@@ -1736,9 +1752,10 @@ namespace WinForm {
 			this->tabPage8->TabIndex = 7;
 			this->tabPage8->Text = L"Частотная синхронизация";
 			this->tabPage8->UseVisualStyleBackColor = true;
-			//
+			// 
 			// zedGraphControl8
-			//
+			// 
+			this->zedGraphControl8->Enabled = false;
 			this->zedGraphControl8->IsShowPointValues = true;
 			this->zedGraphControl8->Location = System::Drawing::Point(3, 5);
 			this->zedGraphControl8->Name = L"zedGraphControl8";
@@ -1751,9 +1768,9 @@ namespace WinForm {
 			this->zedGraphControl8->ScrollMinY2 = 0;
 			this->zedGraphControl8->Size = System::Drawing::Size(1200, 720);
 			this->zedGraphControl8->TabIndex = 4;
-			//
+			// 
 			// tabPage4
-			//
+			// 
 			this->tabPage4->Controls->Add(this->textBox5);
 			this->tabPage4->Controls->Add(this->panel1);
 			this->tabPage4->Controls->Add(this->textBox3);
@@ -1764,9 +1781,9 @@ namespace WinForm {
 			this->tabPage4->TabIndex = 3;
 			this->tabPage4->Text = L"Серия экспериментов";
 			this->tabPage4->UseVisualStyleBackColor = true;
-			//
+			// 
 			// textBox5
-			//
+			// 
 			this->textBox5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->textBox5->Location = System::Drawing::Point(5, 364);
@@ -1776,9 +1793,9 @@ namespace WinForm {
 			this->textBox5->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
 			this->textBox5->Size = System::Drawing::Size(465, 355);
 			this->textBox5->TabIndex = 157;
-			//
+			// 
 			// panel1
-			//
+			// 
 			this->panel1->Controls->Add(this->comboBox3);
 			this->panel1->Controls->Add(this->comboBox4);
 			this->panel1->Controls->Add(this->label14);
@@ -1804,9 +1821,9 @@ namespace WinForm {
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(633, 532);
 			this->panel1->TabIndex = 156;
-			//
+			// 
 			// comboBox3
-			//
+			// 
 			this->comboBox3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->comboBox3->FormattingEnabled = true;
@@ -1816,9 +1833,9 @@ namespace WinForm {
 			this->comboBox3->Size = System::Drawing::Size(100, 32);
 			this->comboBox3->TabIndex = 170;
 			this->comboBox3->Text = L"1,1";
-			//
+			// 
 			// comboBox4
-			//
+			// 
 			this->comboBox4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->comboBox4->FormattingEnabled = true;
@@ -1828,9 +1845,9 @@ namespace WinForm {
 			this->comboBox4->Size = System::Drawing::Size(100, 32);
 			this->comboBox4->TabIndex = 169;
 			this->comboBox4->Text = L"1";
-			//
+			// 
 			// label14
-			//
+			// 
 			this->label14->AutoSize = true;
 			this->label14->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -2225,8 +2242,8 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	const int n = Convert::ToInt32(n_Text3->Text);                   //Число уравнений в системе
 	const int p = Convert::ToInt32(textBox1->Text);                  //Число итераций, второй критерий остановки
 	const int NumOfSets = Convert::ToInt32(textBox4->Text);          //Число наборов
-	const double gamma1Copy = Convert::ToDouble(comboBox4->Text);
-	const double gamma2Copy = Convert::ToDouble(comboBox3->Text);
+	const double gamma1Copy = Convert::ToDouble(comboBox4->Text);    //Минимальное значение γ₁
+	const double gamma2Copy = Convert::ToDouble(comboBox3->Text);	 //Максимальное значение γ₂
 	const double beta1 = Convert::ToDouble(g1_Text->Text);           //Начальное значение β
 	const double beta2 = Convert::ToDouble(g2_Text->Text);           //Конечное значение β
 	const double betaStep = Convert::ToDouble(GShag_Text->Text);     //Шаг по β
@@ -2245,10 +2262,10 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 	double *om;                                                      //Технический массив для вычислений 
 	double *Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
 	double *Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
-	double *cur_gamma;                                               //Набор γⱼ
+	double *cur_gamma;                                               //Набор случайных параметров γⱼ
 	double *Fi0;                                                     //Фазы при t = T₁
 
-	const double D2PI = 2 * M_PI;
+	const double D2PI = 2 * M_PI;                                    //Константа 2π
 
 	if (T01 > T)
 	{
@@ -2371,7 +2388,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 					}
 				}
 				//---------------------------------------------------
-				//t от T01 - h до T01
+				//t от T₁ - h до T₁
 				t = round(t * 1000) / 1000;
 				for (int j = 0; j < n; j++)
 				{
@@ -2398,7 +2415,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 					Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
 				}
 				//---------------------------------------------------
-				//t от T01 до T
+				//t от T₁ до T
 				for (t; t < T; t += h)
 				{
 					t = round(t * 1000) / 1000;
@@ -2859,11 +2876,12 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	const double beta = Convert::ToDouble(textBox7->Text);      //Число β	
 	int it = 0;                                                 //Индекс строк в таблице
 	int NumOfClusters;                                          //Число кластеров при t = T
+	int IndexOfMaxOmega, IndexOfMinOmega;                       //Номера элементов с максимальными и минимальными частотами
 	double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
 	double E0Star = Convert::ToDouble(E0Star_Text->Text);       //Начальное условие для Ė
 	double t = 0.0;                                             //Текущее время       
 	double Et;                                                  //Поле E(t)
-	double MaxOmega = -100000.0, MinOmega = 100000.0;           //Максимальная и минимальная средние частоты 	
+	double MaxOmega = -100000.0, MinOmega = 100000.0;           //Максимальная и минимальная средние частоты
 	double ts = 0.0;                                            //Время последнего спайка
 	int *k;                                                     //Число спайков для каждого ротатора  
 	double *Fi0;		                                        //Фазы при t = T₁
@@ -3096,7 +3114,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
 		}
 		//---------------------------------------------------
-		//t от T02 - h до T01 - h
+		//t от T02 - h до T₁ - h
 		for (t; t < T01 - h; t += h)
 		{
 			t = round(t * 1000) / 1000;
@@ -3143,7 +3161,7 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 			backgroundWorker2->ReportProgress((int)(t / (T - h) * 100));
 		}
 		//---------------------------------------------------
-		//t от T01 - h до T01
+		//t от T₁ - h до T₁
 		if (backgroundWorker2->CancellationPending)
 		{
 			e->Cancel = true;
@@ -3274,15 +3292,20 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 		if (Omega[i] > MaxOmega)  
 		{
 			MaxOmega = Omega[i];
+			IndexOfMaxOmega = i;
 		}
 		//Вычисление минимальной средней частоты
 		if (Omega[i] < MinOmega)  
 		{
 			MinOmega = Omega[i];
+			IndexOfMinOmega = i;
 		}
 
 		VO->push_back(Omega[i]);
 	}
+
+	g_list->Remove(gcnew PointPair(IndexOfMaxOmega, MaxOmega));
+	g_list->Remove(gcnew PointPair(IndexOfMinOmega, MinOmega));
 
 	NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T
 
@@ -3292,16 +3315,30 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 
 	double tmax_limit = t + 0.05;
 
+	PointPairList ^MinMaxOmegaList = gcnew PointPairList();
+
 	//Рисование графиков
 	LineItem ^Curve6 = panel2->AddCurve(L"Ωⱼ", g_list, Color::Red, SymbolType::Circle);
 	LineItem ^Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);
 	LineItem ^Curve8 = panel5->AddCurve(L"|μ|(t)", Mu_list, Color::Red, SymbolType::None);
 	LineItem ^Curve9 = panel6->AddCurve(L"φⱼ(T)", FIT_list, Color::Blue, SymbolType::Circle);
 
+	MinMaxOmegaList->Add(IndexOfMaxOmega, MaxOmega);
+	MinMaxOmegaList->Add(IndexOfMinOmega, MinOmega);
+
+	LineItem ^CurveMinMaxOmega = panel2->AddCurve(L"Min & Max Ωⱼ", MinMaxOmegaList, Color::Green, SymbolType::Circle);
+
+	panel2->Title->Text += String::Format("\nКластеров: {0}", NumOfClusters);
+	
 	Curve6->Line->IsVisible = false;
 	Curve6->Symbol->Fill->Color = Color::Red;
 	Curve6->Symbol->Fill->Type = FillType::Solid;
 	Curve6->Symbol->Size = 6;
+
+	CurveMinMaxOmega->Line->IsVisible = false;
+	CurveMinMaxOmega->Symbol->Fill->Color = Color::Green;
+	CurveMinMaxOmega->Symbol->Fill->Type = FillType::Solid;
+	CurveMinMaxOmega->Symbol->Size = 6;
 
 	Curve9->Line->IsVisible = false;
 	Curve9->Symbol->Fill->Color = Color::Blue;
@@ -3314,6 +3351,33 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	panel2->YAxis->Scale->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
 	panel2->YAxis->Scale->Min = MinOmega - 0.1;
 	panel2->YAxis->Scale->Max = MaxOmega + 0.1;
+	
+	zedGraphControl2->AxisChange();
+
+	ArrowObj ^Arr1 = gcnew ArrowObj(IndexOfMaxOmega + 1.5, MaxOmega + (MaxOmega - MinOmega)*0.5, IndexOfMaxOmega, MaxOmega);
+	ArrowObj ^Arr2 = gcnew ArrowObj(IndexOfMinOmega + 1.5, MinOmega - (MaxOmega - MinOmega)*0.5, IndexOfMinOmega, MinOmega);
+	LineObj ^Line1 = gcnew LineObj(Arr1->Location->X1, Arr1->Location->Y1, Arr1->Location->X1 + 1.5, Arr1->Location->Y1);
+	LineObj ^Line2 = gcnew LineObj(Arr2->Location->X1, Arr2->Location->Y1, Arr2->Location->X1 + 1.5, Arr2->Location->Y1);
+	TextObj ^Text1 = gcnew TextObj("Max", (Line1->Location->X1 + Line1->Location->X2)*0.5, Line1->Location->Y1 + (MaxOmega - MinOmega)*0.1);
+	TextObj ^Text2 = gcnew TextObj("Min", (Line2->Location->X1 + Line2->Location->X2)*0.5, Line2->Location->Y1 + (MaxOmega - MinOmega)*0.1);
+
+	Arr1->IsVisible = false;
+	Arr2->IsVisible = false;
+	Line1->IsVisible = false;
+	Line2->IsVisible = false;
+	Text1->FontSpec->Border->IsVisible = false;
+	Text1->FontSpec->Fill->Color = Color::Transparent;
+	Text1->IsVisible = false;
+	Text2->FontSpec->Border->IsVisible = false;
+	Text2->FontSpec->Fill->Color = Color::Transparent;
+	Text2->IsVisible = false;
+
+	panel2->GraphObjList->Add(Arr1);
+	panel2->GraphObjList->Add(Arr2);
+	panel2->GraphObjList->Add(Line1);
+	panel2->GraphObjList->Add(Line2);
+	panel2->GraphObjList->Add(Text1);
+	panel2->GraphObjList->Add(Text2);
 
 	panel6->XAxis->Scale->Min = -1;
 	panel6->XAxis->Scale->Max = n;
@@ -3327,7 +3391,6 @@ private: System::Void backgroundWorker2_DoWork(System::Object^  sender, System::
 	panel5->XAxis->Scale->Max = t + 0.05;
 	panel5->XAxis->Scale->Min = T02 - 0.05;
 
-	zedGraphControl2->AxisChange();
 	zedGraphControl2->Invalidate();
 	zedGraphControl4->AxisChange();
 	zedGraphControl4->Invalidate();
@@ -3422,6 +3485,7 @@ private: System::Void backgroundWorker2_RunWorkerCompleted(System::Object^  send
 	button1->Enabled = true;
 	comboBox1->Enabled = true;
 	comboBox2->Enabled = true;
+	checkBox2->Enabled = true;
 	button6->Enabled = false;
 	Change_scale_Omega->Enabled = true;
 }
@@ -3878,6 +3942,7 @@ private: System::Void radioButton3_CheckedChanged(System::Object^  sender, Syste
 	Omega1_Text->Visible = true;
 	Omega2_Text->Visible = true;
 	Change_scale_Omega->Visible = true;
+	checkBox2->Visible = true;
 }
 private: System::Void radioButton4_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
 {
@@ -3889,6 +3954,7 @@ private: System::Void radioButton4_CheckedChanged(System::Object^  sender, Syste
 	Omega1_Text->Visible = false;
 	Omega2_Text->Visible = false;
 	Change_scale_Omega->Visible = false;
+	checkBox2->Visible = false;
 }
 private: System::Void backgroundWorker6_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) 
 {
@@ -4066,6 +4132,24 @@ private: System::Void button16_Click(System::Object^  sender, System::EventArgs^
 
 	zedGraphControl9->AxisChange();
 	zedGraphControl9->Invalidate();
+}
+private: System::Void checkBox2_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
+{
+	if (checkBox2->Checked)
+	{
+		for each (GraphObj ^obj in zedGraphControl2->GraphPane->GraphObjList)
+		{
+			obj->IsVisible = true;
+		}
+	}
+	else
+	{
+		for each (GraphObj ^obj in zedGraphControl2->GraphPane->GraphObjList)
+		{
+			obj->IsVisible = false;
+		}
+	}
+	zedGraphControl2->Invalidate();
 }
 };
 }
