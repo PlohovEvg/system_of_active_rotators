@@ -18,22 +18,14 @@ namespace WinForm {
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
-	public: double *gamma;    //Параметры γⱼ
+
+	public: double* gamma;    //Параметры γⱼ
 	public: double gamma1;    //Левая граница γ₁
 	public: double gamma2;    //Правая граница γ₂
 	public: bool AvgMaxMinAlreadyExists;
-	public: vector<int*> *Clusters_vec;
-	public: vector<double**> *Omega_vec;
-	public: cli::array<Color> ^Colors;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column3;
-	public:
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column4;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn1;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn2;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn5;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn6;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn3;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn4;
+	public: vector<int*>* Clusters_vec;
+	public: vector<double**>* Omega_vec;
+	public: cli::array<Color>^ Colors;
 	public: String^ Str;
 
 		MyForm(void)
@@ -131,7 +123,14 @@ namespace WinForm {
 				delete components;
 			}
 		}
-
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column3;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column4;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn1;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn2;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn5;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn6;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn3;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn4;
 	private: System::Windows::Forms::GroupBox^ IntegrParams;
 	private: System::Windows::Forms::Label^ label25;
 	private: System::Windows::Forms::Label^ label28;
@@ -160,13 +159,7 @@ namespace WinForm {
 	private: System::Windows::Forms::Label^ label21;
 	private: System::Windows::Forms::TextBox^ nTB;
 	private: System::Windows::Forms::CheckBox^  checkBox2;
-
-
-
-
 	private: System::Windows::Forms::DataGridView^ TPhaseTable;
-
-
 	private: System::Windows::Forms::DataGridView^ TimeOfSpikesTable;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Time;
 	private: System::Windows::Forms::TabPage^  tabPage9;
@@ -268,8 +261,6 @@ namespace WinForm {
 	private: ZedGraph::ZedGraphControl^  SpikesGraph;
 	private: System::Windows::Forms::DataGridView^  dataGridView1;
 	private: System::Windows::Forms::DataGridView^  dataGridView2;
-
-
 	private: System::Windows::Forms::TextBox^  Omega1TB;
 	private: System::Windows::Forms::Label^  Omega2;
 	private: System::Windows::Forms::Label^  Omega1;
@@ -2318,112 +2309,90 @@ namespace WinForm {
 		}
 #pragma endregion
 
-private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) 
-{
-	GraphPane ^panel = OmegaBetaGraph->GraphPane;
-	GraphPane ^panel2 = ClustersCountBetaGraph->GraphPane;
+		private: System::Void PerformCalculations()
+		{
 
-	const int n = Convert::ToInt32(nTB->Text);                       //Число уравнений в системе
-	const int p = Convert::ToInt32(IterationsTB->Text);              //Число итераций, второй критерий остановки
-	const int NumOfSets = Convert::ToInt32(GammaSetsCountTB->Text);  //Число наборов
-	const double gamma1Copy = Convert::ToDouble(Gamma1MinTB->Text);  //Минимальное значение γ₁
-	const double gamma2Copy = Convert::ToDouble(Gamma2MaxTB->Text);	 //Максимальное значение γ₂
-	const double beta1 = Convert::ToDouble(Beta1TB->Text);           //Начальное значение β
-	const double beta2 = Convert::ToDouble(Beta2TB->Text);           //Конечное значение β
-	const double betaStep = Convert::ToDouble(BetaStepTB->Text);     //Шаг по β
-	const double h = Convert::ToDouble(hTB->Text);                   //Шаг интегрирования
-	const double T1 = Convert::ToDouble(T1_TB->Text);                //Начальное время, от которого будет считаться частота	
-	const double T = Convert::ToDouble(T_TB->Text);                  //Максимальное время, до которого будет подсчет, первый критерий остановки
-	const double alpha = Convert::ToDouble(AlphaTB->Text);           //Число α
-	const double g = Convert::ToDouble(gTB->Text);                   //Коэффициент связи
-	int non = 0;                                                     //Число точек на графике, в которых считаются средние частоты 
-	double E0;                                                       //Начальное условие для E    
-	double E0Star;                                                   //Начальное условие для Ė
-	double t;                                                        //Время			
-	int *NumOfClusters;                                              //Массив для хранения числа кластеров
-	int *k;                                                          //Число спайков для каждого ротатора
-	double **Omega;                                                  //Средние частоты
-	double *om;                                                      //Технический массив для вычислений 
-	double *Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
-	double *Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
-	double *cur_gamma;                                               //Набор случайных параметров γⱼ
-	double *Fi0;                                                     //Фазы при t = T₁
+		}
 
-	const double D2PI = 2 * M_PI;                                    //Константа 2π
+		private: System::Void SingleCalculationBW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
+		{
+			GraphPane^ panel2 = OmegaGraph->GraphPane;
+			GraphPane^ panel3 = SpikesGraph->GraphPane;
+			GraphPane^ panel4 = E_fieldGraph->GraphPane;
+			GraphPane^ panel5 = PhSyncParamGraph->GraphPane;
+			GraphPane^ panel6 = PhasesGraph->GraphPane;
 
-	if (T1 > T)
-	{
-		MessageBox::Show(L"T₁ должен быть меньше или равен T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
-	}
+			panel2->CurveList->Clear();
+			panel3->CurveList->Clear();
+			panel4->CurveList->Clear();
+			panel5->CurveList->Clear();
+			panel6->CurveList->Clear();
 
-	//Технические переменные, используемые для расчетов
-	int index;
-	int counter = 0;
-	double oldE0;
-	double ts;
+			panel2->YAxis->Scale->MajorStepAuto = true;
+			panel2->YAxis->Scale->MinorStepAuto = true;
+			panel2->Title->Text = L"График средних частот Ωⱼ";
 
-	panel->XAxis->Scale->Min = beta1 - 0.0001;
-	panel->XAxis->Scale->Max = beta2 + 0.0001;
-	panel->XAxis->Scale->MajorStep = betaStep;
-	panel->XAxis->Scale->MinorStep = betaStep / 5;
-	panel2->XAxis->Scale->Min = beta1 - 0.0001;
-	panel2->XAxis->Scale->Max = beta2 + 0.0001;
-	panel2->YAxis->Scale->MajorStep = 2;
-	panel2->YAxis->Scale->MinorStep = 1;
-	panel2->XAxis->Scale->MajorStep = betaStep;
-	panel2->XAxis->Scale->MinorStep = betaStep / 5;
+			PointPairList^ g_list = gcnew PointPairList();              //Список точек для графика средних частот Ω
+			PointPairList^ E_list = gcnew PointPairList();	            //Список точек для графика поля E(t)
+			PointPairList^ Mu_list = gcnew PointPairList();             //Список точек для графика |μ| от t
+			PointPairList^ FIT_list = gcnew PointPairList();            //Список точек для графика φⱼ(T) в конечный момент времени
 
-	//Вычисляем количество вершин в графе
-	for (double beta = beta1; beta <= beta2; beta += betaStep)
-	{
-		beta = round(beta * 100000) / 100000;
-		non++;
-	}
-	
-	PointPairList ^Cl_list;
-	cli::array<PointPairList^> ^Omega_List;
-	
-#pragma omp parallel private(om, Fi, Fiplus1, k, Fi0)
-	{
-		int threadid = omp_get_thread_num();
-			k = new int[n];
-			om = new double[n];
+			const int n = Convert::ToInt32(nTB->Text);              //Число уравнений в системе
+			const int p = Convert::ToInt32(IterationsTB->Text);             //Максимальное число итераций
+			const double h = Convert::ToDouble(hTB->Text);          //Шаг
+			const double T = Convert::ToDouble(T_TB->Text);          //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double T01 = Convert::ToDouble(T1_TB->Text);       //Начальное время, от которого будет считаться частота
+			const double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
+			const double g = Convert::ToDouble(gTB->Text);           //Коэффициент связи
+			const double alpha = Convert::ToDouble(AlphaTB->Text);   //Число α
+			const double beta = Convert::ToDouble(textBox7->Text);      //Число β	
+			int it = 0;                                                 //Индекс строк в таблице
+			int NumOfClusters;                                          //Число кластеров при t = T
+			int IndexOfMaxOmega, IndexOfMinOmega;                       //Номера элементов с максимальными и минимальными частотами
+			double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
+			double E0Star = Convert::ToDouble(E0Star_Text->Text);       //Начальное условие для Ė
+			double t = 0.0;                                             //Текущее время       
+			double Et;                                                  //Поле E(t)
+			double MaxOmega = -100000.0, MinOmega = 100000.0;           //Максимальная и минимальная средние частоты
+			double ts = 0.0;                                            //Время последнего спайка
+			int* k;                                                     //Число спайков для каждого ротатора  
+			double* Fi0;		                                        //Фазы при t = T₁
+			double* Fi, * Fiplus1;	                                    //Фазы φⱼ(t) j = 0,...,n - 1
+			double* Omega;                                              //Средние частоты Ω
+			complex<double> Mu;                                         //Параметр фазовой синхронизации μ
+
+			Str = "";
+
+			const double D2PI = 2 * M_PI;
+
+			if (T01 > T || T02 > T)
+			{
+				MessageBox::Show(L"T₁ и T₂ должны быть меньше или равны T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+				return;
+			}
+
+			//Технические переменные, используемые для расчетов
+			int ind = 0;
+			int i;
+			double oldE0;
+			bool spike_flag = false;
+			complex<double> CompFi;
+			const complex<double> CompN((double)n, 0.0);
+
 			Fi = new double[n];
 			Fiplus1 = new double[n];
+			Omega = new double[n];
 			Fi0 = new double[n];
+			k = new int[n];
 
-#pragma omp for private(Cl_list, Omega_List, E0, E0Star, index, ts, t, cur_gamma, Omega, NumOfClusters, oldE0)
-		for (int GlobalInd = 0; GlobalInd < NumOfSets; GlobalInd++)
-		{
-			if (backgroundWorker1->CancellationPending)
+			double tmin_limit = t - 0.05;
+
+			if (gamma1 != gamma2)
 			{
-				e->Cancel = true;
-				break;
-			}
-			E0 = Convert::ToDouble(E0_Text->Text);
-			E0Star = Convert::ToDouble(E0Star_Text->Text);
-			index = 0;
-			ts = 0.0;
-			t = 0.0;
-
-			cur_gamma = Set_Gamma_in_range(n, gamma1Copy, gamma2Copy);
-			NumOfClusters = new int[non];
-			Omega = new double*[n];
-			Cl_list = gcnew PointPairList();
-			Omega_List = gcnew cli::array<PointPairList^>(n);
-
-			if (gamma1Copy != gamma2Copy)
-			{
-				for (int i = 0; i < n; i++)
+				for (i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
 				{
-
-					Omega[i] = new double[non];
-					Omega_List[i] = gcnew PointPairList();
-
-					//Начальное значение φⱼ(0) и число спайков равно 0
 					Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
-					k[i] = 0;
+					k[i] = 0;                          //Изначальное число спайков равно нулю
 				}
 			}
 			else
@@ -2431,33 +2400,30 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 				random_device gen;
 				mt19937 me(gen());
 				uniform_real_distribution<> distr(0, M_PI);
-				for (int i = 0; i < n; i++)
+				for (i = 0; i < n; i++)
 				{
-					Omega[i] = new double[non];
-					Omega_List[i] = gcnew PointPairList();
-
 					Fi[i] = Fi0[i] = distr(me);
 					Fiplus1[i] = 0.0;
 					k[i] = 0;                          //Изначальное число спайков равно нулю
 				}
 			}
 
-			//Вычисляем φⱼ(t) методом Рунге-Кутта 4-го порядка
-			for (double beta = beta1; beta <= beta2; beta += betaStep)
+			//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
+			if (T01 <= T02)
 			{
-				beta = round(beta * 100000) / 100000;
-				if (threadid == 0)
-				{
-					backgroundWorker3->ReportProgress((int)((beta - beta1) / (beta2 - beta1) * 100));
-				}
 				//t от 0 до T01 - h
-				for (t; t < T1 - h; t += h)
-				{					
+				for (t; t < T01 - h; t += h)
+				{
+					if (SingleCalculationBW->CancellationPending)
+					{
+						e->Cancel = true;
+						return;
+					}
 					t = round(t * 1000) / 1000;
 					for (int j = 0; j < n; j++)
 					{
 						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
 						Fi[j] = Fiplus1[j];
 
 						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
@@ -2470,17 +2436,23 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 							Fi[j] = 0.0;			                       //Обнуление значения ф												
 						}
 					}
+					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
 				}
 				//---------------------------------------------------
-				//t от T₁ - h до T₁
+				//t от T01 - h до T01
+				if (SingleCalculationBW->CancellationPending)
+				{
+					e->Cancel = true;
+					return;
+				}
 				t = round(t * 1000) / 1000;
 				for (int j = 0; j < n; j++)
 				{
 					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
 					Fi[j] = Fiplus1[j];
 
-					if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+					if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
 					{
 						oldE0 = E0;
 						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
@@ -2492,1252 +2464,1513 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 					}
 				}
 
-				t += h;
-
 				for (int l = 0; l < n; l++)
 				{
 					Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
 				}
+
+				SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
+				t += h;
 				//---------------------------------------------------
-				//t от T₁ до T
-				for (t; t < T; t += h)
+				//t от T01 до T02 - h
+				for (t; t < T02 - h; t += h)
 				{
+					if (SingleCalculationBW->CancellationPending)
+					{
+						e->Cancel = true;
+						return;
+					}
 					t = round(t * 1000) / 1000;
 					for (int j = 0; j < n; j++)
 					{
 						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
 						Fi[j] = Fiplus1[j];
 
-						if (Fi[j] >= D2PI)                                   //В моемент импульса j-го ротатора
-						{												     
-							oldE0 = E0;									     
-							E0 = E(t + h, ts, E0, E0Star, alpha);            //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);  
-							E0Star += beta;                                  //Добавление β к начальному значению производной
-							ts = t + h;                                      //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                         //Обнуление значения ф
-							k[j]++;
+						if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                 //Добавление β к начальному значению производной
+							ts = t + h;                                     //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                        //Обнуление значения ф						
+							k[j]++;                                         //Увеличение числа спайков на 1						
 						}
 					}
+
+					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
 				}
-				//---------------------------------------------------		
-				//Вычисление средних частот Ω		
-				for (int i = 0; i < n; i++)
+				//---------------------------------------------------			
+				//t от T02 - h до T
+				for (t; t < T; t += h)
 				{
-					if (k[i] != 0)
+					if (SingleCalculationBW->CancellationPending)
 					{
-						Omega[i][index] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (t - T1);
+						e->Cancel = true;
+						return;
+					}
+					t = round(t * 1000) / 1000;
+					Mu = complex<double>(0.0, 0.0);
+					for (int j = 0; j < n; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+						Fi[j] = Fiplus1[j];
+
+						if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                 //Добавление β к начальному значению производной
+							ts = t + h;                                     //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                        //Обнуление значения ф						
+							k[j]++;                                         //Увеличение числа спайков на 1	
+							if (!spike_flag)                                //Отбражение нового спайка на графике
+							{
+								PointPairList^ Spaik_list = gcnew PointPairList();
+								Spaik_list->Add(ts, 0.0);
+								Spaik_list->Add(ts, 1.0);
+
+								LineItem^ Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+								SpikesGraph->AxisChange();
+								SpikesGraph->Invalidate();
+								spike_flag = true;
+							}
+						}
+						CompFi = polar<double>(1.0, Fi[j]);
+						Mu += CompFi;
+					}
+					spike_flag = false;
+
+					Et = E(t + h, ts, E0, E0Star, alpha);
+					E_list->Add(t + h, Et);
+					Mu = Mu / CompN;
+					Mu_list->Add(t + h, abs(Mu));
+
+					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
+				}
+				//---------------------------------------------------
+			}
+			else
+			{
+				//t от 0 до T02 - h
+				for (t; t < T02 - h; t += h)
+				{
+					if (SingleCalculationBW->CancellationPending)
+					{
+						e->Cancel = true;
+						return;
+					}
+					t = round(t * 1000) / 1000;
+					for (int j = 0; j < n; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+						Fi[j] = Fiplus1[j];
+
+						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                //Добавление β к начальному значению производной
+							ts = t + h;                                    //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                       //Обнуление значения ф												
+						}
+					}
+					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
+				}
+				//---------------------------------------------------
+				//t от T02 - h до T₁ - h
+				for (t; t < T01 - h; t += h)
+				{
+					t = round(t * 1000) / 1000;
+					Mu = complex<double>(0.0, 0.0);
+					for (int j = 0; j < n; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+						Fi[j] = Fiplus1[j];
+
+						if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                 //Добавление β к начальному значению производной
+							ts = t + h;                                     //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                        //Обнуление значения ф						
+							if (!spike_flag)                                //Отбражение нового спайка на графике
+							{
+								PointPairList^ Spaik_list = gcnew PointPairList();
+								Spaik_list->Add(ts, 0.0);
+								Spaik_list->Add(ts, 1.0);
+
+								LineItem^ Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+								SpikesGraph->AxisChange();
+								SpikesGraph->Invalidate();
+								spike_flag = true;
+							}
+						}
+						CompFi = polar<double>(1.0, Fi[j]);
+						Mu += CompFi;
+					}
+					spike_flag = false;
+
+					Et = E(t + h, ts, E0, E0Star, alpha);
+					E_list->Add(t + h, Et);
+					Mu = Mu / CompN;
+					Mu_list->Add(t + h, abs(Mu));
+
+					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
+				}
+				//---------------------------------------------------
+				//t от T₁ - h до T₁
+				if (SingleCalculationBW->CancellationPending)
+				{
+					e->Cancel = true;
+					return;
+				}
+				t = round(t * 1000) / 1000;
+				Mu = complex<double>(0.0, 0.0);
+				for (int j = 0; j < n; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+					Fi[j] = Fiplus1[j];
+
+					if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += beta;                                //Добавление β к начальному значению производной
+						ts = t + h;                                    //Изменение времени последнего спайка
+						Fi[j] = 0.0;			                       //Обнуление значения ф					
+						k[j]++;                                        //Увеличение числа спайков на 1
+						if (!spike_flag)                               //Отбражение нового спайка на графике
+						{
+							PointPairList^ Spaik_list = gcnew PointPairList();
+							Spaik_list->Add(ts, 0.0);
+							Spaik_list->Add(ts, 1.0);
+
+							LineItem^ Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+							SpikesGraph->AxisChange();
+							SpikesGraph->Invalidate();
+							spike_flag = true;
+						}
+					}
+					CompFi = polar<double>(1.0, Fi[j]);
+					Mu += CompFi;
+				}
+				spike_flag = false;
+
+				Et = E(t + h, ts, E0, E0Star, alpha);
+				E_list->Add(t + h, Et);
+				Mu = Mu / CompN;
+				Mu_list->Add(t + h, abs(Mu));
+
+				for (int l = 0; l < n; l++)
+				{
+					Fi0[l] = Fi[l];                                     //Запоминание значений фаз при t = T₁
+				}
+
+				t += h;
+
+				SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
+				//---------------------------------------------------
+				//t от T01 до T
+				for (t; t < T; t += h)
+				{
+					if (SingleCalculationBW->CancellationPending)
+					{
+						e->Cancel = true;
+						return;
+					}
+					t = round(t * 1000) / 1000;
+					Mu = complex<double>(0.0, 0.0);
+					for (int j = 0; j < n; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+						Fi[j] = Fiplus1[j];
+
+						if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                 //Добавление β к начальному значению производной
+							ts = t + h;                                     //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                        //Обнуление значения ф						
+							k[j]++;                                         //Увеличение числа спайков на 1	
+							if (!spike_flag)                                //Отбражение нового спайка на графике
+							{
+								PointPairList^ Spaik_list = gcnew PointPairList();
+								Spaik_list->Add(ts, 0.0);
+								Spaik_list->Add(ts, 1.0);
+
+								LineItem^ Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+								SpikesGraph->AxisChange();
+								SpikesGraph->Invalidate();
+								spike_flag = true;
+							}
+						}
+						CompFi = polar<double>(1.0, Fi[j]);
+						Mu += CompFi;
+					}
+					spike_flag = false;
+
+					Et = E(t + h, ts, E0, E0Star, alpha);
+					E_list->Add(t + h, Et);
+					Mu = Mu / CompN;
+					Mu_list->Add(t + h, abs(Mu));
+
+					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
+				}
+				//---------------------------------------------------			
+			}
+
+			//Вычисление средних частот
+			for (i = 0; i < n; i++)
+			{
+				//Вычисление значения частоты
+				if (k[i] != 0)
+				{
+					Omega[i] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (t - T01);
+				}
+				else
+				{
+					Omega[i] = (Fi[i] - Fi0[i]) / (t - T01);
+				}
+				g_list->Add(i, Omega[i]);
+				FIT_list->Add(i, Fi[i]);
+
+				//Вычисление максимальной средней частоты
+				if (Omega[i] > MaxOmega)
+				{
+					MaxOmega = Omega[i];
+					IndexOfMaxOmega = i;
+				}
+				//Вычисление минимальной средней частоты
+				if (Omega[i] < MinOmega)
+				{
+					MinOmega = Omega[i];
+					IndexOfMinOmega = i;
+				}
+			}
+
+			g_list->Remove(gcnew PointPair(IndexOfMaxOmega, MaxOmega));
+			g_list->Remove(gcnew PointPair(IndexOfMinOmega, MinOmega));
+
+			NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T
+
+			//Заполнение справки
+			Str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n\r\n";
+			Str += String::Format(L"γⱼ были взяты из интервала [{0:G3}; {1:G3}]\r\n\r\nЧисло кластеров при t = T:{2}", gamma1, gamma2, NumOfClusters);
+
+			double tmax_limit = t + 0.05;
+
+			PointPairList^ MinMaxOmegaList = gcnew PointPairList();
+
+			//Рисование графиков
+			LineItem^ Curve6 = panel2->AddCurve(L"Ωⱼ", g_list, Color::Red, SymbolType::Circle);
+			LineItem^ Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);
+			LineItem^ Curve8 = panel5->AddCurve(L"|μ|(t)", Mu_list, Color::Red, SymbolType::None);
+			LineItem^ Curve9 = panel6->AddCurve(L"φⱼ(T)", FIT_list, Color::Blue, SymbolType::Circle);
+
+			MinMaxOmegaList->Add(IndexOfMaxOmega, MaxOmega);
+			MinMaxOmegaList->Add(IndexOfMinOmega, MinOmega);
+
+			LineItem^ CurveMinMaxOmega = panel2->AddCurve(L"Min & Max Ωⱼ", MinMaxOmegaList, Color::Green, SymbolType::Circle);
+
+			panel2->Title->Text += String::Format("\nКластеров: {0}", NumOfClusters);
+
+			Curve6->Line->IsVisible = false;
+			Curve6->Symbol->Fill->Color = Color::Red;
+			Curve6->Symbol->Fill->Type = FillType::Solid;
+			Curve6->Symbol->Size = 6;
+
+			CurveMinMaxOmega->Line->IsVisible = false;
+			CurveMinMaxOmega->Symbol->Fill->Color = Color::Green;
+			CurveMinMaxOmega->Symbol->Fill->Type = FillType::Solid;
+			CurveMinMaxOmega->Symbol->Size = 6;
+
+			Curve9->Line->IsVisible = false;
+			Curve9->Symbol->Fill->Color = Color::Blue;
+			Curve9->Symbol->Fill->Type = FillType::Solid;
+			Curve9->Symbol->Size = 6;
+
+			panel2->XAxis->Scale->Min = -1;
+			panel2->XAxis->Scale->Max = n;
+			panel2->YAxis->Scale->Min = MinOmega - (MaxOmega - MinOmega) / 2;
+			panel2->YAxis->Scale->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
+			panel2->YAxis->Scale->Min = MinOmega - 0.1;
+			panel2->YAxis->Scale->Max = MaxOmega + 0.1;
+
+			OmegaGraph->AxisChange();
+
+			ArrowObj^ Arr1 = gcnew ArrowObj(IndexOfMaxOmega + 1.5, MaxOmega + (MaxOmega - MinOmega) * 0.5, IndexOfMaxOmega, MaxOmega);
+			ArrowObj^ Arr2 = gcnew ArrowObj(IndexOfMinOmega + 1.5, MinOmega - (MaxOmega - MinOmega) * 0.5, IndexOfMinOmega, MinOmega);
+			LineObj^ Line1 = gcnew LineObj(Arr1->Location->X1, Arr1->Location->Y1, Arr1->Location->X1 + 1.5, Arr1->Location->Y1);
+			LineObj^ Line2 = gcnew LineObj(Arr2->Location->X1, Arr2->Location->Y1, Arr2->Location->X1 + 1.5, Arr2->Location->Y1);
+			TextObj^ Text1 = gcnew TextObj("Max", (Line1->Location->X1 + Line1->Location->X2) * 0.5, Line1->Location->Y1 + (MaxOmega - MinOmega) * 0.1);
+			TextObj^ Text2 = gcnew TextObj("Min", (Line2->Location->X1 + Line2->Location->X2) * 0.5, Line2->Location->Y1 + (MaxOmega - MinOmega) * 0.1);
+
+			Arr1->IsVisible = false;
+			Arr2->IsVisible = false;
+			Line1->IsVisible = false;
+			Line2->IsVisible = false;
+			Text1->FontSpec->Border->IsVisible = false;
+			Text1->FontSpec->Fill->Color = Color::Transparent;
+			Text1->IsVisible = false;
+			Text2->FontSpec->Border->IsVisible = false;
+			Text2->FontSpec->Fill->Color = Color::Transparent;
+			Text2->IsVisible = false;
+
+			panel2->GraphObjList->Add(Arr1);
+			panel2->GraphObjList->Add(Arr2);
+			panel2->GraphObjList->Add(Line1);
+			panel2->GraphObjList->Add(Line2);
+			panel2->GraphObjList->Add(Text1);
+			panel2->GraphObjList->Add(Text2);
+
+			panel6->XAxis->Scale->Min = -1;
+			panel6->XAxis->Scale->Max = n;
+
+			panel3->XAxis->Scale->Max = t + 0.05;
+			panel3->XAxis->Scale->Min = T02 - 0.05;
+
+			panel4->XAxis->Scale->Max = t + 0.05;
+			panel4->XAxis->Scale->Min = T02 - 0.05;
+
+			panel5->XAxis->Scale->Max = t + 0.05;
+			panel5->XAxis->Scale->Min = T02 - 0.05;
+
+			OmegaGraph->Invalidate();
+			E_fieldGraph->AxisChange();
+			E_fieldGraph->Invalidate();
+			PhSyncParamGraph->AxisChange();
+			PhSyncParamGraph->Invalidate();
+			PhasesGraph->AxisChange();
+			PhasesGraph->Invalidate();
+
+			delete[]Fi;
+			delete[]Fiplus1;
+			delete[]Omega;
+			delete[]Fi0;
+			delete[]k;
+
+		}
+
+		private: System::Void backgroundWorker1_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
+		{
+			GraphPane^ panel = OmegaBetaGraph->GraphPane;
+			GraphPane^ panel2 = ClustersCountBetaGraph->GraphPane;
+
+			const int n = Convert::ToInt32(nTB->Text);                       //Число уравнений в системе
+			const int p = Convert::ToInt32(IterationsTB->Text);              //Число итераций, второй критерий остановки
+			const int NumOfSets = Convert::ToInt32(GammaSetsCountTB->Text);  //Число наборов
+			const double gamma1Copy = Convert::ToDouble(Gamma1MinTB->Text);  //Минимальное значение γ₁
+			const double gamma2Copy = Convert::ToDouble(Gamma2MaxTB->Text);	 //Максимальное значение γ₂
+			const double beta1 = Convert::ToDouble(Beta1TB->Text);           //Начальное значение β
+			const double beta2 = Convert::ToDouble(Beta2TB->Text);           //Конечное значение β
+			const double betaStep = Convert::ToDouble(BetaStepTB->Text);     //Шаг по β
+			const double h = Convert::ToDouble(hTB->Text);                   //Шаг интегрирования
+			const double T1 = Convert::ToDouble(T1_TB->Text);                //Начальное время, от которого будет считаться частота	
+			const double T = Convert::ToDouble(T_TB->Text);                  //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double alpha = Convert::ToDouble(AlphaTB->Text);           //Число α
+			const double g = Convert::ToDouble(gTB->Text);                   //Коэффициент связи
+			int non = 0;                                                     //Число точек на графике, в которых считаются средние частоты 
+			double E0;                                                       //Начальное условие для E    
+			double E0Star;                                                   //Начальное условие для Ė
+			double t;                                                        //Время			
+			int* NumOfClusters;                                              //Массив для хранения числа кластеров
+			int* k;                                                          //Число спайков для каждого ротатора
+			double** Omega;                                                  //Средние частоты
+			double* om;                                                      //Технический массив для вычислений 
+			double* Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
+			double* Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
+			double* cur_gamma;                                               //Набор случайных параметров γⱼ
+			double* Fi0;                                                     //Фазы при t = T₁
+
+			const double D2PI = 2 * M_PI;                                    //Константа 2π
+
+			if (T1 > T)
+			{
+				MessageBox::Show(L"T₁ должен быть меньше или равен T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+				return;
+			}
+
+			//Технические переменные, используемые для расчетов
+			int index;
+			int counter = 0;
+			double oldE0;
+			double ts;
+
+			panel->XAxis->Scale->Min = beta1 - 0.0001;
+			panel->XAxis->Scale->Max = beta2 + 0.0001;
+			panel->XAxis->Scale->MajorStep = betaStep;
+			panel->XAxis->Scale->MinorStep = betaStep / 5;
+			panel2->XAxis->Scale->Min = beta1 - 0.0001;
+			panel2->XAxis->Scale->Max = beta2 + 0.0001;
+			panel2->YAxis->Scale->MajorStep = 2;
+			panel2->YAxis->Scale->MinorStep = 1;
+			panel2->XAxis->Scale->MajorStep = betaStep;
+			panel2->XAxis->Scale->MinorStep = betaStep / 5;
+
+			//Вычисляем количество вершин в графе
+			for (double beta = beta1; beta <= beta2; beta += betaStep)
+			{
+				beta = round(beta * 100000) / 100000;
+				non++;
+			}
+
+			PointPairList^ Cl_list;
+			cli::array<PointPairList^>^ Omega_List;
+
+#pragma omp parallel private(om, Fi, Fiplus1, k, Fi0)
+			{
+				int threadid = omp_get_thread_num();
+				k = new int[n];
+				om = new double[n];
+				Fi = new double[n];
+				Fiplus1 = new double[n];
+				Fi0 = new double[n];
+
+#pragma omp for private(Cl_list, Omega_List, E0, E0Star, index, ts, t, cur_gamma, Omega, NumOfClusters, oldE0)
+				for (int GlobalInd = 0; GlobalInd < NumOfSets; GlobalInd++)
+				{
+					if (backgroundWorker1->CancellationPending)
+					{
+						e->Cancel = true;
+						break;
+					}
+					E0 = Convert::ToDouble(E0_Text->Text);
+					E0Star = Convert::ToDouble(E0Star_Text->Text);
+					index = 0;
+					ts = 0.0;
+					t = 0.0;
+
+					cur_gamma = Set_Gamma_in_range(n, gamma1Copy, gamma2Copy);
+					NumOfClusters = new int[non];
+					Omega = new double* [n];
+					Cl_list = gcnew PointPairList();
+					Omega_List = gcnew cli::array<PointPairList^>(n);
+
+					if (gamma1Copy != gamma2Copy)
+					{
+						for (int i = 0; i < n; i++)
+						{
+
+							Omega[i] = new double[non];
+							Omega_List[i] = gcnew PointPairList();
+
+							//Начальное значение φⱼ(0) и число спайков равно 0
+							Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
+							k[i] = 0;
+						}
 					}
 					else
 					{
-						Omega[i][index] = (Fi[i] - Fi0[i]) / (t - T1);
+						random_device gen;
+						mt19937 me(gen());
+						uniform_real_distribution<> distr(0, M_PI);
+						for (int i = 0; i < n; i++)
+						{
+							Omega[i] = new double[non];
+							Omega_List[i] = gcnew PointPairList();
+
+							Fi[i] = Fi0[i] = distr(me);
+							Fiplus1[i] = 0.0;
+							k[i] = 0;                          //Изначальное число спайков равно нулю
+						}
 					}
-					om[i] = Omega[i][index];
-				}
 
-				//Вычисление числа кластеров
-				NumOfClusters[index] = GetNumberOfClusters(om, n);
+					//Вычисляем φⱼ(t) методом Рунге-Кутта 4-го порядка
+					for (double beta = beta1; beta <= beta2; beta += betaStep)
+					{
+						beta = round(beta * 100000) / 100000;
+						if (threadid == 0)
+						{
+							backgroundWorker3->ReportProgress((int)((beta - beta1) / (beta2 - beta1) * 100));
+						}
+						//t от 0 до T01 - h
+						for (t; t < T1 - h; t += h)
+						{
+							t = round(t * 1000) / 1000;
+							for (int j = 0; j < n; j++)
+							{
+								//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+								Fiplus1[j] = RK4(t, ts, Fi[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+								Fi[j] = Fiplus1[j];
 
-				index++;
+								if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+								{
+									oldE0 = E0;
+									E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+									E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+									E0Star += beta;                                //Добавление β к начальному значению производной
+									ts = t + h;                                    //Изменение времени последнего спайка
+									Fi[j] = 0.0;			                       //Обнуление значения ф												
+								}
+							}
+						}
+						//---------------------------------------------------
+						//t от T₁ - h до T₁
+						t = round(t * 1000) / 1000;
+						for (int j = 0; j < n; j++)
+						{
+							//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+							Fiplus1[j] = RK4(t, ts, Fi[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+							Fi[j] = Fiplus1[j];
 
-				//Обнуление переменных для повторного счета при другом значении силы связи g
-				t = 0.0;
-				ts = 0.0;
-				E0 = Convert::ToDouble(E0_Text->Text);
-				E0Star = Convert::ToDouble(E0Star_Text->Text);
+							if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+							{
+								oldE0 = E0;
+								E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+								E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+								E0Star += beta;                                //Добавление β к начальному значению производной
+								ts = t + h;                                    //Изменение времени последнего спайка
+								Fi[j] = 0.0;			                       //Обнуление значения ф					
+								k[j]++;                                        //Увеличение числа спайков на 1
+							}
+						}
 
-				for (int i = 0; i < n; i++)
-				{
-					Fi[i] = Fiplus1[i] = 0.0;
-					k[i] = 0;
-				}
-			}
+						t += h;
+
+						for (int l = 0; l < n; l++)
+						{
+							Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
+						}
+						//---------------------------------------------------
+						//t от T₁ до T
+						for (t; t < T; t += h)
+						{
+							t = round(t * 1000) / 1000;
+							for (int j = 0; j < n; j++)
+							{
+								//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+								Fiplus1[j] = RK4(t, ts, Fi[j], h, cur_gamma[j], g, E0, E0Star, alpha);
+								Fi[j] = Fiplus1[j];
+
+								if (Fi[j] >= D2PI)                                   //В моемент импульса j-го ротатора
+								{
+									oldE0 = E0;
+									E0 = E(t + h, ts, E0, E0Star, alpha);            //Пересчет начальных условий
+									E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+									E0Star += beta;                                  //Добавление β к начальному значению производной
+									ts = t + h;                                      //Изменение времени последнего спайка
+									Fi[j] = 0.0;			                         //Обнуление значения ф
+									k[j]++;
+								}
+							}
+						}
+						//---------------------------------------------------		
+						//Вычисление средних частот Ω		
+						for (int i = 0; i < n; i++)
+						{
+							if (k[i] != 0)
+							{
+								Omega[i][index] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (t - T1);
+							}
+							else
+							{
+								Omega[i][index] = (Fi[i] - Fi0[i]) / (t - T1);
+							}
+							om[i] = Omega[i][index];
+						}
+
+						//Вычисление числа кластеров
+						NumOfClusters[index] = GetNumberOfClusters(om, n);
+
+						index++;
+
+						//Обнуление переменных для повторного счета при другом значении силы связи g
+						t = 0.0;
+						ts = 0.0;
+						E0 = Convert::ToDouble(E0_Text->Text);
+						E0Star = Convert::ToDouble(E0Star_Text->Text);
+
+						for (int i = 0; i < n; i++)
+						{
+							Fi[i] = Fiplus1[i] = 0.0;
+							k[i] = 0;
+						}
+					}
 
 #pragma omp critical (pushing)
-			{
-				Omega_vec->push_back(Omega);
-				Clusters_vec->push_back(NumOfClusters);
-			}
-
-			double _beta = beta1;
-
-			//Рисование графиков
-			for (int i = 0; i < n; i++)
-			{
-				_beta = beta1;
-				for (int j = 0; j < non; j++)
-				{
-					Omega_List[i]->Add(_beta, Omega[i][j]);
-					if (_beta <= beta2)
 					{
+						Omega_vec->push_back(Omega);
+						Clusters_vec->push_back(NumOfClusters);
+					}
+
+					double _beta = beta1;
+
+					//Рисование графиков
+					for (int i = 0; i < n; i++)
+					{
+						_beta = beta1;
+						for (int j = 0; j < non; j++)
+						{
+							Omega_List[i]->Add(_beta, Omega[i][j]);
+							if (_beta <= beta2)
+							{
+								_beta += betaStep;
+								_beta = round(_beta * 100000) / 100000;
+							}
+						}
+						LineItem^ Curve;
+#pragma omp critical (DrawOmegaGraph)
+						Curve = panel->AddCurve(Convert::ToString(GlobalInd), Omega_List[i], Colors[GlobalInd], SymbolType::Circle);
+						Curve->Symbol->Fill->Color = Colors[GlobalInd];
+						Curve->Symbol->Size = 8.0f;
+						Curve->Symbol->Fill->Type = FillType::Solid;
+						if (i > 0)
+						{
+							Curve->Label->Text = String::Empty;
+						}
+					}
+
+					OmegaBetaGraph->AxisChange();
+					OmegaBetaGraph->Invalidate();
+
+					_beta = beta1;
+
+					for (int i = 0; i < non; i++)
+					{
+						Cl_list->Add(_beta, NumOfClusters[i]);
 						_beta += betaStep;
 						_beta = round(_beta * 100000) / 100000;
 					}
-				}
-				LineItem ^Curve;
-#pragma omp critical (DrawOmegaGraph)
-				Curve = panel->AddCurve(Convert::ToString(GlobalInd), Omega_List[i], Colors[GlobalInd], SymbolType::Circle);
-				Curve->Symbol->Fill->Color = Colors[GlobalInd];
-				Curve->Symbol->Size = 8.0f;
-				Curve->Symbol->Fill->Type = FillType::Solid;
-				if (i > 0)
-				{
-					Curve->Label->Text = String::Empty;
-				}
-			}
-
-			OmegaBetaGraph->AxisChange();
-			OmegaBetaGraph->Invalidate();
-
-			_beta = beta1;
-
-			for (int i = 0; i < non; i++)
-			{
-				Cl_list->Add(_beta, NumOfClusters[i]);
-				_beta += betaStep;
-				_beta = round(_beta * 100000) / 100000;
-			}
-			LineItem ^Curve2;
+					LineItem^ Curve2;
 #pragma omp critical (DrawClusGraph)
-			Curve2 = panel2->AddCurve(Convert::ToString(GlobalInd), Cl_list, Colors[GlobalInd], SymbolType::Circle);
-			Curve2->Symbol->Fill->Color = Colors[GlobalInd];
-			Curve2->Symbol->Fill->Type = FillType::Solid;
-			Curve2->Line->IsVisible = false;
+					Curve2 = panel2->AddCurve(Convert::ToString(GlobalInd), Cl_list, Colors[GlobalInd], SymbolType::Circle);
+					Curve2->Symbol->Fill->Color = Colors[GlobalInd];
+					Curve2->Symbol->Fill->Type = FillType::Solid;
+					Curve2->Line->IsVisible = false;
+
+					ClustersCountBetaGraph->AxisChange();
+					ClustersCountBetaGraph->Invalidate();
+
+#pragma omp atomic
+					counter++;
+#pragma omp critical (report)
+					backgroundWorker1->ReportProgress((int)((float)counter / NumOfSets * 100));
+				}
+				//Освобождение памяти
+				delete[]om;
+				delete[]Fi;
+				delete[]Fiplus1;
+				delete[]k;
+				delete[]Fi0;
+			}
+			//Конец параллельной секции------------------------------------------------------------------
+			delete[]cur_gamma;
+		}
+
+		private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+
+			Int32 NumOfSets = Convert::ToInt32(GammaSetsCountTB->Text);
+
+			if (NumOfSets > 50)
+			{
+				MessageBox::Show("Максимальное число наборов: 50", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+				return;
+			}
+			if (NumOfSets == 0)
+			{
+				MessageBox::Show("Число наборов должно быть больше 0", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+				return;
+			}
+
+			Beta1TB->ReadOnly = true;
+			Beta2TB->ReadOnly = true;
+			BetaStepTB->ReadOnly = true;
+			GammaSetsCountTB->ReadOnly = true;
+			label15->Text = "Идут вычисления... 0%";
+			label15->Visible = true;
+			button2->Enabled = false;
+			Gamma2MaxTB->Enabled = false;
+			Gamma1MinTB->Enabled = false;
+			button3->Enabled = true;
+			button3->Focus();
+
+			backgroundWorker1->RunWorkerAsync();
+		}
+
+		private: System::Void Change_scale_Omega_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			GraphPane^ panel = OmegaGraph->GraphPane;
+			double Om1 = Convert::ToDouble(Omega1TB->Text);
+			double Om2 = Convert::ToDouble(Omega2TB->Text);
+			panel->YAxis->Scale->Min = Om1;
+			panel->YAxis->Scale->Max = Om2;
+			panel->YAxis->Scale->MajorStepAuto = false;
+			panel->YAxis->Scale->MinorStepAuto = false;
+			panel->YAxis->Scale->MajorStep = (Om2 - Om1) * 0.1;
+			panel->YAxis->Scale->MinorStep = (Om2 - Om1) * 0.02;
+			OmegaGraph->AxisChange();
+			OmegaGraph->Invalidate();
+		}
+
+		private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			GammaTable->Rows->Clear();
+
+			const int n = Convert::ToInt32(nTB->Text);
+			const double gamma0 = Convert::ToDouble(Gamma0CmbB->Text);
+			const double delta = Convert::ToDouble(DeltaCmbB->Text);
+
+			gamma = Set_Gamma(n, gamma0, delta);
+			gamma1 = gamma2 = gamma[0];
+			qsort((void*)gamma, (size_t)n, sizeof(double), compare);
+
+			GammaTable->Rows->Add(n);
+			GammaTable->Rows[0]->Cells[0]->Value = 0;
+			GammaTable->Rows[0]->Cells[1]->Value = gamma[0];
+
+			for (int i = 1; i < n; i++)
+			{
+				if (gamma[i] > gamma2)
+				{
+					gamma2 = gamma[i];
+				}
+				if (gamma[i] < gamma1)
+				{
+					gamma1 = gamma[i];
+				}
+
+				GammaTable->Rows[i]->Cells[0]->Value = i;
+				GammaTable->Rows[i]->Cells[1]->Value = gamma[i];
+			}
+
+			StartBtn->Enabled = true;
+
+			MessageBox::Show("Набор сгенерирован", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+		}
+
+		private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			OmegaBetaGraph->GraphPane->CurveList->Clear();
+			ClustersCountBetaGraph->GraphPane->CurveList->Clear();
+			Beta1TB->ReadOnly = false;
+			Beta2TB->ReadOnly = false;
+			BetaStepTB->ReadOnly = false;
+			GammaSetsCountTB->ReadOnly = false;
+			AvgMaxMinAlreadyExists = false;
+			Gamma2MaxTB->Enabled = true;
+			Gamma1MinTB->Enabled = true;
 
 			ClustersCountBetaGraph->AxisChange();
 			ClustersCountBetaGraph->Invalidate();
+			OmegaBetaGraph->AxisChange();
+			OmegaBetaGraph->Invalidate();
 
-#pragma omp atomic
-			counter++;
-#pragma omp critical (report)
-			backgroundWorker1->ReportProgress((int)((float)counter / NumOfSets * 100));
-		}		
-		//Освобождение памяти
-		delete[]om;
-		delete[]Fi;
-		delete[]Fiplus1;
-		delete[]k;
-		delete[]Fi0;
-	}
-	//Конец параллельной секции------------------------------------------------------------------
-	delete[]cur_gamma;
-}
+			Omega_vec->clear();
+			Clusters_vec->clear();
+			textBox3->Text = String::Empty;
+			textBox5->Text = String::Empty;
+			textBox6->Text = String::Empty;
+			checkBox1->Checked = true;
+			checkBox4->Checked = true;
+			checkBox1->Enabled = false;
+			checkBox4->Enabled = false;
+			button2->Enabled = true;
+			button5->Enabled = false;
+			button4->Enabled = false;
 
-private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e)
-{
-
-	Int32 NumOfSets = Convert::ToInt32(GammaSetsCountTB->Text);
-
-	if (NumOfSets > 50)
-	{
-		MessageBox::Show("Максимальное число наборов: 50", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
-	}
-	if (NumOfSets == 0)
-	{
-		MessageBox::Show("Число наборов должно быть больше 0", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
-	}
-
-	Beta1TB->ReadOnly = true;
-	Beta2TB->ReadOnly = true;
-	BetaStepTB->ReadOnly = true;
-	GammaSetsCountTB->ReadOnly = true;
-	label15->Text = "Идут вычисления... 0%";
-	label15->Visible = true;
-	button2->Enabled = false;
-	Gamma2MaxTB->Enabled = false;
-	Gamma1MinTB->Enabled = false;
-	button3->Enabled = true;
-	button3->Focus();
-
-	backgroundWorker1->RunWorkerAsync();
-}
-
-private: System::Void Change_scale_Omega_Click(System::Object^  sender, System::EventArgs^  e)
-{
-	GraphPane ^panel = OmegaGraph->GraphPane;
-	double Om1 = Convert::ToDouble(Omega1TB->Text);
-	double Om2 = Convert::ToDouble(Omega2TB->Text);
-
-	panel->YAxis->Scale->Min = Om1;
-	panel->YAxis->Scale->Max = Om2;
-
-	panel->YAxis->Scale->MajorStepAuto = false;
-	panel->YAxis->Scale->MinorStepAuto = false;
-	panel->YAxis->Scale->MajorStep = (Om2 - Om1)*0.1;
-	panel->YAxis->Scale->MinorStep = (Om2 - Om1)*0.02;
-	OmegaGraph->AxisChange();
-	OmegaGraph->Invalidate();
-}
-private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
-{
-	GammaTable->Rows->Clear();
-
-	const int n = Convert::ToInt32(nTB->Text);
-	const double gamma0 = Convert::ToDouble(Gamma0CmbB->Text);
-	const double delta = Convert::ToDouble(DeltaCmbB->Text);
-
-	gamma = Set_Gamma(n, gamma0, delta);
-	gamma1 = gamma2 = gamma[0];
-	qsort((void *)gamma, (size_t)n, sizeof(double), compare);
-
-	GammaTable->Rows->Add(n);
-	GammaTable->Rows[0]->Cells[0]->Value = 0;
-	GammaTable->Rows[0]->Cells[1]->Value = gamma[0];
-
-	for (int i = 1; i < n; i++)
-	{
-		if (gamma[i] > gamma2)
-		{
-			gamma2 = gamma[i];
-		}
-		if (gamma[i] < gamma1)
-		{
-			gamma1 = gamma[i];
+			MessageBox::Show("Графики очищены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 		}
 
-		GammaTable->Rows[i]->Cells[0]->Value = i;
-		GammaTable->Rows[i]->Cells[1]->Value = gamma[i];
-	}
-
-	StartBtn->Enabled = true;
-
-	MessageBox::Show("Набор сгенерирован", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-}
-private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	OmegaBetaGraph->GraphPane->CurveList->Clear();
-	ClustersCountBetaGraph->GraphPane->CurveList->Clear();
-	Beta1TB->ReadOnly = false;
-	Beta2TB->ReadOnly = false;
-	BetaStepTB->ReadOnly = false;
-	GammaSetsCountTB->ReadOnly = false;
-	AvgMaxMinAlreadyExists = false;
-	Gamma2MaxTB->Enabled = true;
-	Gamma1MinTB->Enabled = true;
-
-	ClustersCountBetaGraph->AxisChange();
-	ClustersCountBetaGraph->Invalidate();
-	OmegaBetaGraph->AxisChange();
-	OmegaBetaGraph->Invalidate();
-
-	Omega_vec->clear();
-	Clusters_vec->clear();
-	textBox3->Text = String::Empty;
-	textBox5->Text = String::Empty;
-	textBox6->Text = String::Empty;
-	checkBox1->Checked = true;
-	checkBox4->Checked = true;
-	checkBox1->Enabled = false;
-	checkBox4->Enabled = false;
-	button2->Enabled = true;
-	button5->Enabled = false;
-	button4->Enabled = false;
-
-	MessageBox::Show("Графики очищены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-}
-private: System::Void backgroundWorker1_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
-{
-	progressBar1->Value = e->ProgressPercentage;
-	label15->Text = "Идут вычисления... " + Convert::ToString(progressBar1->Value) + "%";
-}
-private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
-{
-	if (e->Cancelled)
-	{
-		label16->Visible = false;
-		MessageBox::Show("Вычисления приостановлены пользователем", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-	}
-	else
-	{
-		MessageBox::Show("Вычисления закончены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-	}
-	progressBar1->Value = 0;
-	progressBar3->Value = 0;
-	label15->Visible = false;
-	checkBox1->Enabled = true;
-	checkBox4->Enabled = true;
-	button5->Enabled = true;
-	button4->Enabled = true;
-	button3->Enabled = false;
-}
-private: System::Void button5_Click(System::Object^  sender, System::EventArgs^  e) 
-{	
-	const int n = Convert::ToInt32(nTB->Text);
-	const int NumOfSets = Convert::ToInt32(GammaSetsCountTB->Text);
-	const double beta1 = Convert::ToDouble(Beta1TB->Text);         
-	const double beta2 = Convert::ToDouble(Beta2TB->Text);         
-	const double betaStep = Convert::ToDouble(BetaStepTB->Text);      
-	const double gamma1Copy = Convert::ToDouble(Gamma1MinTB->Text);
-	const double gamma2Copy = Convert::ToDouble(Gamma2MaxTB->Text);
-	int* curClusters;
-	double** curOmega;
-	double* om;
-	String ^str = L"Ω:\r\n";
-	String ^str1 = "Кластеры:\r\n";
-	String ^str2 = "";
-	GraphPane ^panel = OmegaBetaGraph->GraphPane;
-	GraphPane ^panel2 = ClustersCountBetaGraph->GraphPane;
-
-	PointPairList ^AvgOmList = gcnew PointPairList();
-	PointPairList ^AvgClusList = gcnew PointPairList();
-	PointPairList ^MinMaxOmList = gcnew PointPairList();
-	PointPairList ^MinMaxClusList = gcnew PointPairList();
-
-	int non = 0;
-	int index;
-	int k = 0;
-	int m = 0;
-
-	for (double beta = beta1; beta <= beta2; beta += betaStep)
-	{
-		beta = round(beta * 100000) / 100000;
-		non++;
-	}
-
-	double **MinMaxOm = new double*[non];
-	int **MinMaxClus = new int*[non];
-
-	for (int i = 0; i < non; i++)
-	{
-		MinMaxOm[i] = new double[2 * NumOfSets];
-		MinMaxClus[i] = new int[NumOfSets];
-	}
-
-	if (AvgMaxMinAlreadyExists)
-	{		
-			panel->CurveList->RemoveAt(0);
-			panel->CurveList->RemoveAt(0);
-			panel2->CurveList->RemoveAt(0);
-			panel2->CurveList->RemoveAt(0);
-	}
-
-	for(int j = 0; j < (int)Omega_vec->size(); j++)
-	{
-		curOmega = Omega_vec->at(j);
-		om = new double[n];
-		curClusters = Clusters_vec->at(j);
-
-		for (index = 0; index < non; index++)
+		private: System::Void backgroundWorker1_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e)
 		{
-			for (int i = 0; i < n; i++)
+			progressBar1->Value = e->ProgressPercentage;
+			label15->Text = "Идут вычисления... " + Convert::ToString(progressBar1->Value) + "%";
+		}
+
+		private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
+		{
+			if (e->Cancelled)
 			{
-				om[i] = curOmega[i][index];
+				label16->Visible = false;
+				MessageBox::Show("Вычисления приостановлены пользователем", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 			}
-			FindMinMax(n, om, &MinMaxOm[index][k], &MinMaxOm[index][k + 1]);
-			MinMaxClus[index][m] = curClusters[index];
-		}
-		m++;
-		k += 2;		
-	}
-
-	double beta = beta1;
-	for (int i = 0; i < non; i++)
-	{
-		double MaxOmega, MinOmega;
-		int MaxClus, MinClus;
-
-		FindMinMax(2 * NumOfSets, MinMaxOm[i], &MinOmega, &MaxOmega);
-		FindMinMax(NumOfSets, MinMaxClus[i], &MinClus, &MaxClus);
-
-		MinMaxOmList->Add(beta, MinOmega, MaxOmega);
-		AvgOmList->Add(beta, (MinOmega + MaxOmega)*0.5);
-		MinMaxClusList->Add(beta, MinClus, MaxClus);
-		AvgClusList->Add(beta, (int)((MinClus + MaxClus)*0.5));
-
-		str += String::Format(L"β = {0}; Min = {1:G5}, Max = {2:G5}, Avg = {3:G5}\r\n", beta, MinOmega, MaxOmega, (MinOmega + MaxOmega)*0.5);
-
-		str1 += String::Format(L"β = {0}; Min = {1}, Max = {2}, Avg = {3}\r\n", beta, MinClus, MaxClus, (int)((MinClus + MaxClus)*0.5));
-
-		beta += betaStep;
-	}
-
-	str2 += String::Format(L"γⱼ были взяты из интервала [{0}; {1}]", gamma1Copy, gamma2Copy);
-
-	textBox3->Text = str;
-	textBox5->Text = str1;
-	textBox6->Text = str2;
-
-	LineItem ^Curve = panel->AddCurve("Среднее значение", AvgOmList, Color::DarkOrange, SymbolType::Diamond);
-	LineItem ^Curve2 = panel2->AddCurve("Среднее значение", AvgClusList, Color::DarkOrange, SymbolType::Diamond);
-	ErrorBarItem ^ErrorBar = panel->AddErrorBar("Min и Max", MinMaxOmList, Color::DarkOrange);
-	ErrorBarItem ^ErrorBar2 = panel2->AddErrorBar("Min и Max", MinMaxClusList, Color::DarkOrange);
-
-	Curve->Symbol->Fill->Color = Color::DarkOrange;
-	Curve->Line->IsVisible = false;
-	Curve->Symbol->Size = 8.0f;
-	Curve->Symbol->Fill->Type = FillType::Solid;
-
-	Curve2->Symbol->Fill->Color = Color::DarkOrange;
-	Curve2->Line->IsVisible = false;
-	Curve2->Symbol->Fill->Type = FillType::Solid;
-
-	panel->CurveList->Move(panel->CurveList->Count - 1, -9999);
-	panel->CurveList->Move(panel->CurveList->Count - 1, -10000);
-	panel2->CurveList->Move(panel2->CurveList->Count - 1, -9999);
-	panel2->CurveList->Move(panel2->CurveList->Count - 1, -10000);
-		
-	ClustersCountBetaGraph->Invalidate();
-	OmegaBetaGraph->Invalidate();
-
-	AvgMaxMinAlreadyExists = true;
-
-	for (int i = 0; i < non; i++)
-	{
-		delete[]MinMaxOm[i];
-		delete[]MinMaxClus[i];
-	}
-}
-private: System::Void checkBox1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
-{
-	GraphPane ^panel = OmegaBetaGraph->GraphPane;
-
-	if (checkBox1->Checked)
-	{
-		panel->Legend->IsVisible = true;
-	}
-	else
-	{
-		panel->Legend->IsVisible = false;
-	}
-
-	OmegaBetaGraph->Invalidate();
-}
-private: System::Void checkBox4_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
-{
-	GraphPane ^panel = ClustersCountBetaGraph->GraphPane;
-
-	if (checkBox4->Checked)
-	{
-		panel->Legend->IsVisible = true;
-	}
-	else
-	{
-		panel->Legend->IsVisible = false;
-	}
-
-	ClustersCountBetaGraph->AxisChange();
-	ClustersCountBetaGraph->Invalidate();
-}
-private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	label15->Visible = false;
-	label16->Visible = true;
-	backgroundWorker1->CancelAsync();
-}
-private: System::Void SingleCalculationBW_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) 
-{
-	GraphPane^ panel2 = OmegaGraph->GraphPane;
-	GraphPane^ panel3 = SpikesGraph->GraphPane;
-	GraphPane^ panel4 = E_fieldGraph->GraphPane;
-	GraphPane^ panel5 = PhSyncParamGraph->GraphPane;
-	GraphPane^ panel6 = PhasesGraph->GraphPane;
-
-	panel2->CurveList->Clear();
-	panel3->CurveList->Clear();
-	panel4->CurveList->Clear();
-	panel5->CurveList->Clear();
-	panel6->CurveList->Clear();
-
-	panel2->YAxis->Scale->MajorStepAuto = true;
-	panel2->YAxis->Scale->MinorStepAuto = true;
-	panel2->Title->Text = L"График средних частот Ωⱼ";
-
-	PointPairList^ g_list = gcnew PointPairList();              //Список точек для графика средних частот Ω
-	PointPairList^ E_list = gcnew PointPairList();	            //Список точек для графика поля E(t)
-	PointPairList^ Mu_list = gcnew PointPairList();             //Список точек для графика |μ| от t
-	PointPairList^ FIT_list = gcnew PointPairList();            //Список точек для графика φⱼ(T) в конечный момент времени
-
-	const int n = Convert::ToInt32(nTB->Text);              //Число уравнений в системе
-	const int p = Convert::ToInt32(IterationsTB->Text);             //Максимальное число итераций
-	const double h = Convert::ToDouble(hTB->Text);          //Шаг
-	const double T = Convert::ToDouble(T_TB->Text);          //Максимальное время, до которого будет подсчет, первый критерий остановки
-	const double T01 = Convert::ToDouble(T1_TB->Text);       //Начальное время, от которого будет считаться частота
-	const double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
-	const double g = Convert::ToDouble(gTB->Text);           //Коэффициент связи
-	const double alpha = Convert::ToDouble(AlphaTB->Text);   //Число α
-	const double beta = Convert::ToDouble(textBox7->Text);      //Число β	
-	int it = 0;                                                 //Индекс строк в таблице
-	int NumOfClusters;                                          //Число кластеров при t = T
-	int IndexOfMaxOmega, IndexOfMinOmega;                       //Номера элементов с максимальными и минимальными частотами
-	double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
-	double E0Star = Convert::ToDouble(E0Star_Text->Text);       //Начальное условие для Ė
-	double t = 0.0;                                             //Текущее время       
-	double Et;                                                  //Поле E(t)
-	double MaxOmega = -100000.0, MinOmega = 100000.0;           //Максимальная и минимальная средние частоты
-	double ts = 0.0;                                            //Время последнего спайка
-	int *k;                                                     //Число спайков для каждого ротатора  
-	double *Fi0;		                                        //Фазы при t = T₁
-	double *Fi, *Fiplus1;	                                    //Фазы φⱼ(t) j = 0,...,n - 1
-	double *Omega;                                              //Средние частоты Ω
-	complex<double> Mu;                                         //Параметр фазовой синхронизации μ
-
-	Str = "";
-
-	const double D2PI = 2 * M_PI;
-
-	if (T01 > T || T02 > T)
-	{
-		MessageBox::Show(L"T₁ и T₂ должны быть меньше или равны T", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
-	}
-
-	//Технические переменные, используемые для расчетов
-	int ind = 0;
-	int i;
-	double oldE0;
-	bool spike_flag = false;
-	complex<double> CompFi;
-	const complex<double> CompN((double)n, 0.0);
-
-	Fi = new double[n];
-	Fiplus1 = new double[n];
-	Omega = new double[n];
-	Fi0 = new double[n];
-	k = new int[n];
-
-	double tmin_limit = t - 0.05;
-
-	if (gamma1 != gamma2)
-	{
-		for (i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
-		{
-			Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
-			k[i] = 0;                          //Изначальное число спайков равно нулю
-		}
-	}
-	else
-	{
-		random_device gen;
-		mt19937 me(gen());
-		uniform_real_distribution<> distr(0, M_PI);
-		for (i = 0; i < n; i++)                
-		{
-			Fi[i] = Fi0[i] = distr(me);
-			Fiplus1[i] = 0.0;
-			k[i] = 0;                          //Изначальное число спайков равно нулю
-		}
-	}
-
-	//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
-	if (T01 <= T02)
-	{
-		//t от 0 до T01 - h
-		for (t; t < T01 - h; t += h)
-		{
-			if (SingleCalculationBW->CancellationPending)
+			else
 			{
-				e->Cancel = true;
-				return;
+				MessageBox::Show("Вычисления закончены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 			}
-			t = round(t * 1000) / 1000;
-			for (int j = 0; j < n; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
+			progressBar1->Value = 0;
+			progressBar3->Value = 0;
+			label15->Visible = false;
+			checkBox1->Enabled = true;
+			checkBox4->Enabled = true;
+			button5->Enabled = true;
+			button4->Enabled = true;
+			button3->Enabled = false;
+		}
 
-				if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+		private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			const int n = Convert::ToInt32(nTB->Text);
+			const int NumOfSets = Convert::ToInt32(GammaSetsCountTB->Text);
+			const double beta1 = Convert::ToDouble(Beta1TB->Text);
+			const double beta2 = Convert::ToDouble(Beta2TB->Text);
+			const double betaStep = Convert::ToDouble(BetaStepTB->Text);
+			const double gamma1Copy = Convert::ToDouble(Gamma1MinTB->Text);
+			const double gamma2Copy = Convert::ToDouble(Gamma2MaxTB->Text);
+			int* curClusters;
+			double** curOmega;
+			double* om;
+			String^ str = L"Ω:\r\n";
+			String^ str1 = "Кластеры:\r\n";
+			String^ str2 = "";
+			GraphPane^ panel = OmegaBetaGraph->GraphPane;
+			GraphPane^ panel2 = ClustersCountBetaGraph->GraphPane;
+
+			PointPairList^ AvgOmList = gcnew PointPairList();
+			PointPairList^ AvgClusList = gcnew PointPairList();
+			PointPairList^ MinMaxOmList = gcnew PointPairList();
+			PointPairList^ MinMaxClusList = gcnew PointPairList();
+
+			int non = 0;
+			int index;
+			int k = 0;
+			int m = 0;
+
+			for (double beta = beta1; beta <= beta2; beta += betaStep)
+			{
+				beta = round(beta * 100000) / 100000;
+				non++;
+			}
+
+			double** MinMaxOm = new double* [non];
+			int** MinMaxClus = new int* [non];
+
+			for (int i = 0; i < non; i++)
+			{
+				MinMaxOm[i] = new double[2 * NumOfSets];
+				MinMaxClus[i] = new int[NumOfSets];
+			}
+
+			if (AvgMaxMinAlreadyExists)
+			{
+				panel->CurveList->RemoveAt(0);
+				panel->CurveList->RemoveAt(0);
+				panel2->CurveList->RemoveAt(0);
+				panel2->CurveList->RemoveAt(0);
+			}
+
+			for (int j = 0; j < (int)Omega_vec->size(); j++)
+			{
+				curOmega = Omega_vec->at(j);
+				om = new double[n];
+				curClusters = Clusters_vec->at(j);
+
+				for (index = 0; index < non; index++)
 				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                //Добавление β к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                       //Обнуление значения ф												
-				}
-			}
-			SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-		}
-		//---------------------------------------------------
-		//t от T01 - h до T01
-		if (SingleCalculationBW->CancellationPending)
-		{
-			e->Cancel = true;
-			return;
-		}
-		t = round(t * 1000) / 1000;
-		for (int j = 0; j < n; j++)
-		{
-			//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-			Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-			Fi[j] = Fiplus1[j];
-
-			if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
-			{
-				oldE0 = E0;
-				E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-				E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-				E0Star += beta;                                //Добавление β к начальному значению производной
-				ts = t + h;                                    //Изменение времени последнего спайка
-				Fi[j] = 0.0;			                       //Обнуление значения ф					
-				k[j]++;                                        //Увеличение числа спайков на 1
-			}
-		}
-
-		for (int l = 0; l < n; l++)
-		{
-			Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
-		}
-
-		SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-		t += h;
-		//---------------------------------------------------
-		//t от T01 до T02 - h
-		for (t; t < T02 - h; t += h)
-		{
-			if (SingleCalculationBW->CancellationPending)
-			{
-				e->Cancel = true;
-				return;
-			}
-			t = round(t * 1000) / 1000;
-			for (int j = 0; j < n; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                 //Добавление β к начальному значению производной
-					ts = t + h;                                     //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                        //Обнуление значения ф						
-					k[j]++;                                         //Увеличение числа спайков на 1						
-				}
-			}
-
-			SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-		}
-		//---------------------------------------------------			
-		//t от T02 - h до T
-		for (t; t < T; t += h)
-		{
-			if (SingleCalculationBW->CancellationPending)
-			{
-				e->Cancel = true;
-				return;
-			}
-			t = round(t * 1000) / 1000;
-			Mu = complex<double>(0.0, 0.0);
-			for (int j = 0; j < n; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                 //Добавление β к начальному значению производной
-					ts = t + h;                                     //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                        //Обнуление значения ф						
-					k[j]++;                                         //Увеличение числа спайков на 1	
-					if (!spike_flag)                                //Отбражение нового спайка на графике
+					for (int i = 0; i < n; i++)
 					{
-						PointPairList^ Spaik_list = gcnew PointPairList();
-						Spaik_list->Add(ts, 0.0);
-						Spaik_list->Add(ts, 1.0);
-
-						LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-						SpikesGraph->AxisChange();
-						SpikesGraph->Invalidate();
-						spike_flag = true;
+						om[i] = curOmega[i][index];
 					}
+					FindMinMax(n, om, &MinMaxOm[index][k], &MinMaxOm[index][k + 1]);
+					MinMaxClus[index][m] = curClusters[index];
 				}
-				CompFi = polar<double>(1.0, Fi[j]);
-				Mu += CompFi;
+				m++;
+				k += 2;
 			}
-			spike_flag = false;
 
-			Et = E(t + h, ts, E0, E0Star, alpha);
-			E_list->Add(t + h, Et);
-			Mu = Mu / CompN;
-			Mu_list->Add(t + h, abs(Mu));
-
-			SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-		}
-		//---------------------------------------------------
-	}
-	else
-	{
-		//t от 0 до T02 - h
-		for (t; t < T02 - h; t += h)
-		{
-			if (SingleCalculationBW->CancellationPending)
+			double beta = beta1;
+			for (int i = 0; i < non; i++)
 			{
-				e->Cancel = true;
+				double MaxOmega, MinOmega;
+				int MaxClus, MinClus;
+
+				FindMinMax(2 * NumOfSets, MinMaxOm[i], &MinOmega, &MaxOmega);
+				FindMinMax(NumOfSets, MinMaxClus[i], &MinClus, &MaxClus);
+
+				MinMaxOmList->Add(beta, MinOmega, MaxOmega);
+				AvgOmList->Add(beta, (MinOmega + MaxOmega) * 0.5);
+				MinMaxClusList->Add(beta, MinClus, MaxClus);
+				AvgClusList->Add(beta, (int)((MinClus + MaxClus) * 0.5));
+
+				str += String::Format(L"β = {0}; Min = {1:G5}, Max = {2:G5}, Avg = {3:G5}\r\n", beta, MinOmega, MaxOmega, (MinOmega + MaxOmega) * 0.5);
+
+				str1 += String::Format(L"β = {0}; Min = {1}, Max = {2}, Avg = {3}\r\n", beta, MinClus, MaxClus, (int)((MinClus + MaxClus) * 0.5));
+
+				beta += betaStep;
+			}
+
+			str2 += String::Format(L"γⱼ были взяты из интервала [{0}; {1}]", gamma1Copy, gamma2Copy);
+
+			textBox3->Text = str;
+			textBox5->Text = str1;
+			textBox6->Text = str2;
+
+			LineItem^ Curve = panel->AddCurve("Среднее значение", AvgOmList, Color::DarkOrange, SymbolType::Diamond);
+			LineItem^ Curve2 = panel2->AddCurve("Среднее значение", AvgClusList, Color::DarkOrange, SymbolType::Diamond);
+			ErrorBarItem^ ErrorBar = panel->AddErrorBar("Min и Max", MinMaxOmList, Color::DarkOrange);
+			ErrorBarItem^ ErrorBar2 = panel2->AddErrorBar("Min и Max", MinMaxClusList, Color::DarkOrange);
+
+			Curve->Symbol->Fill->Color = Color::DarkOrange;
+			Curve->Line->IsVisible = false;
+			Curve->Symbol->Size = 8.0f;
+			Curve->Symbol->Fill->Type = FillType::Solid;
+
+			Curve2->Symbol->Fill->Color = Color::DarkOrange;
+			Curve2->Line->IsVisible = false;
+			Curve2->Symbol->Fill->Type = FillType::Solid;
+
+			panel->CurveList->Move(panel->CurveList->Count - 1, -9999);
+			panel->CurveList->Move(panel->CurveList->Count - 1, -10000);
+			panel2->CurveList->Move(panel2->CurveList->Count - 1, -9999);
+			panel2->CurveList->Move(panel2->CurveList->Count - 1, -10000);
+
+			ClustersCountBetaGraph->Invalidate();
+			OmegaBetaGraph->Invalidate();
+
+			AvgMaxMinAlreadyExists = true;
+
+			for (int i = 0; i < non; i++)
+			{
+				delete[]MinMaxOm[i];
+				delete[]MinMaxClus[i];
+			}
+		}
+
+		private: System::Void checkBox1_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			GraphPane^ panel = OmegaBetaGraph->GraphPane;
+
+			if (checkBox1->Checked)
+			{
+				panel->Legend->IsVisible = true;
+			}
+			else
+			{
+				panel->Legend->IsVisible = false;
+			}
+
+			OmegaBetaGraph->Invalidate();
+		}
+
+		private: System::Void checkBox4_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			GraphPane^ panel = ClustersCountBetaGraph->GraphPane;
+
+			if (checkBox4->Checked)
+			{
+				panel->Legend->IsVisible = true;
+			}
+			else
+			{
+				panel->Legend->IsVisible = false;
+			}
+
+			ClustersCountBetaGraph->AxisChange();
+			ClustersCountBetaGraph->Invalidate();
+		}
+
+		private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			label15->Visible = false;
+			label16->Visible = true;
+			backgroundWorker1->CancelAsync();
+		}
+
+		private: System::Void SingleCalculationBW_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e)
+		{
+			progressBar2->Value = e->ProgressPercentage;
+			SingleCalculationProgressLbl->Text = "Идут вычисления... " + Convert::ToString(progressBar2->Value) + "%";
+		}
+
+		private: System::Void button7_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			const double delta = Convert::ToDouble(DeltaCmbB->Text);
+			SingleCalculationProgressLbl->Text = "Идут вычисления... 0%";
+			SingleCalculationProgressLbl->Visible = true;
+			dataGridView1->Rows->Clear();
+			dataGridView2->Rows->Clear();
+			TPhaseTable->Rows->Clear();
+			TimeOfSpikesTable->Rows->Clear();
+			StartBtn->Enabled = false;
+			IntegrParams->Enabled = false;
+			SystemParams->Enabled = false;
+			StopBtn->Enabled = true;
+			StopBtn->Focus();
+
+			SingleCalculationBW->RunWorkerAsync(delta);
+		}
+
+		private: System::Void SingleCalculationBW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
+		{
+			if (e->Cancelled)
+			{
+				StopCalculationsLbl->Visible = false;
+				MessageBox::Show("Вычисления приостановлены пользователем", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+
+				progressBar2->Value = 0;
+				SingleCalculationProgressLbl->Visible = false;
+				StartBtn->Enabled = true;
+				IntegrParams->Enabled = true;
+				SystemParams->Enabled = true;
+				StopBtn->Enabled = false;
+				Change_scale_Omega->Enabled = true;
+
 				return;
 			}
-			t = round(t * 1000) / 1000;
-			for (int j = 0; j < n; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
 
-				if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+			IPointList^ PhiTList = PhasesGraph->GraphPane->CurveList[PhasesGraph->GraphPane->CurveList->Count - 1]->Points;
+			IPointList^ EPointList = E_fieldGraph->GraphPane->CurveList[E_fieldGraph->GraphPane->CurveList->Count - 1]->Points;
+			IPointList^ OmegaPointList = OmegaGraph->GraphPane->CurveList[0]->Points;
+			IPointList^ OmegaPointListMinMax = OmegaGraph->GraphPane->CurveList[OmegaGraph->GraphPane->CurveList->Count - 1]->Points;
+			CurveList^ SpikesCurvesList = SpikesGraph->GraphPane->CurveList;
+
+			for (int i = 0; i < PhiTList->Count; i++)
+			{
+				TPhaseTable->Rows->Add(PhiTList[i]->X, PhiTList[i]->Y);
+			}
+
+			for (int i = 0; i < SpikesCurvesList->Count; i++)
+			{
+				TimeOfSpikesTable->Rows->Add();
+				TimeOfSpikesTable->Rows[i]->Cells[0]->Value = SpikesCurvesList[i]->Points[0]->X;
+			}
+
+			for (int i = 0; i < EPointList->Count; i++)
+			{
+				dataGridView2->Rows->Add(EPointList[i]->X, EPointList[i]->Y);
+			}
+
+			for (int i = 0; i < OmegaPointList->Count; i++)
+			{
+				dataGridView1->Rows->Add(OmegaPointList[i]->X, OmegaPointList[i]->Y);
+			}
+
+			dataGridView1->Rows->Add(OmegaPointListMinMax[0]->X, OmegaPointListMinMax[0]->Y);
+			dataGridView1->Rows->Add(OmegaPointListMinMax[1]->X, OmegaPointListMinMax[1]->Y);
+
+			dataGridView1->Sort(dataGridView1->Columns->GetFirstColumn(DataGridViewElementStates::None), ListSortDirection::Ascending);
+
+			ResultsTB->Text = Str;
+
+			MessageBox::Show("Вычисления закончены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+
+			progressBar2->Value = 0;
+			SingleCalculationProgressLbl->Visible = false;
+			StartBtn->Enabled = true;
+			IntegrParams->Enabled = true;
+			SystemParams->Enabled = true;
+			StopBtn->Enabled = false;
+			Change_scale_Omega->Enabled = true;
+		}
+
+		private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			SingleCalculationProgressLbl->Visible = false;
+			StopCalculationsLbl->Visible = true;
+			SingleCalculationBW->CancelAsync();
+		}
+
+		private: System::Void backgroundWorker3_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e)
+		{
+			progressBar3->Value = e->ProgressPercentage;
+		}
+
+		private: System::Void radioButton1_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			TimeOfSpikesTable->Visible = true;
+			SpikesGraph->Visible = true;
+			PhSyncParamGraph->Visible = false;
+		}
+
+		private: System::Void radioButton2_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			TimeOfSpikesTable->Visible = false;
+			PhSyncParamGraph->Visible = true;
+			SpikesGraph->Visible = false;
+		}
+
+		private: System::Void button8_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			GraphPane^ panel = BetaCrNGraph->GraphPane;
+			PointPairList^ ApprPoints = gcnew PointPairList();
+			CurveItem^ curve = panel->CurveList[0];
+			double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0;
+			double a, b;
+			double minX, maxX;
+			double Q = 0.0;
+
+			minX = maxX = curve->Points[0]->X;
+
+			if (panel->CurveList->Count > 1)
+			{
+				panel->CurveList->RemoveAt(panel->CurveList->Count - 1);
+			}
+
+			for (int i = 0; i < curve->NPts; i++)
+			{
+				PointPair^ curPoint = curve->Points[i];
+				sum1 += 1 / pow(curPoint->X, 2);
+				sum2 += curPoint->Y / curPoint->X;
+				sum3 += curPoint->Y;
+				sum4 += 1 / curPoint->X;
+
+				if (curPoint->X < minX)
 				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                //Добавление β к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                       //Обнуление значения ф												
+					minX = curPoint->X;
+				}
+				if (curPoint->X > maxX)
+				{
+					maxX = curPoint->X;
 				}
 			}
-			SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-		}
-		//---------------------------------------------------
-		//t от T02 - h до T₁ - h
-		for (t; t < T01 - h; t += h)
-		{
-			t = round(t * 1000) / 1000;
-			Mu = complex<double>(0.0, 0.0);
-			for (int j = 0; j < n; j++)
+			a = sum2 / sum1;
+			b = 1 / curve->NPts * (sum3 - a * sum4);
+
+			for (int i = 0; i < curve->NPts; i++)
 			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                 //Добавление β к начальному значению производной
-					ts = t + h;                                     //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                        //Обнуление значения ф						
-					if (!spike_flag)                                //Отбражение нового спайка на графике
-					{
-						PointPairList^ Spaik_list = gcnew PointPairList();
-						Spaik_list->Add(ts, 0.0);
-						Spaik_list->Add(ts, 1.0);
-
-						LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-						SpikesGraph->AxisChange();
-						SpikesGraph->Invalidate();
-						spike_flag = true;
-					}
-				}
-				CompFi = polar<double>(1.0, Fi[j]);
-				Mu += CompFi;
+				PointPair^ curPoint = curve->Points[i];
+				Q += pow(curPoint->Y - (a / curPoint->X + b), 2);
 			}
-			spike_flag = false;
 
-			Et = E(t + h, ts, E0, E0Star, alpha);
-			E_list->Add(t + h, Et);
-			Mu = Mu / CompN;
-			Mu_list->Add(t + h, abs(Mu));
-
-			SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-		}
-		//---------------------------------------------------
-		//t от T₁ - h до T₁
-		if (SingleCalculationBW->CancellationPending)
-		{
-			e->Cancel = true;
-			return;
-		}
-		t = round(t * 1000) / 1000;
-		Mu = complex<double>(0.0, 0.0);
-		for (int j = 0; j < n; j++)
-		{
-			//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-			Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-			Fi[j] = Fiplus1[j];
-
-			if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
+			for (double x = minX - 0.1; x <= maxX + 0.1; x += 0.01)
 			{
-				oldE0 = E0;
-				E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-				E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-				E0Star += beta;                                //Добавление β к начальному значению производной
-				ts = t + h;                                    //Изменение времени последнего спайка
-				Fi[j] = 0.0;			                       //Обнуление значения ф					
-				k[j]++;                                        //Увеличение числа спайков на 1
-				if (!spike_flag)                               //Отбражение нового спайка на графике
-				{
-					PointPairList^ Spaik_list = gcnew PointPairList();
-					Spaik_list->Add(ts, 0.0);
-					Spaik_list->Add(ts, 1.0);
-
-					LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-					SpikesGraph->AxisChange();
-					SpikesGraph->Invalidate();
-					spike_flag = true;
-				}
+				ApprPoints->Add(x, a / x + b);
 			}
-			CompFi = polar<double>(1.0, Fi[j]);
-			Mu += CompFi;
+
+			LineItem^ ApprCurve = panel->AddCurve("Аппроксимация", ApprPoints, Color::Blue, SymbolType::None);
+			textBox8->Visible = true;
+			textBox8->Text = String::Format("Уравнение аппроксимации:\r\ny = {0}/x + {1}\r\nНевязка:{2:G5}", a, b, Q);
+
+			BetaCrNGraph->AxisChange();
+			BetaCrNGraph->Invalidate();
 		}
-		spike_flag = false;
 
-		Et = E(t + h, ts, E0, E0Star, alpha);
-		E_list->Add(t + h, Et);
-		Mu = Mu / CompN;
-		Mu_list->Add(t + h, abs(Mu));
-
-		for (int l = 0; l < n; l++)
+		private: System::Void button9_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			Fi0[l] = Fi[l];                                     //Запоминание значений фаз при t = T₁
+			button9->Enabled = false;
+			button8->Enabled = false;
+			button10->Enabled = false;
+			button11->Enabled = false;
+			textBox9->Enabled = false;
+			textBox10->Enabled = false;
+			textBox11->Enabled = false;
+			textBox12->Enabled = false;
+			label20->Text = "Идёт построение... 0%";
+			label20->Visible = true;
+
+			backgroundWorker4->RunWorkerAsync();
 		}
 
-		t += h;		
-
-		SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-		//---------------------------------------------------
-		//t от T01 до T
-		for (t; t < T; t += h)
+		private: System::Void backgroundWorker4_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
 		{
-			if (SingleCalculationBW->CancellationPending)
-			{
-				e->Cancel = true;
-				return;
-			}
-			t = round(t * 1000) / 1000;
-			Mu = complex<double>(0.0, 0.0);
-			for (int j = 0; j < n; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
+			GraphPane^ pane = BetaCrNGraph->GraphPane;
 
-				if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                 //Добавление β к начальному значению производной
-					ts = t + h;                                     //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                        //Обнуление значения ф						
-					k[j]++;                                         //Увеличение числа спайков на 1	
-					if (!spike_flag)                                //Отбражение нового спайка на графике
-					{
-						PointPairList^ Spaik_list = gcnew PointPairList();
-						Spaik_list->Add(ts, 0.0);
-						Spaik_list->Add(ts, 1.0);
+			PointPairList^ list = gcnew PointPairList();
 
-						LineItem ^Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+			const int N1 = Convert::ToInt32(textBox9->Text);                 //Число уравнений N₁
+			const int N2 = Convert::ToInt32(textBox10->Text);                //Число уравнений N₂
+			const int NOM = Convert::ToInt32(textBox11->Text);               //Число измерений
+			const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
+			const double gamma0 = Convert::ToDouble(textBox12->Text);
+			const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
+			const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
+			const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
+			int NStep = (N2 - N1) / NOM;                                     //Шаг по N
+			int counter = 0;
+			double beta;                                                     //Начальное значение β
+			double betaStep;                                                 //Начальный шаг по β
+			double E0;                                                       //Начальное условие для E
+			double E0Star;                                                   //Начальное условие для Ė
+			double t;                                                        //Время
+			double oldE0;
+			double ts;
+			double* Fi0;                                                     //Начальное распределение фаз φⱼ(0)
+			double* Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
+			double* Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
+			double* gamma;                                                   //Набор γⱼ
+			const double D2PI = 2 * M_PI;
 
-						SpikesGraph->AxisChange();
-						SpikesGraph->Invalidate();
-						spike_flag = true;
-					}					
-				}
-				CompFi = polar<double>(1.0, Fi[j]);
-				Mu += CompFi;
-			}
-			spike_flag = false;
-
-			Et = E(t + h, ts, E0, E0Star, alpha);
-			E_list->Add(t + h, Et);
-			Mu = Mu / CompN;
-			Mu_list->Add(t + h, abs(Mu));
-
-			SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-		}
-		//---------------------------------------------------			
-	}
-
-	//Вычисление средних частот
-	for (i = 0; i < n; i++)         
-	{
-		//Вычисление значения частоты
-		if (k[i] != 0)
-		{
-			Omega[i] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (t - T01); 
-		}
-		else
-		{
-			Omega[i] = (Fi[i] - Fi0[i]) / (t - T01);       
-		}
-		g_list->Add(i, Omega[i]);
-		FIT_list->Add(i, Fi[i]);
-
-		//Вычисление максимальной средней частоты
-		if (Omega[i] > MaxOmega)  
-		{
-			MaxOmega = Omega[i];
-			IndexOfMaxOmega = i;
-		}
-		//Вычисление минимальной средней частоты
-		if (Omega[i] < MinOmega)  
-		{
-			MinOmega = Omega[i];
-			IndexOfMinOmega = i;
-		}
-	}
-
-	g_list->Remove(gcnew PointPair(IndexOfMaxOmega, MaxOmega));
-	g_list->Remove(gcnew PointPair(IndexOfMinOmega, MinOmega));
-
-	NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T
-
-    //Заполнение справки
-	Str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n\r\n";
-	Str += String::Format(L"γⱼ были взяты из интервала [{0:G3}; {1:G3}]\r\n\r\nЧисло кластеров при t = T:{2}", gamma1, gamma2, NumOfClusters);
-
-	double tmax_limit = t + 0.05;
-
-	PointPairList ^MinMaxOmegaList = gcnew PointPairList();
-
-	//Рисование графиков
-	LineItem ^Curve6 = panel2->AddCurve(L"Ωⱼ", g_list, Color::Red, SymbolType::Circle);
-	LineItem ^Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);
-	LineItem ^Curve8 = panel5->AddCurve(L"|μ|(t)", Mu_list, Color::Red, SymbolType::None);
-	LineItem ^Curve9 = panel6->AddCurve(L"φⱼ(T)", FIT_list, Color::Blue, SymbolType::Circle);
-
-	MinMaxOmegaList->Add(IndexOfMaxOmega, MaxOmega);
-	MinMaxOmegaList->Add(IndexOfMinOmega, MinOmega);
-
-	LineItem ^CurveMinMaxOmega = panel2->AddCurve(L"Min & Max Ωⱼ", MinMaxOmegaList, Color::Green, SymbolType::Circle);
-
-	panel2->Title->Text += String::Format("\nКластеров: {0}", NumOfClusters);
-	
-	Curve6->Line->IsVisible = false;
-	Curve6->Symbol->Fill->Color = Color::Red;
-	Curve6->Symbol->Fill->Type = FillType::Solid;
-	Curve6->Symbol->Size = 6;
-
-	CurveMinMaxOmega->Line->IsVisible = false;
-	CurveMinMaxOmega->Symbol->Fill->Color = Color::Green;
-	CurveMinMaxOmega->Symbol->Fill->Type = FillType::Solid;
-	CurveMinMaxOmega->Symbol->Size = 6;
-
-	Curve9->Line->IsVisible = false;
-	Curve9->Symbol->Fill->Color = Color::Blue;
-	Curve9->Symbol->Fill->Type = FillType::Solid;
-	Curve9->Symbol->Size = 6;
-
-	panel2->XAxis->Scale->Min = -1;
-	panel2->XAxis->Scale->Max = n;
-	panel2->YAxis->Scale->Min = MinOmega - (MaxOmega - MinOmega) / 2;
-	panel2->YAxis->Scale->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
-	panel2->YAxis->Scale->Min = MinOmega - 0.1;
-	panel2->YAxis->Scale->Max = MaxOmega + 0.1;
-	
-	OmegaGraph->AxisChange();
-
-	ArrowObj ^Arr1 = gcnew ArrowObj(IndexOfMaxOmega + 1.5, MaxOmega + (MaxOmega - MinOmega)*0.5, IndexOfMaxOmega, MaxOmega);
-	ArrowObj ^Arr2 = gcnew ArrowObj(IndexOfMinOmega + 1.5, MinOmega - (MaxOmega - MinOmega)*0.5, IndexOfMinOmega, MinOmega);
-	LineObj ^Line1 = gcnew LineObj(Arr1->Location->X1, Arr1->Location->Y1, Arr1->Location->X1 + 1.5, Arr1->Location->Y1);
-	LineObj ^Line2 = gcnew LineObj(Arr2->Location->X1, Arr2->Location->Y1, Arr2->Location->X1 + 1.5, Arr2->Location->Y1);
-	TextObj ^Text1 = gcnew TextObj("Max", (Line1->Location->X1 + Line1->Location->X2)*0.5, Line1->Location->Y1 + (MaxOmega - MinOmega)*0.1);
-	TextObj ^Text2 = gcnew TextObj("Min", (Line2->Location->X1 + Line2->Location->X2)*0.5, Line2->Location->Y1 + (MaxOmega - MinOmega)*0.1);
-
-	Arr1->IsVisible = false;
-	Arr2->IsVisible = false;
-	Line1->IsVisible = false;
-	Line2->IsVisible = false;
-	Text1->FontSpec->Border->IsVisible = false;
-	Text1->FontSpec->Fill->Color = Color::Transparent;
-	Text1->IsVisible = false;
-	Text2->FontSpec->Border->IsVisible = false;
-	Text2->FontSpec->Fill->Color = Color::Transparent;
-	Text2->IsVisible = false;
-
-	panel2->GraphObjList->Add(Arr1);
-	panel2->GraphObjList->Add(Arr2);
-	panel2->GraphObjList->Add(Line1);
-	panel2->GraphObjList->Add(Line2);
-	panel2->GraphObjList->Add(Text1);
-	panel2->GraphObjList->Add(Text2);
-
-	panel6->XAxis->Scale->Min = -1;
-	panel6->XAxis->Scale->Max = n;
-
-	panel3->XAxis->Scale->Max = t + 0.05;
-	panel3->XAxis->Scale->Min = T02 - 0.05;
-
-	panel4->XAxis->Scale->Max = t + 0.05;
-	panel4->XAxis->Scale->Min = T02 - 0.05;
-
-	panel5->XAxis->Scale->Max = t + 0.05;
-	panel5->XAxis->Scale->Min = T02 - 0.05;
-
-	OmegaGraph->Invalidate();
-	E_fieldGraph->AxisChange();
-	E_fieldGraph->Invalidate();
-	PhSyncParamGraph->AxisChange();
-	PhSyncParamGraph->Invalidate();
-	PhasesGraph->AxisChange();
-	PhasesGraph->Invalidate();
-
-	delete[]Fi;
-	delete[]Fiplus1;
-	delete[]Omega;
-	delete[]Fi0;
-	delete[]k;
-
-}
-private: System::Void SingleCalculationBW_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
-{
-	progressBar2->Value = e->ProgressPercentage;
-	SingleCalculationProgressLbl->Text = "Идут вычисления... " + Convert::ToString(progressBar2->Value) + "%";
-}
-private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e)
-{
-	const double delta = Convert::ToDouble(DeltaCmbB->Text);
-	SingleCalculationProgressLbl->Text = "Идут вычисления... 0%";
-	SingleCalculationProgressLbl->Visible = true;
-	dataGridView1->Rows->Clear();
-	dataGridView2->Rows->Clear();
-	TPhaseTable->Rows->Clear();
-	TimeOfSpikesTable->Rows->Clear();
-	StartBtn->Enabled = false;
-	IntegrParams->Enabled = false;
-	SystemParams->Enabled = false;
-	StopBtn->Enabled = true;
-	StopBtn->Focus();
-
-	SingleCalculationBW->RunWorkerAsync(delta);
-}
-private: System::Void SingleCalculationBW_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
-{
-	if (e->Cancelled)
-	{
-		StopCalculationsLbl->Visible = false;
-		MessageBox::Show("Вычисления приостановлены пользователем", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-
-		progressBar2->Value = 0;
-		SingleCalculationProgressLbl->Visible = false;
-		StartBtn->Enabled = true;
-		IntegrParams->Enabled = true;
-		SystemParams->Enabled = true;
-		StopBtn->Enabled = false;
-		Change_scale_Omega->Enabled = true;
-
-		return;
-	}
-
-	IPointList ^PhiTList = PhasesGraph->GraphPane->CurveList[PhasesGraph->GraphPane->CurveList->Count - 1]->Points;
-	IPointList ^EPointList = E_fieldGraph->GraphPane->CurveList[E_fieldGraph->GraphPane->CurveList->Count - 1]->Points;
-	IPointList ^OmegaPointList = OmegaGraph->GraphPane->CurveList[0]->Points;
-	IPointList ^OmegaPointListMinMax = OmegaGraph->GraphPane->CurveList[OmegaGraph->GraphPane->CurveList->Count - 1]->Points;
-	CurveList ^SpikesCurvesList = SpikesGraph->GraphPane->CurveList;
-
-	for (int i = 0; i < PhiTList->Count; i++)
-	{
-		TPhaseTable->Rows->Add(PhiTList[i]->X, PhiTList[i]->Y);
-	}
-
-	for (int i = 0; i < SpikesCurvesList->Count; i++)
-	{
-		TimeOfSpikesTable->Rows->Add();
-		TimeOfSpikesTable->Rows[i]->Cells[0]->Value = SpikesCurvesList[i]->Points[0]->X;
-	}
-
-	for (int i = 0; i < EPointList->Count; i++)
-	{
-		dataGridView2->Rows->Add(EPointList[i]->X, EPointList[i]->Y);
-	}
-
-	for (int i = 0; i < OmegaPointList->Count; i++)
-	{
-		dataGridView1->Rows->Add(OmegaPointList[i]->X, OmegaPointList[i]->Y);
-	}
-
-	dataGridView1->Rows->Add(OmegaPointListMinMax[0]->X, OmegaPointListMinMax[0]->Y);
-	dataGridView1->Rows->Add(OmegaPointListMinMax[1]->X, OmegaPointListMinMax[1]->Y);
-
-	dataGridView1->Sort(dataGridView1->Columns->GetFirstColumn(DataGridViewElementStates::None), ListSortDirection::Ascending);
-
-	ResultsTB->Text = Str;	
-
-	MessageBox::Show("Вычисления закончены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-
-	progressBar2->Value = 0;
-	SingleCalculationProgressLbl->Visible = false;
-	StartBtn->Enabled = true;
-	IntegrParams->Enabled = true;
-	SystemParams->Enabled = true;
-	StopBtn->Enabled = false;
-	Change_scale_Omega->Enabled = true;
-}
-private: System::Void button6_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	SingleCalculationProgressLbl->Visible = false;
-	StopCalculationsLbl->Visible = true;
-	SingleCalculationBW->CancelAsync();
-}
-private: System::Void backgroundWorker3_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
-{
-	progressBar3->Value = e->ProgressPercentage;
-}
-private: System::Void radioButton1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
-{
-	TimeOfSpikesTable->Visible = true;
-	SpikesGraph->Visible = true;
-	PhSyncParamGraph->Visible = false;
-}
-private: System::Void radioButton2_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
-{
-	TimeOfSpikesTable->Visible = false;
-	PhSyncParamGraph->Visible = true;
-	SpikesGraph->Visible = false;
-}
-private: System::Void button8_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	GraphPane ^panel = BetaCrNGraph->GraphPane;
-	PointPairList ^ApprPoints = gcnew PointPairList();
-	CurveItem ^curve = panel->CurveList[0];
-	double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0, sum4 = 0.0;
-	double a, b;
-	double minX, maxX;
-	double Q = 0.0;
-
-	minX = maxX = curve->Points[0]->X;
-
-	if (panel->CurveList->Count > 1)
-	{
-		panel->CurveList->RemoveAt(panel->CurveList->Count - 1);
-	}
-
-	for (int i = 0; i < curve->NPts; i++)
-	{
-		PointPair ^curPoint = curve->Points[i];
-		sum1 += 1 / pow(curPoint->X, 2);
-		sum2 += curPoint->Y / curPoint->X;
-		sum3 += curPoint->Y;
-		sum4 += 1 / curPoint->X;
-
-		if (curPoint->X < minX)
-		{
-			minX = curPoint->X;
-		}
-		if (curPoint->X > maxX)
-		{
-			maxX = curPoint->X;
-		}
-	}
-	a = sum2 / sum1;
-	b = 1 / curve->NPts*(sum3 - a*sum4);
-
-	for (int i = 0; i < curve->NPts; i++)
-	{
-		PointPair ^curPoint = curve->Points[i];
-		Q += pow(curPoint->Y - (a / curPoint->X + b), 2);
-	}
-
-	for (double x = minX - 0.1; x <= maxX + 0.1; x += 0.01)
-	{
-		ApprPoints->Add(x, a / x + b);
-	}
-
-	LineItem ^ApprCurve = panel->AddCurve("Аппроксимация", ApprPoints, Color::Blue, SymbolType::None);
-	textBox8->Visible = true;
-	textBox8->Text = String::Format("Уравнение аппроксимации:\r\ny = {0}/x + {1}\r\nНевязка:{2:G5}", a, b, Q);
-
-	BetaCrNGraph->AxisChange();
-	BetaCrNGraph->Invalidate();
-}
-private: System::Void button9_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	button9->Enabled = false;
-	button8->Enabled = false;
-	button10->Enabled = false;
-	button11->Enabled = false;
-	textBox9->Enabled = false;
-	textBox10->Enabled = false;
-	textBox11->Enabled = false;
-	textBox12->Enabled = false;
-	label20->Text = "Идёт построение... 0%";
-	label20->Visible = true;
-
-	backgroundWorker4->RunWorkerAsync();
-}
-private: System::Void backgroundWorker4_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e)
-{
-	GraphPane^ pane = BetaCrNGraph->GraphPane;
-
-	PointPairList^ list = gcnew PointPairList();
-
-	const int N1 = Convert::ToInt32(textBox9->Text);                 //Число уравнений N₁
-	const int N2 = Convert::ToInt32(textBox10->Text);                //Число уравнений N₂
-	const int NOM = Convert::ToInt32(textBox11->Text);               //Число измерений
-	const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
-	const double gamma0 = Convert::ToDouble(textBox12->Text);
-	const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
-	const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
-	const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
-	const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
-	int NStep = (N2 - N1) / NOM;                                     //Шаг по N
-	int counter = 0;
-	double beta;                                                     //Начальное значение β
-	double betaStep;                                                 //Начальный шаг по β
-	double E0;                                                       //Начальное условие для E
-	double E0Star;                                                   //Начальное условие для Ė
-	double t;                                                        //Время
-	double oldE0;
-	double ts;
-	double *Fi0;                                                     //Начальное распределение фаз φⱼ(0)
-	double *Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
-	double *Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
-	double *gamma;                                                   //Набор γⱼ
-	const double D2PI = 2 * M_PI;
-
-	complex<double> Mu;
-	complex<double> CompFi;
+			complex<double> Mu;
+			complex<double> CompFi;
 
 #pragma omp parallel for private(E0, E0Star, oldE0, t, ts, Fi0, Fi, Fiplus1, gamma, Mu, CompFi, beta, betaStep) schedule(static, 1)
-	for (int i = N1; i <= N2; i += NStep)
-	{
-		Fi0 = new double[i];
-		Fi = new double[i];
-		Fiplus1 = new double[i];
-
-		gamma = Set_Gamma(i, gamma0, 0.0);
-		beta = 0.0;
-		if ((i >= 0) && (i < 70))
-			betaStep = 0.0579;
-		else
-			if ((i >= 70) && (i < 90))
-				betaStep = 0.0426;
-			else
-				betaStep = 0.0324;
-
-		double prevbeta = beta;
-
-		const complex<double> CompN((double)i, 0.0);
-
-		random_device gen;
-		mt19937 me(gen());
-		uniform_real_distribution<> distr(0, M_PI);
-		for (int j = 0; j < i; j++)
-		{
-			Fi0[j] = distr(me);
-		}
-		while (betaStep > 1e-03)
-		{
-			t = ts = 0.0;
-#pragma omp critical (convert)
+			for (int i = N1; i <= N2; i += NStep)
 			{
+				Fi0 = new double[i];
+				Fi = new double[i];
+				Fiplus1 = new double[i];
+
+				gamma = Set_Gamma(i, gamma0, 0.0);
+				beta = 0.0;
+				if ((i >= 0) && (i < 70))
+					betaStep = 0.0579;
+				else
+					if ((i >= 70) && (i < 90))
+						betaStep = 0.0426;
+					else
+						betaStep = 0.0324;
+
+				double prevbeta = beta;
+
+				const complex<double> CompN((double)i, 0.0);
+
+				random_device gen;
+				mt19937 me(gen());
+				uniform_real_distribution<> distr(0, M_PI);
+				for (int j = 0; j < i; j++)
+				{
+					Fi0[j] = distr(me);
+				}
+				while (betaStep > 1e-03)
+				{
+					t = ts = 0.0;
+#pragma omp critical (convert)
+					{
+						E0 = Convert::ToDouble(E0_Text->Text);
+						E0Star = Convert::ToDouble(E0Star_Text->Text);
+					}
+
+					for (int j = 0; j < i; j++)
+					{
+						Fi[j] = Fi0[j];
+						Fiplus1[j] = 0.0;
+					}
+
+					//t от 0 до T - h
+					for (t; t < T - h; t += h)
+					{
+						t = round(t * 1000) / 1000;
+						for (int j = 0; j < i; j++)
+						{
+							//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+							Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+							Fi[j] = Fiplus1[j];
+
+							if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+							{
+								oldE0 = E0;
+								E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+								E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+								E0Star += beta;                                //Добавление β к начальному значению производной
+								ts = t + h;                                    //Изменение времени последнего спайка
+								Fi[j] = 0.0;			                       //Обнуление значения ф
+							}
+						}
+					}
+					//---------------------------------------------------
+					//t от T - h до T
+					t = round(t * 1000) / 1000;
+					Mu = complex<double>(0.0, 0.0);
+
+					for (int j = 0; j < i; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+						Fi[j] = Fiplus1[j];
+
+						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                //Добавление β к начальному значению производной
+							ts = t + h;                                    //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                       //Обнуление значения ф
+						}
+						CompFi = polar<double>(1.0, Fi[j]);
+						Mu += CompFi;
+					}
+					Mu = Mu / CompN;
+					t += h;
+					//---------------------------------------------------
+
+					if (1 - abs(Mu) < 1e-03)
+					{
+						betaStep /= 2;
+						if (betaStep > 1e-03)
+							beta = prevbeta + betaStep;
+					}
+					else
+					{
+						prevbeta = beta;
+						beta += betaStep;
+					}
+				}
+
+#pragma omp critical (pushing)
+				list->Add(i, beta);
+#pragma omp atomic
+				counter++;
+#pragma omp critical (report)
+				backgroundWorker4->ReportProgress((int)((float)counter / (NOM + 1) * 100));
+
+				delete[] Fi0;
+				delete[] Fi;
+				delete[] Fiplus1;
+				delete[] gamma;
+			}
+			//Конец параллельной секции------------------------------------------------------------------
+
+			list->Sort();
+			LineItem^ curve = pane->AddCurve("", list, Color::Red, SymbolType::Circle);
+			curve->Symbol->Fill->Color = Color::Red;
+			curve->Symbol->Fill->Type = FillType::Solid;
+
+			BetaCrNGraph->AxisChange();
+			BetaCrNGraph->Invalidate();
+		}
+
+		private: System::Void backgroundWorker4_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e)
+		{
+			progressBar4->Value = e->ProgressPercentage;
+			label20->Text = "Идёт построение... " + Convert::ToString(progressBar4->Value) + "%";
+		}
+
+		private: System::Void backgroundWorker4_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
+		{
+			MessageBox::Show(L"Построение графика β⃰ от N завершено", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+
+			button8->Enabled = true;
+			button10->Enabled = true;
+			button11->Enabled = true;
+			progressBar4->Value = 0;
+			label20->Visible = false;
+		}
+
+		private: System::Void button10_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			GraphPane^ pane = BetaCrNGraph->GraphPane;
+			pane->CurveList->Clear();
+
+			button9->Enabled = true;
+			button10->Enabled = false;
+			button8->Enabled = false;
+			button11->Enabled = false;
+			textBox8->Visible = false;
+
+			BetaCrNGraph->AxisChange();
+			BetaCrNGraph->Invalidate();
+		}
+
+		private: System::Void button11_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			label35->Visible = true;
+			textBox13->Visible = true;
+			button12->Visible = true;
+		}
+
+		private: System::Void button12_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			button8->Enabled = false;
+			button10->Enabled = false;
+			button11->Enabled = false;
+			button12->Enabled = false;
+			textBox13->Enabled = false;
+			label36->Visible = true;
+
+			backgroundWorker5->RunWorkerAsync();
+		}
+
+		private: System::Void backgroundWorker5_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
+		{
+			GraphPane^ pane = BetaCrNGraph->GraphPane;
+
+			const int N = Convert::ToInt32(textBox13->Text);                 //Число уравнений N
+			const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
+			const double gamma0 = Convert::ToDouble(textBox12->Text);
+			const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
+			const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
+			const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
+			double beta = 0.0;                                               //Начальное значение β
+			double betaStep;                                                 //Начальный шаг по β
+			double E0;                                                       //Начальное условие для E
+			double E0Star;                                                   //Начальное условие для Ė
+			double t;                                                        //Время
+			double oldE0;
+			double ts;
+			double* Fi0;                                                     //Начальное распределение фаз φⱼ(0)
+			double* Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
+			double* Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
+			double* gamma;                                                   //Набор γⱼ
+			const double D2PI = 2 * M_PI;
+			complex<double> Mu;
+			complex<double> CompFi;
+
+			Fi0 = new double[N];
+			Fi = new double[N];
+			Fiplus1 = new double[N];
+
+			gamma = Set_Gamma(N, gamma0, 0.0);
+			if ((N >= 0) && (N < 70))
+				betaStep = 0.0579;
+			else
+				if ((N >= 70) && (N < 90))
+					betaStep = 0.0426;
+				else
+					betaStep = 0.0324;
+
+			double prevbeta = beta;
+
+			const complex<double> CompN((double)N, 0.0);
+
+			random_device gen;
+			mt19937 me(gen());
+			uniform_real_distribution<> distr(0, M_PI);
+			for (int j = 0; j < N; j++)
+			{
+				Fi0[j] = distr(me);
+			}
+
+			while (betaStep > 1e-03)
+			{
+				t = ts = 0.0;
 				E0 = Convert::ToDouble(E0_Text->Text);
 				E0Star = Convert::ToDouble(E0Star_Text->Text);
-			}
 
-			for (int j = 0; j < i; j++)
-			{
-				Fi[j] = Fi0[j];
-				Fiplus1[j] = 0.0;
-			}
+				for (int j = 0; j < N; j++)
+				{
+					Fi[j] = Fi0[j];
+					Fiplus1[j] = 0.0;
+				}
 
-			//t от 0 до T - h
-			for (t; t < T - h; t += h)
-			{
+				//t от 0 до T - h
+				for (t; t < T - h; t += h)
+				{
+					t = round(t * 1000) / 1000;
+					for (int j = 0; j < N; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+						Fi[j] = Fiplus1[j];
+
+						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                //Добавление β к начальному значению производной
+							ts = t + h;                                    //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                       //Обнуление значения ф
+						}
+					}
+				}
+				//---------------------------------------------------
+				//t от T - h до T
 				t = round(t * 1000) / 1000;
-				for (int j = 0; j < i; j++)
+				Mu = complex<double>(0.0, 0.0);
+
+				for (int j = 0; j < N; j++)
 				{
 					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
 					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
@@ -3752,484 +3985,280 @@ private: System::Void backgroundWorker4_DoWork(System::Object^  sender, System::
 						ts = t + h;                                    //Изменение времени последнего спайка
 						Fi[j] = 0.0;			                       //Обнуление значения ф
 					}
+					CompFi = polar<double>(1.0, Fi[j]);
+					Mu += CompFi;
 				}
-			}
-			//---------------------------------------------------
-			//t от T - h до T
-			t = round(t * 1000) / 1000;
-			Mu = complex<double>(0.0, 0.0);
+				Mu = Mu / CompN;
+				t += h;
+				//---------------------------------------------------
 
-			for (int j = 0; j < i; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+				if (1 - abs(Mu) < 1e-03)
 				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                //Добавление β к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                       //Обнуление значения ф
+					betaStep /= 2;
+					if (betaStep > 1e-03)
+						beta = prevbeta + betaStep;
 				}
-				CompFi = polar<double>(1.0, Fi[j]);
-				Mu += CompFi;
+				else
+				{
+					prevbeta = beta;
+					beta += betaStep;
+				}
 			}
-			Mu = Mu / CompN;
-			t += h;
-			//---------------------------------------------------
 
-			if (1 - abs(Mu) < 1e-03)
+			PointPairList^ list = (PointPairList^)pane->CurveList[0]->Points;
+			list->Add(N, beta);
+			if (!list->Sorted)
+				list->Sort();
+			pane->CurveList[0]->Points = list;
+
+			BetaCrNGraph->AxisChange();
+			BetaCrNGraph->Invalidate();
+		}
+
+		private: System::Void backgroundWorker5_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
+		{
+			MessageBox::Show(L"Новое измерение добавлено на график", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+
+			button11->Enabled = true;
+			button8->Enabled = true;
+			button10->Enabled = true;
+			button11->Enabled = true;
+			button12->Enabled = true;
+			textBox13->Enabled = true;
+			label35->Visible = false;
+			textBox13->Visible = false;
+			button12->Visible = false;
+			label36->Visible = false;
+		}
+
+		private: System::Void radioButton3_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			dataGridView1->Visible = true;
+			TPhaseTable->Visible = false;
+			PhasesGraph->Visible = false;
+			OmegaGraph->Visible = true;
+			Omega1->Visible = true;
+			Omega2->Visible = true;
+			Omega1TB->Visible = true;
+			Omega2TB->Visible = true;
+			Change_scale_Omega->Visible = true;
+			checkBox2->Visible = true;
+		}
+
+		private: System::Void radioButton4_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			dataGridView1->Visible = false;
+			TPhaseTable->Visible = true;
+			PhasesGraph->Visible = true;
+			OmegaGraph->Visible = false;
+			Omega1->Visible = false;
+			Omega2->Visible = false;
+			Omega1TB->Visible = false;
+			Omega2TB->Visible = false;
+			Change_scale_Omega->Visible = false;
+			checkBox2->Visible = false;
+		}
+
+		private: System::Void backgroundWorker6_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
+		{
+			GraphPane^ pane = MaxMuBetaGraph->GraphPane;
+
+			PointPairList^ list = gcnew PointPairList();
+
+			const double Beta1 = Convert::ToDouble(textBox16->Text);         //Начальное значение β
+			const double Beta2 = Convert::ToDouble(textBox17->Text);         //Конечное значение β
+			const int NOM = Convert::ToInt32(textBox14->Text);               //Число измерений
+			const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
+			const int N = Convert::ToInt32(nTB->Text);                   //Число уравнений
+			const double gamma0 = Convert::ToDouble(textBox15->Text);
+			const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
+			const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double T02 = Convert::ToDouble(T02_text->Text);
+			const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
+			const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
+			double BetaStep = (Beta2 - Beta1) / NOM;                         //Шаг по β
+			int counter = 0;
+			double beta;
+			double E0;                                                       //Начальное условие для E
+			double E0Star;                                                   //Начальное условие для Ė
+			double t;                                                        //Время
+			double oldE0;
+			double ts;
+			double maxAbsMu;
+			double* Fi0;                                                     //Начальное распределение фаз φⱼ(0)
+			double* Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
+			double* Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
+			double* gamma;                                                   //Набор γⱼ
+
+			const double D2PI = 2 * M_PI;
+
+			complex<double> Mu;
+			complex<double> CompFi;
+			const complex<double> CompN((double)N, 0.0);
+
+			Fi0 = new double[N];
+			gamma = Set_Gamma(N, gamma0, 0.0);
+
+			random_device gen;
+			mt19937 me(gen());
+			uniform_real_distribution<> distr(0, M_PI);
+			for (int j = 0; j < N; j++)
 			{
-				betaStep /= 2;
-				if(betaStep > 1e-03)
-					beta = prevbeta + betaStep;
+				Fi0[j] = distr(me);
+			}
+
+#pragma omp parallel for private(E0, E0Star, t, oldE0, ts, Fi, Fiplus1, Mu, CompFi, maxAbsMu, beta)
+			for (int Ind = 0; Ind <= NOM; Ind++)
+			{
+				Fi = new double[N];
+				Fiplus1 = new double[N];
+				E0 = Convert::ToDouble(E0_Text->Text);
+				E0Star = Convert::ToDouble(E0Star_Text->Text);
+				t = ts = 0.0;
+				maxAbsMu = -1.0;
+				beta = Beta1 + Ind * BetaStep;
+
+				for (int i = 0; i < N; i++)
+				{
+					Fi[i] = Fi0[i];
+					Fiplus1[i] = 0.0;
+				}
+
+				//t от 0 до T02 - h
+				for (t; t < T02 - h; t += h)
+				{
+					t = round(t * 1000) / 1000;
+					for (int j = 0; j < N; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+						Fi[j] = Fiplus1[j];
+
+						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                //Добавление β к начальному значению производной
+							ts = t + h;                                    //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                       //Обнуление значения ф
+						}
+					}
+				}
+				//---------------------------------------------------
+				//t от T02 до T
+				for (t; t < T; t += h)
+				{
+					t = round(t * 1000) / 1000;
+					Mu = complex<double>(0.0, 0.0);
+					for (int j = 0; j < N; j++)
+					{
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
+						Fi[j] = Fiplus1[j];
+
+						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+						{
+							oldE0 = E0;
+							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+							E0Star += beta;                                //Добавление β к начальному значению производной
+							ts = t + h;                                    //Изменение времени последнего спайка
+							Fi[j] = 0.0;			                       //Обнуление значения ф
+						}
+						CompFi = polar<double>(1.0, Fi[j]);
+						Mu += CompFi;
+					}
+					Mu = Mu / CompN;
+
+					if (abs(Mu) > maxAbsMu)
+					{
+						maxAbsMu = abs(Mu);
+					}
+				}
+				//---------------------------------------------------
+#pragma omp critical (pushing)
+				list->Add(beta, maxAbsMu);
+#pragma omp atomic
+				counter++;
+#pragma omp critical (report)
+				backgroundWorker6->ReportProgress((int)((float)counter / (NOM + 1) * 100));
+			}
+			//Конец параллельной секции------------------------------------------------------------------
+
+			list->Sort();
+			LineItem^ curve = pane->AddCurve("", list, Color::Red, SymbolType::Circle);
+			curve->Symbol->Fill->Color = Color::Red;
+			curve->Symbol->Fill->Type = FillType::Solid;
+
+			MaxMuBetaGraph->AxisChange();
+			MaxMuBetaGraph->Invalidate();
+
+			delete[]Fi;
+			delete[]Fiplus1;
+			delete[]Fi0;
+			delete[]gamma;
+		}
+
+		private: System::Void backgroundWorker6_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e)
+		{
+			progressBar5->Value = e->ProgressPercentage;
+			label37->Text = "Идёт построение... " + Convert::ToString(progressBar5->Value) + "%";
+		}
+
+		private: System::Void backgroundWorker6_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
+		{
+			MessageBox::Show(L"Построение графика max|μ(t)| от β завершено", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
+			label37->Visible = false;
+			button16->Enabled = true;
+			progressBar5->Value = 0;
+		}
+
+		private: System::Void button15_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			button15->Enabled = false;
+			textBox14->Enabled = false;
+			textBox15->Enabled = false;
+			textBox16->Enabled = false;
+			textBox17->Enabled = false;
+			label37->Visible = true;
+			label37->Text = "Идёт построение... 0 %";
+
+			backgroundWorker6->RunWorkerAsync();
+		}
+
+		private: System::Void button16_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			MaxMuBetaGraph->GraphPane->CurveList->Clear();
+			button16->Enabled = false;
+			button15->Enabled = true;
+			textBox14->Enabled = true;
+			textBox15->Enabled = true;
+			textBox16->Enabled = true;
+			textBox17->Enabled = true;
+
+			MaxMuBetaGraph->AxisChange();
+			MaxMuBetaGraph->Invalidate();
+		}
+
+		private: System::Void checkBox2_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			if (checkBox2->Checked)
+			{
+				for each (GraphObj ^ obj in OmegaGraph->GraphPane->GraphObjList)
+				{
+					obj->IsVisible = true;
+				}
 			}
 			else
 			{
-				prevbeta = beta;
-				beta += betaStep;
-			}
-		}
-
-#pragma omp critical (pushing)
-		list->Add(i, beta);
-#pragma omp atomic
-		counter++;
-#pragma omp critical (report)
-		backgroundWorker4->ReportProgress((int)((float)counter / (NOM + 1) * 100));
-
-		delete[] Fi0;
-		delete[] Fi;
-		delete[] Fiplus1;
-		delete[] gamma;
-	}
-	//Конец параллельной секции------------------------------------------------------------------
-
-	list->Sort();
-	LineItem^ curve = pane->AddCurve("", list, Color::Red, SymbolType::Circle);
-	curve->Symbol->Fill->Color = Color::Red;
-	curve->Symbol->Fill->Type = FillType::Solid;
-
-	BetaCrNGraph->AxisChange();
-	BetaCrNGraph->Invalidate();
-}
-private: System::Void backgroundWorker4_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
-{
-	progressBar4->Value = e->ProgressPercentage;
-	label20->Text = "Идёт построение... " + Convert::ToString(progressBar4->Value) + "%";
-}
-private: System::Void backgroundWorker4_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
-{
-	MessageBox::Show(L"Построение графика β⃰ от N завершено", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-
-	button8->Enabled = true;
-	button10->Enabled = true;
-	button11->Enabled = true;
-	progressBar4->Value = 0;
-	label20->Visible = false;
-}
-private: System::Void button10_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	GraphPane^ pane = BetaCrNGraph->GraphPane;
-	pane->CurveList->Clear();
-
-	button9->Enabled = true;
-	button10->Enabled = false;
-	button8->Enabled = false;
-	button11->Enabled = false;
-	textBox8->Visible = false;
-
-	BetaCrNGraph->AxisChange();
-	BetaCrNGraph->Invalidate();
-}
-private: System::Void button11_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	label35->Visible = true;
-	textBox13->Visible = true;
-	button12->Visible = true;
-}
-private: System::Void button12_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	button8->Enabled = false;
-	button10->Enabled = false;
-	button11->Enabled = false;
-	button12->Enabled = false;
-	textBox13->Enabled = false;
-	label36->Visible = true;
-
-	backgroundWorker5->RunWorkerAsync();
-}
-private: System::Void backgroundWorker5_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) 
-{
-	GraphPane^ pane = BetaCrNGraph->GraphPane;
-
-	const int N = Convert::ToInt32(textBox13->Text);                 //Число уравнений N
-	const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
-	const double gamma0 = Convert::ToDouble(textBox12->Text);
-	const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
-	const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
-	const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
-	const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
-	double beta = 0.0;                                               //Начальное значение β
-	double betaStep;                                                 //Начальный шаг по β
-	double E0;                                                       //Начальное условие для E
-	double E0Star;                                                   //Начальное условие для Ė
-	double t;                                                        //Время
-	double oldE0;
-	double ts;
-	double *Fi0;                                                     //Начальное распределение фаз φⱼ(0)
-	double *Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
-	double *Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
-	double *gamma;                                                   //Набор γⱼ
-	const double D2PI = 2 * M_PI;
-	complex<double> Mu;
-	complex<double> CompFi;
-
-	Fi0 = new double[N];
-	Fi = new double[N];
-	Fiplus1 = new double[N];
-
-	gamma = Set_Gamma(N, gamma0, 0.0);
-	if ((N >= 0) && (N < 70))
-		betaStep = 0.0579;
-	else
-		if ((N >= 70) && (N < 90))
-			betaStep = 0.0426;
-		else
-			betaStep = 0.0324;
-
-	double prevbeta = beta;
-
-	const complex<double> CompN((double)N, 0.0);
-
-	random_device gen;
-	mt19937 me(gen());
-	uniform_real_distribution<> distr(0, M_PI);
-	for (int j = 0; j < N; j++)
-	{
-		Fi0[j] = distr(me);
-	}
-
-	while (betaStep > 1e-03)
-	{
-		t = ts = 0.0;
-		E0 = Convert::ToDouble(E0_Text->Text);
-		E0Star = Convert::ToDouble(E0Star_Text->Text);
-
-		for (int j = 0; j < N; j++)
-		{
-			Fi[j] = Fi0[j];
-			Fiplus1[j] = 0.0;
-		}
-
-		//t от 0 до T - h
-		for (t; t < T - h; t += h)
-		{
-			t = round(t * 1000) / 1000;
-			for (int j = 0; j < N; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+				for each (GraphObj ^ obj in OmegaGraph->GraphPane->GraphObjList)
 				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                //Добавление β к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                       //Обнуление значения ф
+					obj->IsVisible = false;
 				}
 			}
-		}
-		//---------------------------------------------------
-		//t от T - h до T
-		t = round(t * 1000) / 1000;
-		Mu = complex<double>(0.0, 0.0);
-
-		for (int j = 0; j < N; j++)
-		{
-			//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-			Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-			Fi[j] = Fiplus1[j];
-
-			if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-			{
-				oldE0 = E0;
-				E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-				E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-				E0Star += beta;                                //Добавление β к начальному значению производной
-				ts = t + h;                                    //Изменение времени последнего спайка
-				Fi[j] = 0.0;			                       //Обнуление значения ф
-			}
-			CompFi = polar<double>(1.0, Fi[j]);
-			Mu += CompFi;
-		}
-		Mu = Mu / CompN;
-		t += h;
-		//---------------------------------------------------
-
-		if (1 - abs(Mu) < 1e-03)
-		{
-			betaStep /= 2;
-			if (betaStep > 1e-03)
-				beta = prevbeta + betaStep;
-		}
-		else
-		{
-			prevbeta = beta;
-			beta += betaStep;
-		}
-	}
-
-	PointPairList^ list = (PointPairList^)pane->CurveList[0]->Points;
-	list->Add(N, beta);
-	if (!list->Sorted)
-		list->Sort();
-	pane->CurveList[0]->Points = list;
-
-	BetaCrNGraph->AxisChange();
-	BetaCrNGraph->Invalidate();
-}
-private: System::Void backgroundWorker5_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
-{
-	MessageBox::Show(L"Новое измерение добавлено на график", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-
-	button11->Enabled = true;
-	button8->Enabled = true;
-	button10->Enabled = true;
-	button11->Enabled = true;
-	button12->Enabled = true;
-	textBox13->Enabled = true;
-	label35->Visible = false;
-	textBox13->Visible = false;
-	button12->Visible = false;
-	label36->Visible = false;
-}
-private: System::Void radioButton3_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
-{
-	dataGridView1->Visible = true;
-	TPhaseTable->Visible = false;
-	PhasesGraph->Visible = false;
-	OmegaGraph->Visible = true;
-	Omega1->Visible = true;
-	Omega2->Visible = true;
-	Omega1TB->Visible = true;
-	Omega2TB->Visible = true;
-	Change_scale_Omega->Visible = true;
-	checkBox2->Visible = true;
-}
-private: System::Void radioButton4_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
-{
-	dataGridView1->Visible = false;
-	TPhaseTable->Visible = true;
-	PhasesGraph->Visible = true;
-	OmegaGraph->Visible = false;
-	Omega1->Visible = false;
-	Omega2->Visible = false;
-	Omega1TB->Visible = false;
-	Omega2TB->Visible = false;
-	Change_scale_Omega->Visible = false;
-	checkBox2->Visible = false;
-}
-private: System::Void backgroundWorker6_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) 
-{
-	GraphPane^ pane = MaxMuBetaGraph->GraphPane;
-
-	PointPairList^ list = gcnew PointPairList();
-
-	const double Beta1 = Convert::ToDouble(textBox16->Text);         //Начальное значение β
-	const double Beta2 = Convert::ToDouble(textBox17->Text);         //Конечное значение β
-	const int NOM = Convert::ToInt32(textBox14->Text);               //Число измерений
-	const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
-	const int N = Convert::ToInt32(nTB->Text);                   //Число уравнений
-	const double gamma0 = Convert::ToDouble(textBox15->Text);
-	const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
-	const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
-	const double T02 = Convert::ToDouble(T02_text->Text);
-	const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
-	const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
-	double BetaStep = (Beta2 - Beta1) / NOM;                         //Шаг по β
-	int counter = 0;
-	double beta;
-	double E0;                                                       //Начальное условие для E
-	double E0Star;                                                   //Начальное условие для Ė
-	double t;                                                        //Время
-	double oldE0;
-	double ts;
-	double maxAbsMu;
-	double *Fi0;                                                     //Начальное распределение фаз φⱼ(0)
-	double *Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
-	double *Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
-	double *gamma;                                                   //Набор γⱼ
-
-	const double D2PI = 2 * M_PI;
-
-	complex<double> Mu;
-	complex<double> CompFi;
-	const complex<double> CompN((double)N, 0.0);
-
-	Fi0 = new double[N];
-	gamma = Set_Gamma(N, gamma0, 0.0);
-
-	random_device gen;
-	mt19937 me(gen());
-	uniform_real_distribution<> distr(0, M_PI);
-	for (int j = 0; j < N; j++)
-	{
-		Fi0[j] = distr(me);
-	}
-
-#pragma omp parallel for private(E0, E0Star, t, oldE0, ts, Fi, Fiplus1, Mu, CompFi, maxAbsMu, beta)
-	for (int Ind = 0; Ind <= NOM; Ind++)
-	{
-	    Fi = new double[N];
-	    Fiplus1 = new double[N];
-		E0 = Convert::ToDouble(E0_Text->Text);
-		E0Star = Convert::ToDouble(E0Star_Text->Text);
-		t = ts = 0.0;
-		maxAbsMu = -1.0;
-		beta = Beta1 + Ind*BetaStep;
-
-		for (int i = 0; i < N; i++)
-		{
-			Fi[i] = Fi0[i];
-			Fiplus1[i] = 0.0;
+			OmegaGraph->Invalidate();
 		}
 
-		//t от 0 до T02 - h
-		for (t; t < T02 - h; t += h)
-		{
-			t = round(t * 1000) / 1000;
-			for (int j = 0; j < N; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                //Добавление β к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                       //Обнуление значения ф
-				}
-			}
-		}
-		//---------------------------------------------------
-		//t от T02 до T
-		for (t; t < T; t += h)
-		{
-			t = round(t * 1000) / 1000;
-			Mu = complex<double>(0.0, 0.0);
-			for (int j = 0; j < N; j++)
-			{
-				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-				Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-				Fi[j] = Fiplus1[j];
-
-				if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-				{
-					oldE0 = E0;
-					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-					E0Star += beta;                                //Добавление β к начальному значению производной
-					ts = t + h;                                    //Изменение времени последнего спайка
-					Fi[j] = 0.0;			                       //Обнуление значения ф
-				}
-				CompFi = polar<double>(1.0, Fi[j]);
-				Mu += CompFi;
-			}
-			Mu = Mu / CompN;
-
-			if (abs(Mu) > maxAbsMu)
-			{
-				maxAbsMu = abs(Mu);
-			}
-		}
-		//---------------------------------------------------
-#pragma omp critical (pushing)
-		list->Add(beta, maxAbsMu);
-#pragma omp atomic
-		counter++;
-#pragma omp critical (report)
-		backgroundWorker6->ReportProgress((int)((float)counter / (NOM + 1) * 100));
-	}
-	//Конец параллельной секции------------------------------------------------------------------
-
-	list->Sort();
-	LineItem^ curve = pane->AddCurve("", list, Color::Red, SymbolType::Circle);
-	curve->Symbol->Fill->Color = Color::Red;
-	curve->Symbol->Fill->Type = FillType::Solid;
-
-	MaxMuBetaGraph->AxisChange();
-	MaxMuBetaGraph->Invalidate();
-
-	delete[]Fi;
-	delete[]Fiplus1;
-	delete[]Fi0;
-	delete[]gamma;
-}
-private: System::Void backgroundWorker6_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) 
-{
-	progressBar5->Value = e->ProgressPercentage;
-	label37->Text = "Идёт построение... " + Convert::ToString(progressBar5->Value) + "%";
-}
-private: System::Void backgroundWorker6_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) 
-{
-	MessageBox::Show(L"Построение графика max|μ(t)| от β завершено", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
-	label37->Visible = false;
-	button16->Enabled = true;
-	progressBar5->Value = 0;
-}
-private: System::Void button15_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	button15->Enabled = false;
-	textBox14->Enabled = false;
-	textBox15->Enabled = false;
-	textBox16->Enabled = false;
-	textBox17->Enabled = false;
-	label37->Visible = true;
-	label37->Text = "Идёт построение... 0 %";
-
-	backgroundWorker6->RunWorkerAsync();
-}
-private: System::Void button16_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	MaxMuBetaGraph->GraphPane->CurveList->Clear();
-	button16->Enabled = false;
-	button15->Enabled = true;
-	textBox14->Enabled = true;
-	textBox15->Enabled = true;
-	textBox16->Enabled = true;
-	textBox17->Enabled = true;
-
-	MaxMuBetaGraph->AxisChange();
-	MaxMuBetaGraph->Invalidate();
-}
-private: System::Void checkBox2_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
-{
-	if (checkBox2->Checked)
-	{
-		for each (GraphObj ^obj in OmegaGraph->GraphPane->GraphObjList)
-		{
-			obj->IsVisible = true;
-		}
-	}
-	else
-	{
-		for each (GraphObj ^obj in OmegaGraph->GraphPane->GraphObjList)
-		{
-			obj->IsVisible = false;
-		}
-	}
-	OmegaGraph->Invalidate();
-}
-};
+	};
 }
