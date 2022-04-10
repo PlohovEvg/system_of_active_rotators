@@ -10,7 +10,9 @@ namespace WinForm {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Text;
 	using namespace System::Threading::Tasks;
+	using namespace System::IO;
 	using namespace ZedGraph;
 
 	/// <summary>
@@ -26,6 +28,9 @@ namespace WinForm {
 	public: vector<int*>* Clusters_vec;
 	public: vector<double**>* Omega_vec;
 	public: cli::array<Color>^ Colors;
+	private: System::Windows::Forms::Button^ LoadSetFromFileBtn;
+	public:
+	private: System::Windows::Forms::Button^ SaveSetToFileBtn;
 	public: String^ Str;
 
 		MyForm(void)
@@ -290,6 +295,8 @@ namespace WinForm {
 			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+			this->LoadSetFromFileBtn = (gcnew System::Windows::Forms::Button());
+			this->SaveSetToFileBtn = (gcnew System::Windows::Forms::Button());
 			this->IntegrParams = (gcnew System::Windows::Forms::GroupBox());
 			this->label25 = (gcnew System::Windows::Forms::Label());
 			this->label28 = (gcnew System::Windows::Forms::Label());
@@ -480,6 +487,8 @@ namespace WinForm {
 			// 
 			// tabPage1
 			// 
+			this->tabPage1->Controls->Add(this->LoadSetFromFileBtn);
+			this->tabPage1->Controls->Add(this->SaveSetToFileBtn);
 			this->tabPage1->Controls->Add(this->IntegrParams);
 			this->tabPage1->Controls->Add(this->pictureBox2);
 			this->tabPage1->Controls->Add(this->DeltaCmbB);
@@ -505,6 +514,31 @@ namespace WinForm {
 			this->tabPage1->TabIndex = 0;
 			this->tabPage1->Text = L"Ввод данных";
 			this->tabPage1->UseVisualStyleBackColor = true;
+			// 
+			// LoadSetFromFileBtn
+			// 
+			this->LoadSetFromFileBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->LoadSetFromFileBtn->Location = System::Drawing::Point(1151, 149);
+			this->LoadSetFromFileBtn->Name = L"LoadSetFromFileBtn";
+			this->LoadSetFromFileBtn->Size = System::Drawing::Size(156, 55);
+			this->LoadSetFromFileBtn->TabIndex = 171;
+			this->LoadSetFromFileBtn->Text = L"Загрузить набор из файла";
+			this->LoadSetFromFileBtn->UseVisualStyleBackColor = true;
+			this->LoadSetFromFileBtn->Click += gcnew System::EventHandler(this, &MyForm::LoadSetFromFileBtn_Click);
+			// 
+			// SaveSetToFileBtn
+			// 
+			this->SaveSetToFileBtn->Enabled = false;
+			this->SaveSetToFileBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->SaveSetToFileBtn->Location = System::Drawing::Point(1151, 88);
+			this->SaveSetToFileBtn->Name = L"SaveSetToFileBtn";
+			this->SaveSetToFileBtn->Size = System::Drawing::Size(156, 55);
+			this->SaveSetToFileBtn->TabIndex = 170;
+			this->SaveSetToFileBtn->Text = L"Сохранить набор в файл";
+			this->SaveSetToFileBtn->UseVisualStyleBackColor = true;
+			this->SaveSetToFileBtn->Click += gcnew System::EventHandler(this, &MyForm::SaveSetToFileBtn_Click);
 			// 
 			// IntegrParams
 			// 
@@ -640,9 +674,9 @@ namespace WinForm {
 				L"0", L"0,01", L"0,02", L"0,03", L"0,04", L"0,05",
 					L"0,06", L"0,07", L"0,08", L"0,09", L"0,1"
 			});
-			this->DeltaCmbB->Location = System::Drawing::Point(1045, 138);
+			this->DeltaCmbB->Location = System::Drawing::Point(1007, 138);
 			this->DeltaCmbB->Name = L"DeltaCmbB";
-			this->DeltaCmbB->Size = System::Drawing::Size(100, 32);
+			this->DeltaCmbB->Size = System::Drawing::Size(88, 32);
 			this->DeltaCmbB->TabIndex = 166;
 			this->DeltaCmbB->Text = L"0";
 			// 
@@ -652,9 +686,9 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->Gamma0CmbB->FormattingEnabled = true;
 			this->Gamma0CmbB->Items->AddRange(gcnew cli::array< System::Object^  >(6) { L"1", L"1,03", L"2", L"3", L"4", L"5" });
-			this->Gamma0CmbB->Location = System::Drawing::Point(835, 138);
+			this->Gamma0CmbB->Location = System::Drawing::Point(816, 138);
 			this->Gamma0CmbB->Name = L"Gamma0CmbB";
-			this->Gamma0CmbB->Size = System::Drawing::Size(100, 32);
+			this->Gamma0CmbB->Size = System::Drawing::Size(88, 32);
 			this->Gamma0CmbB->TabIndex = 165;
 			this->Gamma0CmbB->Text = L"1,03";
 			// 
@@ -670,13 +704,13 @@ namespace WinForm {
 			this->SingleCalculationProgressLbl->Text = L"Идут вычисления... 0%";
 			this->SingleCalculationProgressLbl->Visible = false;
 			// 
-			// label17
+			// StopCalculationsLbl
 			// 
 			this->StopCalculationsLbl->AutoSize = true;
-			this->StopCalculationsLbl->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
+			this->StopCalculationsLbl->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
 			this->StopCalculationsLbl->Location = System::Drawing::Point(831, 324);
-			this->StopCalculationsLbl->Name = L"label17";
+			this->StopCalculationsLbl->Name = L"StopCalculationsLbl";
 			this->StopCalculationsLbl->Size = System::Drawing::Size(281, 24);
 			this->StopCalculationsLbl->TabIndex = 164;
 			this->StopCalculationsLbl->Text = L"Останавливаем вычисления...";
@@ -687,7 +721,7 @@ namespace WinForm {
 			this->StopBtn->Enabled = false;
 			this->StopBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->StopBtn->Location = System::Drawing::Point(956, 201);
+			this->StopBtn->Location = System::Drawing::Point(941, 202);
 			this->StopBtn->Name = L"StopBtn";
 			this->StopBtn->Size = System::Drawing::Size(184, 66);
 			this->StopBtn->TabIndex = 153;
@@ -769,20 +803,20 @@ namespace WinForm {
 			// 
 			this->GenerateGammaBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->GenerateGammaBtn->Location = System::Drawing::Point(1131, 32);
+			this->GenerateGammaBtn->Location = System::Drawing::Point(1151, 27);
 			this->GenerateGammaBtn->Name = L"GenerateGammaBtn";
-			this->GenerateGammaBtn->Size = System::Drawing::Size(165, 55);
+			this->GenerateGammaBtn->Size = System::Drawing::Size(156, 55);
 			this->GenerateGammaBtn->TabIndex = 141;
 			this->GenerateGammaBtn->Text = L"Сгенерировать набор γⱼ";
 			this->GenerateGammaBtn->UseVisualStyleBackColor = true;
-			this->GenerateGammaBtn->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
+			this->GenerateGammaBtn->Click += gcnew System::EventHandler(this, &MyForm::CreateGammaBtn_Click);
 			// 
 			// label10
 			// 
 			this->label10->AutoSize = true;
 			this->label10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label10->Location = System::Drawing::Point(975, 137);
+			this->label10->Location = System::Drawing::Point(941, 137);
 			this->label10->Name = L"label10";
 			this->label10->Size = System::Drawing::Size(60, 29);
 			this->label10->TabIndex = 137;
@@ -793,7 +827,7 @@ namespace WinForm {
 			this->Gamma1->AutoSize = true;
 			this->Gamma1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->Gamma1->Location = System::Drawing::Point(765, 137);
+			this->Gamma1->Location = System::Drawing::Point(746, 137);
 			this->Gamma1->Name = L"Gamma1";
 			this->Gamma1->Size = System::Drawing::Size(64, 29);
 			this->Gamma1->TabIndex = 135;
@@ -826,7 +860,7 @@ namespace WinForm {
 			this->StartBtn->Enabled = false;
 			this->StartBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->StartBtn->Location = System::Drawing::Point(766, 203);
+			this->StartBtn->Location = System::Drawing::Point(751, 203);
 			this->StartBtn->Name = L"StartBtn";
 			this->StartBtn->Size = System::Drawing::Size(184, 64);
 			this->StartBtn->TabIndex = 90;
@@ -2309,21 +2343,560 @@ namespace WinForm {
 		}
 #pragma endregion
 
-		private: System::Void PerformCalculations()
+		//Для вычислений без сбора дополнительной информации и с возможностью остановки backgroundWorker
+		private: int PerformCalculations(int NumOfEquations, double endTime, double& _E0, double& _E0Star, double& _ts, double* fi, double* fipl1, BackgroundWorker^ bw)
 		{
+			const double h = Convert::ToDouble(hTB->Text);              //Шаг
+			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double g = Convert::ToDouble(gTB->Text);              //Коэффициент связи
+			const double alpha = Convert::ToDouble(AlphaTB->Text);      //Число α
+			const double beta = Convert::ToDouble(textBox7->Text);      //Число β
+			double t = 0.0;                                             //Текущее время       
 
+			const double D2PI = 2 * M_PI;
+			double oldE0;
+
+			//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
+			//Без подсчетов какой-либо дополнительной информации
+			for (t; t < endTime; t += h)
+			{
+				if (bw->CancellationPending)
+				{
+					return -1;
+				}
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < NumOfEquations; j++)
+				{
+					if (bw->CancellationPending)
+					{
+						return -1;
+					}
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					fipl1[j] = RK4(t, _ts, fi[j], h, gamma[j], g, _E0, _E0Star, alpha);
+					fi[j] = fipl1[j];
+
+					if (fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+					{
+						oldE0 = _E0;
+						_E0 = E(t + h, _ts, _E0, _E0Star, alpha);          //Пересчет начальных условий
+						_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
+						_E0Star += beta;                                //Добавление β к начальному значению производной
+						_ts = t + h;                                    //Изменение времени последнего спайка
+						fi[j] = 0.0;                                   //Обнуление значения ф
+					}
+				}
+				bw->ReportProgress((int)(t / (T - h) * 100));
+			}
+
+			return 0;
+		}
+
+		//Для вычислений со сбором информации о средних частотах и с возможностью остановки backgroundWorker
+		private: int PerformCalculations(int NumOfEquations, double startTime, double endTime, double& _E0, double& _E0Star, double& _ts, int* clustersArr, double* fi,
+			double* fipl1, double* fi0, BackgroundWorker^ bw)
+		{
+			const double h = Convert::ToDouble(hTB->Text);              //Шаг
+			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double g = Convert::ToDouble(gTB->Text);              //Коэффициент связи
+			const double alpha = Convert::ToDouble(AlphaTB->Text);      //Число α
+			const double beta = Convert::ToDouble(textBox7->Text);      //Число β
+			double t = startTime;                                       //Текущее время
+
+			const double D2PI = 2 * M_PI;
+			double oldE0;
+			// Первая итерация отдельно-------------------------------------------------------------------------------------------------------------------------------------------
+			if (bw->CancellationPending)
+			{
+				return -1;
+			}
+			t = round(t * 1000) / 1000;
+			for (int j = 0; j < NumOfEquations; j++)
+			{
+				if (bw->CancellationPending)
+				{
+					return -1;
+				}
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				fipl1[j] = RK4(t, _ts, fi[j], h, gamma[j], g, _E0, _E0Star, alpha);
+				fi[j] = fipl1[j];
+
+				if (fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
+				{
+					oldE0 = _E0;
+					_E0 = E(t + h, _ts, _E0, _E0Star, alpha);          //Пересчет начальных условий
+					_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
+					_E0Star += beta;                                //Добавление β к начальному значению производной
+					_ts = t + h;                                    //Изменение времени последнего спайка
+					fi[j] = 0.0;                                   //Обнуление значения ф
+					clustersArr[j]++;                              //Увеличение числа спайков на 1
+				}
+			}
+
+			for (int l = 0; l < NumOfEquations; l++)
+			{
+				fi0[l] = fi[l];                                    //Запоминание значений фаз при t = T₁
+			}
+
+			bw->ReportProgress((int)(t / (T - h) * 100));
+			t += h;
+			//--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+			for (t; t < endTime; t += h)
+			{
+				if (bw->CancellationPending)
+				{
+					return -1;
+				}
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < NumOfEquations; j++)
+				{
+					if (bw->CancellationPending)
+					{
+						return -1;
+					}
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					fipl1[j] = RK4(t, _ts, fi[j], h, gamma[j], g, _E0, _E0Star, alpha);
+					fi[j] = fipl1[j];
+
+					if (fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+					{
+						oldE0 = _E0;
+						_E0 = E(t + h, _ts, _E0, _E0Star, alpha);           //Пересчет начальных условий
+						_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
+						_E0Star += beta;                                 //Добавление β к начальному значению производной
+						_ts = t + h;                                     //Изменение времени последнего спайка
+						fi[j] = 0.0;                                    //Обнуление значения ф
+						clustersArr[j]++;                               //Увеличение числа спайков на 1
+					}
+				}
+
+				bw->ReportProgress((int)(t / (T - h) * 100));
+			}
+
+			return 0;
+		}
+
+		//Для вычислений со сбором информации о спайках, среднем поле и параметре фазовой синхронизации и с возможностью остановки backgroundWorker
+		private: int PerformCalculations(int NumOfEquations, double startTime, double endTime, double& _E0, double& _E0Star, double& _ts, double* fi, double* fipl1,
+			PointPairList^ E_PPL, PointPairList^ Mu_PPL, BackgroundWorker^ bw)
+		{
+			GraphPane^ panel = SpikesGraph->GraphPane;
+			panel->CurveList->Clear();
+
+			const double h = Convert::ToDouble(hTB->Text);              //Шаг
+			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double g = Convert::ToDouble(gTB->Text);              //Коэффициент связи
+			const double alpha = Convert::ToDouble(AlphaTB->Text);      //Число α
+			const double beta = Convert::ToDouble(textBox7->Text);      //Число β
+			double Et;                                                  //Поле E(t)
+			double t = startTime;                                       //Текущее время
+			complex<double> Mu;                                         //Параметр фазовой синхронизации μ
+
+			const double D2PI = 2 * M_PI;
+			bool spike_flag = false;
+			double oldE0;
+			complex<double> CompFi;
+			const complex<double> CompN((double)NumOfEquations, 0.0);
+
+			for (t; t < endTime; t += h)
+			{
+				if (bw->CancellationPending)
+				{
+					return -1;
+				}
+				t = round(t * 1000) / 1000;
+				Mu = complex<double>(0.0, 0.0);
+				for (int j = 0; j < NumOfEquations; j++)
+				{
+					if (bw->CancellationPending)
+					{
+						return -1;
+					}
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					fipl1[j] = RK4(t, _ts, fi[j], h, gamma[j], g, _E0, _E0Star, alpha);
+					fi[j] = fipl1[j];
+
+					if (fi[j] >= D2PI)                                      //В моемент импульса j-го ротатора
+					{
+						oldE0 = _E0;
+						_E0 = E(t + h, _ts, _E0, _E0Star, alpha);           //Пересчет начальных условий
+						_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
+						_E0Star += beta;                                    //Добавление β к начальному значению производной
+						_ts = t + h;                                        //Изменение времени последнего спайка
+						fi[j] = 0.0;                                        //Обнуление значения ф
+						if (!spike_flag)                                    //Отбражение нового спайка на графике
+						{
+							PointPairList^ Spaik_list = gcnew PointPairList();
+							Spaik_list->Add(_ts, 0.0);
+							Spaik_list->Add(_ts, 1.0);
+
+							LineItem^ Curve7 = panel->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+							SpikesGraph->AxisChange();
+							SpikesGraph->Invalidate();
+							spike_flag = true;
+						}
+					}
+					CompFi = polar<double>(1.0, fi[j]);
+					Mu += CompFi;
+				}
+				spike_flag = false;
+
+				Et = E(t + h, _ts, _E0, _E0Star, alpha);
+				E_PPL->Add(t + h, Et);
+				Mu = Mu / CompN;
+				Mu_PPL->Add(t + h, abs(Mu));
+
+				bw->ReportProgress((int)(t / (T - h) * 100));
+			}
+
+			return 0;
+		}
+
+		//Для вычислений со сбором информации о частотах, спайках, среднем поле и параметре фазовой синхронизации и с возможностью остановки backgroundWorker
+		private: int PerformCalculations(bool T1LessThanT2, int NumOfEquations, double startTime, double& _E0, double& _E0Star, double& _ts, int* clustersArr, double* fi,
+			double* fipl1, double* fi0, PointPairList^ E_PPL, PointPairList^ Mu_PPL, BackgroundWorker^ bw)
+		{
+			GraphPane^ panel = SpikesGraph->GraphPane;
+			panel->CurveList->Clear();
+
+			const double h = Convert::ToDouble(hTB->Text);              //Шаг
+			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double g = Convert::ToDouble(gTB->Text);              //Коэффициент связи
+			const double alpha = Convert::ToDouble(AlphaTB->Text);      //Число α
+			const double beta = Convert::ToDouble(textBox7->Text);      //Число β
+			double Et;                                                  //Поле E(t)
+			double t = startTime;                                       //Текущее время
+			complex<double> Mu;                                         //Параметр фазовой синхронизации μ
+			const double D2PI = 2 * M_PI;
+			bool spike_flag = false;
+			double oldE0;
+			complex<double> CompFi;
+			const complex<double> CompN((double)NumOfEquations, 0.0);
+
+			if (T1LessThanT2)
+			{
+				for (t; t < T; t += h)
+				{
+					if (bw->CancellationPending)
+					{
+						return -1;
+					}
+					t = round(t * 1000) / 1000;
+					Mu = complex<double>(0.0, 0.0);
+					for (int j = 0; j < NumOfEquations; j++)
+					{
+						if (bw->CancellationPending)
+						{
+							return -1;
+						}
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						fipl1[j] = RK4(t, _ts, fi[j], h, gamma[j], g, _E0, _E0Star, alpha);
+						fi[j] = fipl1[j];
+
+						if (fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+						{
+							oldE0 = _E0;
+							_E0 = E(t + h, _ts, _E0, _E0Star, alpha);           //Пересчет начальных условий
+							_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
+							_E0Star += beta;                                 //Добавление β к начальному значению производной
+							_ts = t + h;                                     //Изменение времени последнего спайка
+							fi[j] = 0.0;                                    //Обнуление значения ф
+							clustersArr[j]++;                               //Увеличение числа спайков на 1
+							if (!spike_flag)                                //Отбражение нового спайка на графике
+							{
+								PointPairList^ Spaik_list = gcnew PointPairList();
+								Spaik_list->Add(_ts, 0.0);
+								Spaik_list->Add(_ts, 1.0);
+
+								LineItem^ Curve7 = panel->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+								SpikesGraph->AxisChange();
+								SpikesGraph->Invalidate();
+								spike_flag = true;
+							}
+						}
+						CompFi = polar<double>(1.0, fi[j]);
+						Mu += CompFi;
+					}
+					spike_flag = false;
+
+					Et = E(t + h, _ts, _E0, _E0Star, alpha);
+					E_PPL->Add(t + h, Et);
+					Mu = Mu / CompN;
+					Mu_PPL->Add(t + h, abs(Mu));
+
+					bw->ReportProgress((int)(t / (T - h) * 100));
+				}
+			}
+			else
+			{
+				// Первая итерация отдельно-------------------------------------------------------------------------------------------------------------------------------------------
+				if (bw->CancellationPending)
+				{
+					return -1;
+				}
+				t = round(t * 1000) / 1000;
+				Mu = complex<double>(0.0, 0.0);
+				for (int j = 0; j < NumOfEquations; j++)
+				{
+					if (bw->CancellationPending)
+					{
+						return -1;
+					}
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					fipl1[j] = RK4(t, _ts, fi[j], h, gamma[j], g, _E0, _E0Star, alpha);
+					fi[j] = fipl1[j];
+
+					if (fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
+					{
+						oldE0 = _E0;
+						_E0 = E(t + h, _ts, _E0, _E0Star, alpha);          //Пересчет начальных условий
+						_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
+						_E0Star += beta;                                //Добавление β к начальному значению производной
+						_ts = t + h;                                    //Изменение времени последнего спайка
+						fi[j] = 0.0;                                   //Обнуление значения ф
+						clustersArr[j]++;                              //Увеличение числа спайков на 1
+						if (!spike_flag)                               //Отбражение нового спайка на графике
+						{
+							PointPairList^ Spaik_list = gcnew PointPairList();
+							Spaik_list->Add(_ts, 0.0);
+							Spaik_list->Add(_ts, 1.0);
+
+							LineItem^ Curve7 = panel->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+							SpikesGraph->AxisChange();
+							SpikesGraph->Invalidate();
+							spike_flag = true;
+						}
+					}
+					CompFi = polar<double>(1.0, fi[j]);
+					Mu += CompFi;
+				}
+				spike_flag = false;
+
+				Et = E(t + h, _ts, _E0, _E0Star, alpha);
+				E_PPL->Add(t + h, Et);
+				Mu = Mu / CompN;
+				Mu_PPL->Add(t + h, abs(Mu));
+
+				for (int l = 0; l < NumOfEquations; l++)
+				{
+					fi0[l] = fi[l];                                     //Запоминание значений фаз при t = T₁
+				}
+
+				t += h;
+
+				bw->ReportProgress((int)(t / (T - h) * 100));
+				//--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+				for (t; t < T; t += h)
+				{
+					if (bw->CancellationPending)
+					{
+						return -1;
+					}
+					t = round(t * 1000) / 1000;
+					Mu = complex<double>(0.0, 0.0);
+					for (int j = 0; j < NumOfEquations; j++)
+					{
+						if (bw->CancellationPending)
+						{
+							return -1;
+						}
+						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+						fipl1[j] = RK4(t, _ts, fi[j], h, gamma[j], g, _E0, _E0Star, alpha);
+						fi[j] = fipl1[j];
+
+						if (fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
+						{
+							oldE0 = _E0;
+							_E0 = E(t + h, _ts, _E0, _E0Star, alpha);           //Пересчет начальных условий
+							_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
+							_E0Star += beta;                                 //Добавление β к начальному значению производной
+							_ts = t + h;                                     //Изменение времени последнего спайка
+							fi[j] = 0.0;                                    //Обнуление значения ф
+							clustersArr[j]++;                                         //Увеличение числа спайков на 1	
+							if (!spike_flag)                                //Отбражение нового спайка на графике
+							{
+								PointPairList^ Spaik_list = gcnew PointPairList();
+								Spaik_list->Add(_ts, 0.0);
+								Spaik_list->Add(_ts, 1.0);
+
+								LineItem^ Curve7 = panel->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
+
+								SpikesGraph->AxisChange();
+								SpikesGraph->Invalidate();
+								spike_flag = true;
+							}
+						}
+						CompFi = polar<double>(1.0, fi[j]);
+						Mu += CompFi;
+					}
+					spike_flag = false;
+
+					Et = E(t + h, _ts, _E0, _E0Star, alpha);
+					E_PPL->Add(t + h, Et);
+					Mu = Mu / CompN;
+					Mu_PPL->Add(t + h, abs(Mu));
+
+					bw->ReportProgress((int)(t / (T - h) * 100));
+				}
+			}
+
+			return 0;
+		}
+
+		//Для вычислений с подсчётом параметра фазовой синхронизации и своим набором гамма
+		private: int PerformCalculations(int NumOfEquations, double _beta, complex<double> &mu, double* fi, double* fipl1, double* gamma)
+		{
+			const double h = Convert::ToDouble(hTB->Text);                   //Шаг интегрирования
+			const double T = Convert::ToDouble(T_TB->Text);                  //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double alpha = Convert::ToDouble(AlphaTB->Text);           //Число α
+			const double g = Convert::ToDouble(gTB->Text);                   //Коэффициент связи
+			double E0 = Convert::ToDouble(E0_Text->Text);                    //Начальное условие для E
+			double E0Star = Convert::ToDouble(E0Star_Text->Text);            //Начальное условие для Ė
+			double t = 0.0;                                                  //Время
+			double ts = 0.0;
+			double oldE0;
+			const double D2PI = 2 * M_PI;
+			const complex<double> CompN((double)NumOfEquations, 0.0);
+			complex<double> CompFi;
+
+			//t от 0 до T - h---------------------------------------------------------------------------------------------------------------------------------
+			for (t; t < T - h; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < NumOfEquations; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					fipl1[j] = RK4(t, ts, fi[j], h, gamma[j], g, E0, E0Star, alpha);
+					fi[j] = fipl1[j];
+
+					if (fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += _beta;                                //Добавление β к начальному значению производной
+						ts = t + h;                                    //Изменение времени последнего спайка
+						fi[j] = 0.0;			                       //Обнуление значения ф
+					}
+				}
+			}
+			//------------------------------------------------------------------------------------------------------------------------------------------------
+			//t от T - h до T---------------------------------------------------------------------------------------------------------------------------------
+			t = round(t * 1000) / 1000;
+			mu = complex<double>(0.0, 0.0);
+
+			for (int j = 0; j < NumOfEquations; j++)
+			{
+				//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+				fipl1[j] = RK4(t, ts, fi[j], h, gamma[j], g, E0, E0Star, alpha);
+				fi[j] = fipl1[j];
+
+				if (fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+				{
+					oldE0 = E0;
+					E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+					E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+					E0Star += _beta;                                //Добавление β к начальному значению производной
+					ts = t + h;                                    //Изменение времени последнего спайка
+					fi[j] = 0.0;			                       //Обнуление значения ф
+				}
+				CompFi = polar<double>(1.0, fi[j]);
+				mu += CompFi;
+			}
+			mu = mu / CompN;
+			t += h;
+			//------------------------------------------------------------------------------------------------------------------------------------------------
+			return 0;
+		}
+		//Для вычислений с подсчётом максимума параметра фазовой синхронизации и своим набором гамма
+		private: int PerformCalculations(int NumOfEquations, double _beta, double &maxAbsmu, double* fi, double* fipl1, double* gamma) 
+		{
+			const double h = Convert::ToDouble(hTB->Text);                   //Шаг интегрирования
+			const double T = Convert::ToDouble(T_TB->Text);                  //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double alpha = Convert::ToDouble(AlphaTB->Text);           //Число α
+			const double g = Convert::ToDouble(gTB->Text);                   //Коэффициент связи
+			double E0 = Convert::ToDouble(E0_Text->Text);                    //Начальное условие для E
+			double E0Star = Convert::ToDouble(E0Star_Text->Text);            //Начальное условие для Ė
+			double t = 0.0;                                                  //Время
+			const double T2 = Convert::ToDouble(T02_text->Text);
+			double oldE0;
+			double ts = 0.0;
+
+			const double D2PI = 2 * M_PI;
+
+			complex<double> Mu;
+			complex<double> CompFi;
+			const complex<double> CompN((double)NumOfEquations, 0.0);
+
+			//t от 0 до T02 - h-------------------------------------------------------------------------------------------------------------------------------
+			for (t; t < T2 - h; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				for (int j = 0; j < NumOfEquations; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					fipl1[j] = RK4(t, ts, fi[j], h, gamma[j], g, E0, E0Star, alpha);
+					fi[j] = fipl1[j];
+
+					if (fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += _beta;                                //Добавление β к начальному значению производной
+						ts = t + h;                                    //Изменение времени последнего спайка
+						fi[j] = 0.0;			                       //Обнуление значения ф
+					}
+				}
+			}
+			//------------------------------------------------------------------------------------------------------------------------------------------------
+			//t от T02 до T-----------------------------------------------------------------------------------------------------------------------------------
+			for (t; t < T; t += h)
+			{
+				t = round(t * 1000) / 1000;
+				Mu = complex<double>(0.0, 0.0);
+				for (int j = 0; j < NumOfEquations; j++)
+				{
+					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
+					fipl1[j] = RK4(t, ts, fi[j], h, gamma[j], g, E0, E0Star, alpha);
+					fi[j] = fipl1[j];
+
+					if (fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
+					{
+						oldE0 = E0;
+						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
+						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
+						E0Star += _beta;                                //Добавление β к начальному значению производной
+						ts = t + h;                                    //Изменение времени последнего спайка
+						fi[j] = 0.0;			                       //Обнуление значения ф
+					}
+					CompFi = polar<double>(1.0, fi[j]);
+					Mu += CompFi;
+				}
+				Mu = Mu / CompN;
+
+				if (abs(Mu) > maxAbsmu)
+				{
+					maxAbsmu = abs(Mu);
+				}
+			}
+			//------------------------------------------------------------------------------------------------------------------------------------------------
+
+			return 0;
 		}
 
 		private: System::Void SingleCalculationBW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
 		{
 			GraphPane^ panel2 = OmegaGraph->GraphPane;
-			GraphPane^ panel3 = SpikesGraph->GraphPane;
 			GraphPane^ panel4 = E_fieldGraph->GraphPane;
 			GraphPane^ panel5 = PhSyncParamGraph->GraphPane;
 			GraphPane^ panel6 = PhasesGraph->GraphPane;
 
 			panel2->CurveList->Clear();
-			panel3->CurveList->Clear();
 			panel4->CurveList->Clear();
 			panel5->CurveList->Clear();
 			panel6->CurveList->Clear();
@@ -2337,29 +2910,22 @@ namespace WinForm {
 			PointPairList^ Mu_list = gcnew PointPairList();             //Список точек для графика |μ| от t
 			PointPairList^ FIT_list = gcnew PointPairList();            //Список точек для графика φⱼ(T) в конечный момент времени
 
-			const int n = Convert::ToInt32(nTB->Text);              //Число уравнений в системе
-			const int p = Convert::ToInt32(IterationsTB->Text);             //Максимальное число итераций
-			const double h = Convert::ToDouble(hTB->Text);          //Шаг
-			const double T = Convert::ToDouble(T_TB->Text);          //Максимальное время, до которого будет подсчет, первый критерий остановки
-			const double T01 = Convert::ToDouble(T1_TB->Text);       //Начальное время, от которого будет считаться частота
+			const int n = Convert::ToInt32(nTB->Text);                  //Число уравнений в системе
+			const int p = Convert::ToInt32(IterationsTB->Text);         //Максимальное число итераций
+			const double h = Convert::ToDouble(hTB->Text);              //Шаг
+			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double T01 = Convert::ToDouble(T1_TB->Text);          //Начальное время, от которого будет считаться частота
 			const double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
-			const double g = Convert::ToDouble(gTB->Text);           //Коэффициент связи
-			const double alpha = Convert::ToDouble(AlphaTB->Text);   //Число α
-			const double beta = Convert::ToDouble(textBox7->Text);      //Число β	
-			int it = 0;                                                 //Индекс строк в таблице
 			int NumOfClusters;                                          //Число кластеров при t = T
 			int IndexOfMaxOmega, IndexOfMinOmega;                       //Номера элементов с максимальными и минимальными частотами
 			double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
 			double E0Star = Convert::ToDouble(E0Star_Text->Text);       //Начальное условие для Ė
-			double t = 0.0;                                             //Текущее время       
-			double Et;                                                  //Поле E(t)
 			double MaxOmega = -100000.0, MinOmega = 100000.0;           //Максимальная и минимальная средние частоты
 			double ts = 0.0;                                            //Время последнего спайка
-			int* k;                                                     //Число спайков для каждого ротатора  
+			int* k;                                                     //Число спайков для каждого ротатора
 			double* Fi0;		                                        //Фазы при t = T₁
 			double* Fi, * Fiplus1;	                                    //Фазы φⱼ(t) j = 0,...,n - 1
 			double* Omega;                                              //Средние частоты Ω
-			complex<double> Mu;                                         //Параметр фазовой синхронизации μ
 
 			Str = "";
 
@@ -2371,25 +2937,17 @@ namespace WinForm {
 				return;
 			}
 
-			//Технические переменные, используемые для расчетов
-			int ind = 0;
-			int i;
-			double oldE0;
-			bool spike_flag = false;
-			complex<double> CompFi;
-			const complex<double> CompN((double)n, 0.0);
-
 			Fi = new double[n];
 			Fiplus1 = new double[n];
 			Omega = new double[n];
 			Fi0 = new double[n];
 			k = new int[n];
 
-			double tmin_limit = t - 0.05;
+			double tmin_limit = - 0.05;
 
 			if (gamma1 != gamma2)
 			{
-				for (i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
+				for (int i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
 				{
 					Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
 					k[i] = 0;                          //Изначальное число спайков равно нулю
@@ -2400,7 +2958,7 @@ namespace WinForm {
 				random_device gen;
 				mt19937 me(gen());
 				uniform_real_distribution<> distr(0, M_PI);
-				for (i = 0; i < n; i++)
+				for (int i = 0; i < n; i++)
 				{
 					Fi[i] = Fi0[i] = distr(me);
 					Fiplus1[i] = 0.0;
@@ -2411,343 +2969,62 @@ namespace WinForm {
 			//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
 			if (T01 <= T02)
 			{
-				//t от 0 до T01 - h
-				for (t; t < T01 - h; t += h)
-				{
-					if (SingleCalculationBW->CancellationPending)
-					{
-						e->Cancel = true;
-						return;
-					}
-					t = round(t * 1000) / 1000;
-					for (int j = 0; j < n; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                //Добавление β к начальному значению производной
-							ts = t + h;                                    //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                       //Обнуление значения ф												
-						}
-					}
-					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-				}
-				//---------------------------------------------------
-				//t от T01 - h до T01
-				if (SingleCalculationBW->CancellationPending)
+				int res = PerformCalculations(n, T01 - h, E0, E0Star, ts, Fi, Fiplus1, SingleCalculationBW);
+				if (res == -1)
 				{
 					e->Cancel = true;
 					return;
 				}
-				t = round(t * 1000) / 1000;
-				for (int j = 0; j < n; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
 
-					if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                //Добавление β к начальному значению производной
-						ts = t + h;                                    //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                       //Обнуление значения ф					
-						k[j]++;                                        //Увеличение числа спайков на 1
-					}
+				res = PerformCalculations(n, T01 - h, T02 - h, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, SingleCalculationBW);
+				if (res == -1)
+				{
+					e->Cancel = true;
+					return;
 				}
 
-				for (int l = 0; l < n; l++)
+				res = PerformCalculations(true, n, T02 - h, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, E_list, Mu_list, SingleCalculationBW);
+				if (res == -1)
 				{
-					Fi0[l] = Fi[l];                                    //Запоминание значений фаз при t = T₁
+					e->Cancel = true;
+					return;
 				}
-
-				SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-				t += h;
-				//---------------------------------------------------
-				//t от T01 до T02 - h
-				for (t; t < T02 - h; t += h)
-				{
-					if (SingleCalculationBW->CancellationPending)
-					{
-						e->Cancel = true;
-						return;
-					}
-					t = round(t * 1000) / 1000;
-					for (int j = 0; j < n; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                 //Добавление β к начальному значению производной
-							ts = t + h;                                     //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                        //Обнуление значения ф						
-							k[j]++;                                         //Увеличение числа спайков на 1						
-						}
-					}
-
-					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-				}
-				//---------------------------------------------------			
-				//t от T02 - h до T
-				for (t; t < T; t += h)
-				{
-					if (SingleCalculationBW->CancellationPending)
-					{
-						e->Cancel = true;
-						return;
-					}
-					t = round(t * 1000) / 1000;
-					Mu = complex<double>(0.0, 0.0);
-					for (int j = 0; j < n; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                 //Добавление β к начальному значению производной
-							ts = t + h;                                     //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                        //Обнуление значения ф						
-							k[j]++;                                         //Увеличение числа спайков на 1	
-							if (!spike_flag)                                //Отбражение нового спайка на графике
-							{
-								PointPairList^ Spaik_list = gcnew PointPairList();
-								Spaik_list->Add(ts, 0.0);
-								Spaik_list->Add(ts, 1.0);
-
-								LineItem^ Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-								SpikesGraph->AxisChange();
-								SpikesGraph->Invalidate();
-								spike_flag = true;
-							}
-						}
-						CompFi = polar<double>(1.0, Fi[j]);
-						Mu += CompFi;
-					}
-					spike_flag = false;
-
-					Et = E(t + h, ts, E0, E0Star, alpha);
-					E_list->Add(t + h, Et);
-					Mu = Mu / CompN;
-					Mu_list->Add(t + h, abs(Mu));
-
-					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-				}
-				//---------------------------------------------------
 			}
 			else
 			{
-				//t от 0 до T02 - h
-				for (t; t < T02 - h; t += h)
-				{
-					if (SingleCalculationBW->CancellationPending)
-					{
-						e->Cancel = true;
-						return;
-					}
-					t = round(t * 1000) / 1000;
-					for (int j = 0; j < n; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                //Добавление β к начальному значению производной
-							ts = t + h;                                    //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                       //Обнуление значения ф												
-						}
-					}
-					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-				}
-				//---------------------------------------------------
-				//t от T02 - h до T₁ - h
-				for (t; t < T01 - h; t += h)
-				{
-					t = round(t * 1000) / 1000;
-					Mu = complex<double>(0.0, 0.0);
-					for (int j = 0; j < n; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                 //Добавление β к начальному значению производной
-							ts = t + h;                                     //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                        //Обнуление значения ф						
-							if (!spike_flag)                                //Отбражение нового спайка на графике
-							{
-								PointPairList^ Spaik_list = gcnew PointPairList();
-								Spaik_list->Add(ts, 0.0);
-								Spaik_list->Add(ts, 1.0);
-
-								LineItem^ Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-								SpikesGraph->AxisChange();
-								SpikesGraph->Invalidate();
-								spike_flag = true;
-							}
-						}
-						CompFi = polar<double>(1.0, Fi[j]);
-						Mu += CompFi;
-					}
-					spike_flag = false;
-
-					Et = E(t + h, ts, E0, E0Star, alpha);
-					E_list->Add(t + h, Et);
-					Mu = Mu / CompN;
-					Mu_list->Add(t + h, abs(Mu));
-
-					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-				}
-				//---------------------------------------------------
-				//t от T₁ - h до T₁
-				if (SingleCalculationBW->CancellationPending)
+				int res = PerformCalculations(n, T02 - h, E0, E0Star, ts, Fi, Fiplus1, SingleCalculationBW);
+				if (res == -1)
 				{
 					e->Cancel = true;
 					return;
 				}
-				t = round(t * 1000) / 1000;
-				Mu = complex<double>(0.0, 0.0);
-				for (int j = 0; j < n; j++)
+
+				res = PerformCalculations(n, T02 - h, T01 - h, E0, E0Star, ts, Fi, Fiplus1, E_list, Mu_list, SingleCalculationBW);
+				if (res == -1)
 				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
-
-					if (Fi[j] >= D2PI)                              //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                //Добавление β к начальному значению производной
-						ts = t + h;                                    //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                       //Обнуление значения ф					
-						k[j]++;                                        //Увеличение числа спайков на 1
-						if (!spike_flag)                               //Отбражение нового спайка на графике
-						{
-							PointPairList^ Spaik_list = gcnew PointPairList();
-							Spaik_list->Add(ts, 0.0);
-							Spaik_list->Add(ts, 1.0);
-
-							LineItem^ Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-							SpikesGraph->AxisChange();
-							SpikesGraph->Invalidate();
-							spike_flag = true;
-						}
-					}
-					CompFi = polar<double>(1.0, Fi[j]);
-					Mu += CompFi;
-				}
-				spike_flag = false;
-
-				Et = E(t + h, ts, E0, E0Star, alpha);
-				E_list->Add(t + h, Et);
-				Mu = Mu / CompN;
-				Mu_list->Add(t + h, abs(Mu));
-
-				for (int l = 0; l < n; l++)
-				{
-					Fi0[l] = Fi[l];                                     //Запоминание значений фаз при t = T₁
+					e->Cancel = true;
+					return;
 				}
 
-				t += h;
-
-				SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
-				//---------------------------------------------------
-				//t от T01 до T
-				for (t; t < T; t += h)
+				res = PerformCalculations(false, n, T02 - h, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, E_list, Mu_list, SingleCalculationBW);
+				if (res == -1)
 				{
-					if (SingleCalculationBW->CancellationPending)
-					{
-						e->Cancel = true;
-						return;
-					}
-					t = round(t * 1000) / 1000;
-					Mu = complex<double>(0.0, 0.0);
-					for (int j = 0; j < n; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                  //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);           //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                 //Добавление β к начальному значению производной
-							ts = t + h;                                     //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                        //Обнуление значения ф						
-							k[j]++;                                         //Увеличение числа спайков на 1	
-							if (!spike_flag)                                //Отбражение нового спайка на графике
-							{
-								PointPairList^ Spaik_list = gcnew PointPairList();
-								Spaik_list->Add(ts, 0.0);
-								Spaik_list->Add(ts, 1.0);
-
-								LineItem^ Curve7 = panel3->AddCurve("", Spaik_list, Color::Red, SymbolType::None);
-
-								SpikesGraph->AxisChange();
-								SpikesGraph->Invalidate();
-								spike_flag = true;
-							}
-						}
-						CompFi = polar<double>(1.0, Fi[j]);
-						Mu += CompFi;
-					}
-					spike_flag = false;
-
-					Et = E(t + h, ts, E0, E0Star, alpha);
-					E_list->Add(t + h, Et);
-					Mu = Mu / CompN;
-					Mu_list->Add(t + h, abs(Mu));
-
-					SingleCalculationBW->ReportProgress((int)(t / (T - h) * 100));
+					e->Cancel = true;
+					return;
 				}
-				//---------------------------------------------------			
 			}
 
 			//Вычисление средних частот
-			for (i = 0; i < n; i++)
+			for (int i = 0; i < n; i++)
 			{
 				//Вычисление значения частоты
 				if (k[i] != 0)
 				{
-					Omega[i] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (t - T01);
+					Omega[i] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (T - T01);
 				}
 				else
 				{
-					Omega[i] = (Fi[i] - Fi0[i]) / (t - T01);
+					Omega[i] = (Fi[i] - Fi0[i]) / (T - T01);
 				}
 				g_list->Add(i, Omega[i]);
 				FIT_list->Add(i, Fi[i]);
@@ -2775,7 +3052,7 @@ namespace WinForm {
 			Str += "Для вычислений был использован метод Рунге-Кутта 4-го порядка.\r\n\r\n";
 			Str += String::Format(L"γⱼ были взяты из интервала [{0:G3}; {1:G3}]\r\n\r\nЧисло кластеров при t = T:{2}", gamma1, gamma2, NumOfClusters);
 
-			double tmax_limit = t + 0.05;
+			double tmax_limit = T + 0.05;
 
 			PointPairList^ MinMaxOmegaList = gcnew PointPairList();
 
@@ -2844,13 +3121,13 @@ namespace WinForm {
 			panel6->XAxis->Scale->Min = -1;
 			panel6->XAxis->Scale->Max = n;
 
-			panel3->XAxis->Scale->Max = t + 0.05;
-			panel3->XAxis->Scale->Min = T02 - 0.05;
+			SpikesGraph->GraphPane->XAxis->Scale->Max = T + 0.05;
+			SpikesGraph->GraphPane->XAxis->Scale->Min = T02 - 0.05;
 
-			panel4->XAxis->Scale->Max = t + 0.05;
+			panel4->XAxis->Scale->Max = T + 0.05;
 			panel4->XAxis->Scale->Min = T02 - 0.05;
 
-			panel5->XAxis->Scale->Max = t + 0.05;
+			panel5->XAxis->Scale->Max = T + 0.05;
 			panel5->XAxis->Scale->Min = T02 - 0.05;
 
 			OmegaGraph->Invalidate();
@@ -2866,7 +3143,6 @@ namespace WinForm {
 			delete[]Omega;
 			delete[]Fi0;
 			delete[]k;
-
 		}
 
 		private: System::Void backgroundWorker1_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
@@ -3221,7 +3497,7 @@ namespace WinForm {
 			OmegaGraph->Invalidate();
 		}
 
-		private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e)
+		private: System::Void CreateGammaBtn_Click(System::Object^ sender, System::EventArgs^ e)
 		{
 			GammaTable->Rows->Clear();
 
@@ -3253,6 +3529,7 @@ namespace WinForm {
 			}
 
 			StartBtn->Enabled = true;
+			SaveSetToFileBtn->Enabled = true;
 
 			MessageBox::Show("Набор сгенерирован", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 		}
@@ -3679,31 +3956,19 @@ namespace WinForm {
 			const int N1 = Convert::ToInt32(textBox9->Text);                 //Число уравнений N₁
 			const int N2 = Convert::ToInt32(textBox10->Text);                //Число уравнений N₂
 			const int NOM = Convert::ToInt32(textBox11->Text);               //Число измерений
-			const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
-			const double gamma0 = Convert::ToDouble(textBox12->Text);
-			const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
-			const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
-			const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
-			const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
 			int NStep = (N2 - N1) / NOM;                                     //Шаг по N
-			int counter = 0;
 			double beta;                                                     //Начальное значение β
 			double betaStep;                                                 //Начальный шаг по β
-			double E0;                                                       //Начальное условие для E
-			double E0Star;                                                   //Начальное условие для Ė
-			double t;                                                        //Время
-			double oldE0;
-			double ts;
 			double* Fi0;                                                     //Начальное распределение фаз φⱼ(0)
 			double* Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
 			double* Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
 			double* gamma;                                                   //Набор γⱼ
+			const double gamma0 = Convert::ToDouble(textBox12->Text);
+			int counter = 0;
 			const double D2PI = 2 * M_PI;
-
 			complex<double> Mu;
-			complex<double> CompFi;
 
-#pragma omp parallel for private(E0, E0Star, oldE0, t, ts, Fi0, Fi, Fiplus1, gamma, Mu, CompFi, beta, betaStep) schedule(static, 1)
+#pragma omp parallel for private(Fi0, Fi, Fiplus1, gamma, Mu, beta, betaStep) schedule(static, 1)
 			for (int i = N1; i <= N2; i += NStep)
 			{
 				Fi0 = new double[i];
@@ -3733,66 +3998,13 @@ namespace WinForm {
 				}
 				while (betaStep > 1e-03)
 				{
-					t = ts = 0.0;
-#pragma omp critical (convert)
-					{
-						E0 = Convert::ToDouble(E0_Text->Text);
-						E0Star = Convert::ToDouble(E0Star_Text->Text);
-					}
-
 					for (int j = 0; j < i; j++)
 					{
 						Fi[j] = Fi0[j];
 						Fiplus1[j] = 0.0;
 					}
 
-					//t от 0 до T - h
-					for (t; t < T - h; t += h)
-					{
-						t = round(t * 1000) / 1000;
-						for (int j = 0; j < i; j++)
-						{
-							//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-							Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-							Fi[j] = Fiplus1[j];
-
-							if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-							{
-								oldE0 = E0;
-								E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-								E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-								E0Star += beta;                                //Добавление β к начальному значению производной
-								ts = t + h;                                    //Изменение времени последнего спайка
-								Fi[j] = 0.0;			                       //Обнуление значения ф
-							}
-						}
-					}
-					//---------------------------------------------------
-					//t от T - h до T
-					t = round(t * 1000) / 1000;
-					Mu = complex<double>(0.0, 0.0);
-
-					for (int j = 0; j < i; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                //Добавление β к начальному значению производной
-							ts = t + h;                                    //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                       //Обнуление значения ф
-						}
-						CompFi = polar<double>(1.0, Fi[j]);
-						Mu += CompFi;
-					}
-					Mu = Mu / CompN;
-					t += h;
-					//---------------------------------------------------
+					PerformCalculations(i, beta, Mu, Fi, Fiplus1, gamma);
 
 					if (1 - abs(Mu) < 1e-03)
 					{
@@ -3857,6 +4069,10 @@ namespace WinForm {
 			button8->Enabled = false;
 			button11->Enabled = false;
 			textBox8->Visible = false;
+			textBox12->ReadOnly = false;
+			textBox9->ReadOnly = false;
+			textBox10->ReadOnly = false;
+			textBox11->ReadOnly = false;
 
 			BetaCrNGraph->AxisChange();
 			BetaCrNGraph->Invalidate();
@@ -3886,26 +4102,14 @@ namespace WinForm {
 			GraphPane^ pane = BetaCrNGraph->GraphPane;
 
 			const int N = Convert::ToInt32(textBox13->Text);                 //Число уравнений N
-			const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
-			const double gamma0 = Convert::ToDouble(textBox12->Text);
-			const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
-			const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
-			const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
-			const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
+			const double gamma0 = Convert::ToDouble(textBox12->Text);        //Значение γ для всех элементов
 			double beta = 0.0;                                               //Начальное значение β
 			double betaStep;                                                 //Начальный шаг по β
-			double E0;                                                       //Начальное условие для E
-			double E0Star;                                                   //Начальное условие для Ė
-			double t;                                                        //Время
-			double oldE0;
-			double ts;
 			double* Fi0;                                                     //Начальное распределение фаз φⱼ(0)
 			double* Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
 			double* Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
 			double* gamma;                                                   //Набор γⱼ
-			const double D2PI = 2 * M_PI;
 			complex<double> Mu;
-			complex<double> CompFi;
 
 			Fi0 = new double[N];
 			Fi = new double[N];
@@ -3933,64 +4137,13 @@ namespace WinForm {
 			}
 
 			while (betaStep > 1e-03)
-			{
-				t = ts = 0.0;
-				E0 = Convert::ToDouble(E0_Text->Text);
-				E0Star = Convert::ToDouble(E0Star_Text->Text);
-
+			{				
 				for (int j = 0; j < N; j++)
 				{
 					Fi[j] = Fi0[j];
 					Fiplus1[j] = 0.0;
 				}
-
-				//t от 0 до T - h
-				for (t; t < T - h; t += h)
-				{
-					t = round(t * 1000) / 1000;
-					for (int j = 0; j < N; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                //Добавление β к начальному значению производной
-							ts = t + h;                                    //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                       //Обнуление значения ф
-						}
-					}
-				}
-				//---------------------------------------------------
-				//t от T - h до T
-				t = round(t * 1000) / 1000;
-				Mu = complex<double>(0.0, 0.0);
-
-				for (int j = 0; j < N; j++)
-				{
-					//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-					Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-					Fi[j] = Fiplus1[j];
-
-					if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-					{
-						oldE0 = E0;
-						E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-						E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-						E0Star += beta;                                //Добавление β к начальному значению производной
-						ts = t + h;                                    //Изменение времени последнего спайка
-						Fi[j] = 0.0;			                       //Обнуление значения ф
-					}
-					CompFi = polar<double>(1.0, Fi[j]);
-					Mu += CompFi;
-				}
-				Mu = Mu / CompN;
-				t += h;
-				//---------------------------------------------------
+				PerformCalculations(N, beta, Mu, Fi, Fiplus1, gamma);
 
 				if (1 - abs(Mu) < 1e-03)
 				{
@@ -4068,33 +4221,16 @@ namespace WinForm {
 			const double Beta1 = Convert::ToDouble(textBox16->Text);         //Начальное значение β
 			const double Beta2 = Convert::ToDouble(textBox17->Text);         //Конечное значение β
 			const int NOM = Convert::ToInt32(textBox14->Text);               //Число измерений
-			const int p = Convert::ToInt32(IterationsTB->Text);                  //Максимальное число итераций
-			const int N = Convert::ToInt32(nTB->Text);                   //Число уравнений
-			const double gamma0 = Convert::ToDouble(textBox15->Text);
-			const double h = Convert::ToDouble(hTB->Text);               //Шаг интегрирования
-			const double T = Convert::ToDouble(T_TB->Text);               //Максимальное время, до которого будет подсчет, первый критерий остановки
-			const double T02 = Convert::ToDouble(T02_text->Text);
-			const double alpha = Convert::ToDouble(AlphaTB->Text);        //Число α
-			const double g = Convert::ToDouble(gTB->Text);                //Коэффициент связи
+			const int N = Convert::ToInt32(nTB->Text);                       //Число уравнений
 			double BetaStep = (Beta2 - Beta1) / NOM;                         //Шаг по β
-			int counter = 0;
-			double beta;
-			double E0;                                                       //Начальное условие для E
-			double E0Star;                                                   //Начальное условие для Ė
-			double t;                                                        //Время
-			double oldE0;
-			double ts;
-			double maxAbsMu;
 			double* Fi0;                                                     //Начальное распределение фаз φⱼ(0)
 			double* Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
 			double* Fiplus1;                                                 //Фазы φⱼ(t) j = 0,...,n - 1
 			double* gamma;                                                   //Набор γⱼ
-
-			const double D2PI = 2 * M_PI;
-
-			complex<double> Mu;
-			complex<double> CompFi;
-			const complex<double> CompN((double)N, 0.0);
+			const double gamma0 = Convert::ToDouble(textBox15->Text);
+			int counter = 0;
+			double beta;
+			double maxAbsMu;
 
 			Fi0 = new double[N];
 			gamma = Set_Gamma(N, gamma0, 0.0);
@@ -4107,14 +4243,11 @@ namespace WinForm {
 				Fi0[j] = distr(me);
 			}
 
-#pragma omp parallel for private(E0, E0Star, t, oldE0, ts, Fi, Fiplus1, Mu, CompFi, maxAbsMu, beta)
+#pragma omp parallel for private( Fi, Fiplus1, maxAbsMu, beta)
 			for (int Ind = 0; Ind <= NOM; Ind++)
 			{
 				Fi = new double[N];
 				Fiplus1 = new double[N];
-				E0 = Convert::ToDouble(E0_Text->Text);
-				E0Star = Convert::ToDouble(E0Star_Text->Text);
-				t = ts = 0.0;
 				maxAbsMu = -1.0;
 				beta = Beta1 + Ind * BetaStep;
 
@@ -4124,59 +4257,8 @@ namespace WinForm {
 					Fiplus1[i] = 0.0;
 				}
 
-				//t от 0 до T02 - h
-				for (t; t < T02 - h; t += h)
-				{
-					t = round(t * 1000) / 1000;
-					for (int j = 0; j < N; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
+				PerformCalculations(N, beta, maxAbsMu, Fi, Fiplus1, gamma);
 
-						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                //Добавление β к начальному значению производной
-							ts = t + h;                                    //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                       //Обнуление значения ф
-						}
-					}
-				}
-				//---------------------------------------------------
-				//t от T02 до T
-				for (t; t < T; t += h)
-				{
-					t = round(t * 1000) / 1000;
-					Mu = complex<double>(0.0, 0.0);
-					for (int j = 0; j < N; j++)
-					{
-						//Вычисление нового значения φⱼ(t) методом Рунге-Кутта 4-го порядка
-						Fiplus1[j] = RK4(t, ts, Fi[j], h, gamma[j], g, E0, E0Star, alpha);
-						Fi[j] = Fiplus1[j];
-
-						if (Fi[j] >= D2PI)                                 //В моемент импульса j-го ротатора
-						{
-							oldE0 = E0;
-							E0 = E(t + h, ts, E0, E0Star, alpha);          //Пересчет начальных условий
-							E0Star = dEdt(t + h, ts, oldE0, E0Star, alpha);
-							E0Star += beta;                                //Добавление β к начальному значению производной
-							ts = t + h;                                    //Изменение времени последнего спайка
-							Fi[j] = 0.0;			                       //Обнуление значения ф
-						}
-						CompFi = polar<double>(1.0, Fi[j]);
-						Mu += CompFi;
-					}
-					Mu = Mu / CompN;
-
-					if (abs(Mu) > maxAbsMu)
-					{
-						maxAbsMu = abs(Mu);
-					}
-				}
-				//---------------------------------------------------
 #pragma omp critical (pushing)
 				list->Add(beta, maxAbsMu);
 #pragma omp atomic
@@ -4260,5 +4342,64 @@ namespace WinForm {
 			OmegaGraph->Invalidate();
 		}
 
+		private: System::Void SaveSetToFileBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+		{
+			SaveFileDialog^ sfd = gcnew SaveFileDialog();
+			sfd->DefaultExt = ".txt";
+			sfd->AddExtension = true;
+			sfd->FileName = "Набор гамма " + Gamma0CmbB->Text + " " + DeltaCmbB->Text + " " + DateTime::Now.ToString("dd.MM HH.mm");
+			sfd->Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
+			sfd->InitialDirectory = "E:\\Пользователь\\Pictures\\Курсовая работа Скриншоты\\Наборы гамма";
+			
+			if (sfd->ShowDialog() != System::Windows::Forms::DialogResult::OK) 
+			{
+				return;
+			}
+
+			String ^fileName = sfd->FileName;
+			StringBuilder^ sb = gcnew StringBuilder();
+			String^ firstline = String::Format("{0}\t{1}", Gamma0CmbB->Text, DeltaCmbB->Text);
+			sb->AppendLine(firstline);
+
+			for (int i = 0; i < GammaTable->Rows->Count - 1; i++)
+			{
+				sb->AppendLine(GammaTable[1, i]->Value->ToString());
+			}
+
+			sb->Append(GammaTable[1, GammaTable->Rows->Count - 1]->Value->ToString());
+
+			System::IO::File::WriteAllText(fileName, sb->ToString());
+			System::Diagnostics::Process::Start(System::IO::Path::GetDirectoryName(fileName));
+		}
+
+		private: System::Void LoadSetFromFileBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+		{
+			OpenFileDialog^ ofd = gcnew OpenFileDialog();
+			ofd->InitialDirectory = "E:\\Пользователь\\Pictures\\Курсовая работа Скриншоты\\Наборы гамма";
+			ofd->Filter = "Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*";
+			ofd->Multiselect = false;
+			
+			if (ofd->ShowDialog() != System::Windows::Forms::DialogResult::OK)
+			{
+				return;
+			}
+
+			GammaTable->Rows->Clear();
+
+			String^ file = ofd->FileName;
+			StreamReader^ sr = gcnew StreamReader(file);
+			int counter = 0;
+			cli::array<String^>^ firstLine = sr->ReadLine()->Split(gcnew cli::array<wchar_t> {'\t'});
+			Gamma0CmbB->Text = firstLine[0];
+			DeltaCmbB->Text = firstLine[1];
+
+			while (!sr->EndOfStream)
+			{
+				GammaTable->Rows->Add(counter, sr->ReadLine());
+				counter++;
+			}
+
+			SaveSetToFileBtn->Enabled = true;
+		}
 	};
 }
