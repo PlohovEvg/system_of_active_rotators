@@ -21,6 +21,8 @@ namespace WinForm {
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
+	public: String^ Str;
+
 	public: double* gamma;    //Параметры γⱼ
 
 	public: double gamma1;    //Левая граница γ₁
@@ -34,8 +36,6 @@ namespace WinForm {
 	public: vector<double**>* Omega_vec;
 
 	public: cli::array<Color>^ Colors;
-
-	public: String^ Str;
 
 		MyForm(void)
 		{
@@ -74,8 +74,8 @@ namespace WinForm {
 			OmegaGraph->GraphPane->YAxis->Scale->MinorStepAuto = false;
 			OmegaGraph->GraphPane->YAxis->Scale->MajorStepAuto = false;
 			OmegaGraph->GraphPane->YAxis->Scale->Max = (double)MaxOmegaNUD->Value + (double)MaxOmegaNUD->Value * 0.01;
-			OmegaGraph->GraphPane->YAxis->Scale->MajorStep = OmegaGraph->GraphPane->YAxis->Scale->Max * 0.01;
-			OmegaGraph->GraphPane->YAxis->Type = AxisType::Log;
+			//OmegaGraph->GraphPane->YAxis->Scale->MajorStep = OmegaGraph->GraphPane->YAxis->Scale->Max * 0.01;
+			//OmegaGraph->GraphPane->YAxis->Type = AxisType::Log;
 
 			PhasesGraph->GraphPane->Title->Text = L"График фаз φⱼ(T) в конечный момент времени";
 			PhasesGraph->GraphPane->XAxis->Title->Text = L"j";
@@ -108,7 +108,7 @@ namespace WinForm {
 			OmegaBetaGraph->GraphPane->XAxis->MajorGrid->IsVisible = true;
 			OmegaBetaGraph->GraphPane->YAxis->Type = AxisType::Log;
 			OmegaBetaGraph->GraphPane->YAxis->Scale->Min = 0.0;
-			OmegaBetaGraph->GraphPane->YAxis->Scale->Max = Convert::ToDouble(MaxOmegaNUD->Text->Replace(".", ","));
+			//OmegaBetaGraph->GraphPane->YAxis->Scale->Max = Convert::ToDouble(MaxOmegaNUD->Text->Replace(".", ","));
 
 			BetaCrNGraph->GraphPane->Title->Text = L"График изменения параметра β⃰ от числа элементов N";
 			BetaCrNGraph->GraphPane->XAxis->Title->Text = "N";
@@ -149,6 +149,7 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::Button^ CreateBigImageBtn;
 	private: static String^ FreqSyncGraphTitle = L"График зависимости параметра частотной синхронизации χ от параметра β";
 	private: System::Windows::Forms::Button^ LoadSetFromFileBtn;
 	private: System::Windows::Forms::Button^ SaveSetToFileBtn;
@@ -459,7 +460,6 @@ namespace WinForm {
 			this->FreqSyncClearGraphBtn = (gcnew System::Windows::Forms::Button());
 			this->FreqSyncStartBtn = (gcnew System::Windows::Forms::Button());
 			this->label42 = (gcnew System::Windows::Forms::Label());
-			this->FreqSyncCancelBtn = (gcnew System::Windows::Forms::Button());
 			this->FreqSyncBetaStepTB = (gcnew System::Windows::Forms::TextBox());
 			this->label43 = (gcnew System::Windows::Forms::Label());
 			this->label45 = (gcnew System::Windows::Forms::Label());
@@ -467,6 +467,7 @@ namespace WinForm {
 			this->FreqSyncBeta2TB = (gcnew System::Windows::Forms::TextBox());
 			this->FreqSyncGraph = (gcnew ZedGraph::ZedGraphControl());
 			this->FreqSyncProgBar = (gcnew System::Windows::Forms::ProgressBar());
+			this->FreqSyncCancelBtn = (gcnew System::Windows::Forms::Button());
 			this->FreqSyncProgressLabel = (gcnew System::Windows::Forms::Label());
 			this->tabPage9 = (gcnew System::Windows::Forms::TabPage());
 			this->panel3 = (gcnew System::Windows::Forms::Panel());
@@ -521,6 +522,7 @@ namespace WinForm {
 			this->backgroundWorker5 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->backgroundWorker6 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->FreqSyncBW = (gcnew System::ComponentModel::BackgroundWorker());
+			this->CreateBigImageBtn = (gcnew System::Windows::Forms::Button());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->IntegrParams->SuspendLayout();
@@ -1163,6 +1165,7 @@ namespace WinForm {
 			// 
 			// OmegaPan
 			// 
+			this->OmegaPan->Controls->Add(this->CreateBigImageBtn);
 			this->OmegaPan->Controls->Add(this->OffsetTB);
 			this->OmegaPan->Controls->Add(this->label18);
 			this->OmegaPan->Controls->Add(this->MaxOmegaNUD);
@@ -1928,19 +1931,6 @@ namespace WinForm {
 			this->label42->TabIndex = 169;
 			this->label42->Text = L"Шаг по β:";
 			// 
-			// FreqSyncCancelBtn
-			// 
-			this->FreqSyncCancelBtn->Enabled = false;
-			this->FreqSyncCancelBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
-			this->FreqSyncCancelBtn->Location = System::Drawing::Point(1304, 283);
-			this->FreqSyncCancelBtn->Name = L"FreqSyncCancelBtn";
-			this->FreqSyncCancelBtn->Size = System::Drawing::Size(173, 71);
-			this->FreqSyncCancelBtn->TabIndex = 173;
-			this->FreqSyncCancelBtn->Text = L"Отмена";
-			this->FreqSyncCancelBtn->UseVisualStyleBackColor = true;
-			this->FreqSyncCancelBtn->Click += gcnew System::EventHandler(this, &MyForm::FreqSyncCancelBtn_Click);
-			// 
 			// FreqSyncBetaStepTB
 			// 
 			this->FreqSyncBetaStepTB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
@@ -2014,6 +2004,19 @@ namespace WinForm {
 			this->FreqSyncProgBar->Name = L"FreqSyncProgBar";
 			this->FreqSyncProgBar->Size = System::Drawing::Size(350, 31);
 			this->FreqSyncProgBar->TabIndex = 163;
+			// 
+			// FreqSyncCancelBtn
+			// 
+			this->FreqSyncCancelBtn->Enabled = false;
+			this->FreqSyncCancelBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->FreqSyncCancelBtn->Location = System::Drawing::Point(1304, 283);
+			this->FreqSyncCancelBtn->Name = L"FreqSyncCancelBtn";
+			this->FreqSyncCancelBtn->Size = System::Drawing::Size(173, 71);
+			this->FreqSyncCancelBtn->TabIndex = 173;
+			this->FreqSyncCancelBtn->Text = L"Отмена";
+			this->FreqSyncCancelBtn->UseVisualStyleBackColor = true;
+			this->FreqSyncCancelBtn->Click += gcnew System::EventHandler(this, &MyForm::FreqSyncCancelBtn_Click);
 			// 
 			// FreqSyncProgressLabel
 			// 
@@ -2633,6 +2636,16 @@ namespace WinForm {
 			this->FreqSyncBW->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::FreqSyncBW_ProgressChanged);
 			this->FreqSyncBW->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::FreqSyncBW_RunWorkerCompleted);
 			// 
+			// CreateBigImageBtn
+			// 
+			this->CreateBigImageBtn->Location = System::Drawing::Point(153, 110);
+			this->CreateBigImageBtn->Name = L"CreateBigImageBtn";
+			this->CreateBigImageBtn->Size = System::Drawing::Size(211, 60);
+			this->CreateBigImageBtn->TabIndex = 162;
+			this->CreateBigImageBtn->Text = L"Создать большое изображение";
+			this->CreateBigImageBtn->UseVisualStyleBackColor = true;
+			this->CreateBigImageBtn->Click += gcnew System::EventHandler(this, &MyForm::CreateBigImageBtn_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -3238,6 +3251,7 @@ namespace WinForm {
 			GraphPane^ panel5 = PhSyncParamGraph->GraphPane;
 			GraphPane^ panel6 = PhasesGraph->GraphPane;
 
+			panel2->CurveList->Clear();
 			panel4->CurveList->Clear();
 			panel5->CurveList->Clear();
 			panel6->CurveList->Clear();
@@ -3399,7 +3413,7 @@ namespace WinForm {
 			PointPairList^ MinMaxOmegaList = gcnew PointPairList();
 
 			//Рисование графиков
-			LineItem^ Curve6 = panel2->AddCurve(String::Format(L"β = {0}, кластеров: {1}", Convert::ToDouble(textBox7->Text), NumOfClusters), g_list, Color::Red, SymbolType::Circle);
+			LineItem^ Curve6 = panel2->AddCurve(String::Format(L"β = {0}", Convert::ToDouble(textBox7->Text)), g_list, Color::Red, SymbolType::Circle);
 			LineItem^ Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);
 			LineItem^ Curve8 = panel5->AddCurve(L"|μ|(t)", Mu_list, Color::Red, SymbolType::None);
 			LineItem^ Curve9 = panel6->AddCurve(L"φⱼ(T)", FIT_list, Color::Blue, SymbolType::Circle);
@@ -3407,15 +3421,15 @@ namespace WinForm {
 			MinMaxOmegaList->Add(IndexOfMaxOmega, MaxOmega);
 			MinMaxOmegaList->Add(IndexOfMinOmega, MinOmega);
 
-			LineItem^ CurveMinMaxOmega = panel2->AddCurve("", MinMaxOmegaList, Color::Green, SymbolType::Circle);
+			LineItem^ CurveMinMaxOmega = panel2->AddCurve("Min & Max", MinMaxOmegaList, Color::Green, SymbolType::Circle);
 
-			//panel2->Title->Text += String::Format("\nКластеров: {0}", NumOfClusters);
+			panel2->Title->Text += String::Format("\nКластеров: {0}", NumOfClusters);
 
 			float pointsSize = 6.0f;
 
 			Curve6->Line->IsVisible = false;
-			Curve6->Symbol->Fill->Color = Colors[panel2->CurveList->Count - 1 % Colors->Length - 1];
-			Curve6->Symbol->Border->Color = Colors[panel2->CurveList->Count - 1 % Colors->Length - 1];
+			Curve6->Symbol->Fill->Color = Color::Red;
+			Curve6->Symbol->Border->Color = Color::Red;
 			Curve6->Symbol->Fill->Type = FillType::Solid;
 			Curve6->Symbol->Size = pointsSize;
 
@@ -3431,11 +3445,11 @@ namespace WinForm {
 
 			panel2->XAxis->Scale->Min = -1;
 			panel2->XAxis->Scale->Max = n;
-			//double yaxisOffset = Convert::ToDouble(OffsetTB->Text);
-			//panel2->YAxis->Scale->Min = MinOmega - yaxisOffset;
-			//panel2->YAxis->Scale->Max = MaxOmega + yaxisOffset;
-			//Omega1TB->Text = String::Format("{0}", Math::Round(MinOmega - yaxisOffset, 3));
-			//Omega2TB->Text = String::Format("{0}", Math::Round(MaxOmega + yaxisOffset, 3));
+			double yaxisOffset = Convert::ToDouble(OffsetTB->Text);
+			panel2->YAxis->Scale->Min = MinOmega - yaxisOffset;
+			panel2->YAxis->Scale->Max = MaxOmega + yaxisOffset;
+			Omega1TB->Text = String::Format("{0}", Math::Round(MinOmega - yaxisOffset, 3));
+			Omega2TB->Text = String::Format("{0}", Math::Round(MaxOmega + yaxisOffset, 3));
 
 			OmegaGraph->AxisChange();
 
@@ -4753,7 +4767,7 @@ namespace WinForm {
 			}
 
 			gamma1 = gamma[0];
-			gamma2 = gamma[GammaList->Count];
+			gamma2 = gamma[GammaList->Count - 1];
 
 			SaveSetToFileBtn->Enabled = true;
 			StartBtn->Enabled = true;
@@ -4958,6 +4972,83 @@ namespace WinForm {
 		private: System::Void FreqSyncCancelBtn_Click(System::Object^ sender, System::EventArgs^ e) 
 		{
 			FreqSyncBW->CancelAsync();
+		}
+		private: System::Void CreateBigImageBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+		{
+			OpenFileDialog^ ofd = gcnew OpenFileDialog();
+			ofd->AddExtension = false;
+			ofd->FileName = "";
+			ofd->Filter = "Изображения (*.jpg, *.jpeg, *.png, *.bmp)|*.jpg;*.jpeg;*.png;*.bmp|Все файлы (*.*)|*.*";
+			ofd->InitialDirectory = "E:\\Пользователь\\Pictures\\Курсовая работа Скриншоты";
+			ofd->Multiselect = true;
+			ofd->Title = "Выберите изображения";
+
+			if (ofd->ShowDialog() != System::Windows::Forms::DialogResult::OK)
+			{
+				return;
+			}
+
+			SortedDictionary<float, Bitmap^>^ imgesDict = gcnew SortedDictionary<float, Bitmap^>();
+			String^ textToWrite = L" β = ";
+			int maxWidth = 0;
+			int sumHeight = 0;
+
+			for each (String ^ imagePath in ofd->FileNames)
+			{
+				Bitmap^ picture = gcnew Bitmap(imagePath);
+				imgesDict->Add(Convert::ToSingle(Path::GetFileNameWithoutExtension(imagePath)), picture);
+
+				sumHeight += picture->Height;
+
+				if (picture->Width > maxWidth)
+				{
+					maxWidth = picture->Width;
+				}
+			}
+
+			Bitmap^ bigPicture = gcnew Bitmap(maxWidth + 200, sumHeight);
+			Graphics^ g = Graphics::FromImage(bigPicture);
+			g->FillRectangle(Brushes::White, 0, 0, bigPicture->Width, bigPicture->Height);
+			System::Drawing::Font^ strFont = gcnew System::Drawing::Font("Times New Roman", 28);
+
+			int counter = 0;
+			int yPos = 0;
+
+			for each (KeyValuePair<float, Bitmap^> ^ pair in imgesDict)
+			{
+				String^ writeStr = String::Format("{0}{1}", textToWrite, pair->Key);
+				SizeF^ writeStrSize = g->MeasureString(writeStr, strFont);
+				int picX = bigPicture->Width - pair->Value->Width;
+				float stringX = picX - 15 - writeStrSize->Width;
+				float stringY = yPos + (pair->Value->Height / 2);
+
+				g->DrawImage(pair->Value, picX, yPos);
+				g->DrawString(writeStr, strFont, Brushes::Black, stringX, stringY);
+
+				yPos += pair->Value->Height;
+				counter++;
+			}
+
+			String^ picFile;
+
+			//SaveFileDialog^ sfd = gcnew SaveFileDialog();
+			//sfd->AddExtension = true;
+			//sfd->DefaultExt = ".jpg";
+			//sfd->Filter = "JPEG (*.jpg)|*.jpg|JPEG (*.jpeg)|*.jpeg|PNG (*.png)|*.png|BMP (*.bmp)|*.bmp|Все файлы (*.*)|*.*";
+			//sfd->InitialDirectory = ofd->InitialDirectory;
+			//sfd->Title = "Место для сохранения картинки";
+			//
+			//if (sfd->ShowDialog() != System::Windows::Forms::DialogResult::OK)
+			//{
+			//	return;
+			//}
+			//picFile = sfd->FileName;
+
+			picFile = Path::Combine(Path::GetDirectoryName(ofd->FileNames[0]), "Generated.jpg");
+
+			bigPicture->Save(picFile);
+
+			System::Diagnostics::Process::Start(Path::GetDirectoryName(picFile));
 		}
 	};
 }
