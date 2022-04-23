@@ -7,6 +7,7 @@ namespace WinForm {
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
@@ -20,17 +21,20 @@ namespace WinForm {
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
-
 	public: double* gamma;    //Параметры γⱼ
+
 	public: double gamma1;    //Левая граница γ₁
+
 	public: double gamma2;    //Правая граница γ₂
+
 	public: bool AvgMaxMinAlreadyExists;
+
 	public: vector<int*>* Clusters_vec;
+
 	public: vector<double**>* Omega_vec;
+
 	public: cli::array<Color>^ Colors;
-	private: System::Windows::Forms::Button^ LoadSetFromFileBtn;
-	public:
-	private: System::Windows::Forms::Button^ SaveSetToFileBtn;
+
 	public: String^ Str;
 
 		MyForm(void)
@@ -42,7 +46,9 @@ namespace WinForm {
 			AvgMaxMinAlreadyExists = false;
 			Clusters_vec = new vector<int*>;
 			Omega_vec = new vector<double**>;
+
 			Str = "";
+			gamma = NULL;
 
 			Colors = gcnew cli::array<Color>(50);
 			random_device gen;
@@ -63,6 +69,13 @@ namespace WinForm {
 			OmegaGraph->GraphPane->YAxis->Title->Text = L"Ωⱼ";
 			OmegaGraph->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			OmegaGraph->GraphPane->XAxis->MajorGrid->IsVisible = true;
+			OmegaGraph->GraphPane->YAxis->Scale->MaxAuto = false;
+			OmegaGraph->GraphPane->YAxis->Scale->MinAuto = false;
+			OmegaGraph->GraphPane->YAxis->Scale->MinorStepAuto = false;
+			OmegaGraph->GraphPane->YAxis->Scale->MajorStepAuto = false;
+			OmegaGraph->GraphPane->YAxis->Scale->Max = (double)MaxOmegaNUD->Value + (double)MaxOmegaNUD->Value * 0.01;
+			OmegaGraph->GraphPane->YAxis->Scale->MajorStep = OmegaGraph->GraphPane->YAxis->Scale->Max * 0.01;
+			OmegaGraph->GraphPane->YAxis->Type = AxisType::Log;
 
 			PhasesGraph->GraphPane->Title->Text = L"График фаз φⱼ(T) в конечный момент времени";
 			PhasesGraph->GraphPane->XAxis->Title->Text = L"j";
@@ -94,6 +107,8 @@ namespace WinForm {
 			OmegaBetaGraph->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			OmegaBetaGraph->GraphPane->XAxis->MajorGrid->IsVisible = true;
 			OmegaBetaGraph->GraphPane->YAxis->Type = AxisType::Log;
+			OmegaBetaGraph->GraphPane->YAxis->Scale->Min = 0.0;
+			OmegaBetaGraph->GraphPane->YAxis->Scale->Max = Convert::ToDouble(MaxOmegaNUD->Text->Replace(".", ","));
 
 			BetaCrNGraph->GraphPane->Title->Text = L"График изменения параметра β⃰ от числа элементов N";
 			BetaCrNGraph->GraphPane->XAxis->Title->Text = "N";
@@ -112,6 +127,12 @@ namespace WinForm {
 			ClustersCountBetaGraph->GraphPane->YAxis->Title->Text = L"Кол-во кластеров";
 			ClustersCountBetaGraph->GraphPane->YAxis->MajorGrid->IsVisible = true;
 			ClustersCountBetaGraph->GraphPane->XAxis->MajorGrid->IsVisible = true;
+
+			FreqSyncGraph->GraphPane->Title->Text = FreqSyncGraphTitle;
+			FreqSyncGraph->GraphPane->XAxis->Title->Text = L"β";
+			FreqSyncGraph->GraphPane->YAxis->Title->Text = L"χ";
+			FreqSyncGraph->GraphPane->YAxis->MajorGrid->IsVisible = true;
+			FreqSyncGraph->GraphPane->XAxis->MajorGrid->IsVisible = true;
 		}
 
 	protected:
@@ -128,6 +149,39 @@ namespace WinForm {
 				delete components;
 			}
 		}
+	private: static String^ FreqSyncGraphTitle = L"График зависимости параметра частотной синхронизации χ от параметра β";
+	private: System::Windows::Forms::Button^ LoadSetFromFileBtn;
+	private: System::Windows::Forms::Button^ SaveSetToFileBtn;
+	private: System::Windows::Forms::Panel^ OmegaPan;
+	private: System::Windows::Forms::Button^ ClearOmegaGraphBtn;
+	private: System::Windows::Forms::CheckBox^ ShowMaxMinCB;
+	private: System::Windows::Forms::TextBox^ Omega1TB;
+	private: System::Windows::Forms::Label^ Omega2;
+	private: System::Windows::Forms::Label^ Omega1;
+	private: System::Windows::Forms::TextBox^ Omega2TB;
+	private: System::Windows::Forms::Button^ Change_scale_Omega;
+	private: System::Windows::Forms::GroupBox^ groupBox1;
+	private: System::Windows::Forms::RadioButton^ radioButton3;
+	private: System::Windows::Forms::RadioButton^ radioButton4;
+	private: System::Windows::Forms::TextBox^ OffsetTB;
+	private: System::Windows::Forms::Label^ label18;
+	private: System::Windows::Forms::NumericUpDown^ MaxOmegaNUD;
+	private: System::Windows::Forms::Label^ label17;
+	private: System::Windows::Forms::TabPage^ tabPage8;
+	private: System::Windows::Forms::Panel^ FreqSyncPanel;
+	private: System::Windows::Forms::Button^ FreqSyncClearGraphBtn;
+	private: System::Windows::Forms::Button^ FreqSyncStartBtn;
+	private: System::Windows::Forms::Label^ label42;
+	private: System::Windows::Forms::Button^ FreqSyncCancelBtn;
+	private: System::Windows::Forms::TextBox^ FreqSyncBetaStepTB;
+	private: System::Windows::Forms::Label^ label43;
+	private: System::Windows::Forms::Label^ label45;
+	private: System::Windows::Forms::TextBox^ FreqSyncBeta1TB;
+	private: System::Windows::Forms::TextBox^ FreqSyncBeta2TB;
+	private: ZedGraph::ZedGraphControl^ FreqSyncGraph;
+	private: System::Windows::Forms::ProgressBar^ FreqSyncProgBar;
+	private: System::Windows::Forms::Label^ FreqSyncProgressLabel;
+	private: System::ComponentModel::BackgroundWorker^ FreqSyncBW;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column3;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Column4;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ dataGridViewTextBoxColumn1;
@@ -163,7 +217,7 @@ namespace WinForm {
 	private: System::Windows::Forms::TextBox^ gTB;
 	private: System::Windows::Forms::Label^ label21;
 	private: System::Windows::Forms::TextBox^ nTB;
-	private: System::Windows::Forms::CheckBox^  checkBox2;
+
 	private: System::Windows::Forms::DataGridView^ TPhaseTable;
 	private: System::Windows::Forms::DataGridView^ TimeOfSpikesTable;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Time;
@@ -187,8 +241,8 @@ namespace WinForm {
 	private: System::Windows::Forms::Label^  label35;
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorker5;
 	private: System::Windows::Forms::Label^  label36;
-	private: System::Windows::Forms::RadioButton^  radioButton3;
-	private: System::Windows::Forms::RadioButton^  radioButton4;
+
+
 	private: ZedGraph::ZedGraphControl^  PhasesGraph;
 	private: System::Windows::Forms::Panel^  panel2;
 	private: System::Windows::Forms::Panel^  panel3;
@@ -266,11 +320,11 @@ namespace WinForm {
 	private: ZedGraph::ZedGraphControl^  SpikesGraph;
 	private: System::Windows::Forms::DataGridView^  dataGridView1;
 	private: System::Windows::Forms::DataGridView^  dataGridView2;
-	private: System::Windows::Forms::TextBox^  Omega1TB;
-	private: System::Windows::Forms::Label^  Omega2;
-	private: System::Windows::Forms::Label^  Omega1;
-	private: System::Windows::Forms::TextBox^  Omega2TB;
-	private: System::Windows::Forms::Button^  Change_scale_Omega;
+
+
+
+
+
 	private: System::Windows::Forms::Label^  label10;
 	private: System::Windows::Forms::Label^  Gamma1;
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
@@ -343,14 +397,21 @@ namespace WinForm {
 			this->label21 = (gcnew System::Windows::Forms::Label());
 			this->nTB = (gcnew System::Windows::Forms::TextBox());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
-			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
-			this->radioButton3 = (gcnew System::Windows::Forms::RadioButton());
-			this->radioButton4 = (gcnew System::Windows::Forms::RadioButton());
+			this->OmegaPan = (gcnew System::Windows::Forms::Panel());
+			this->OffsetTB = (gcnew System::Windows::Forms::TextBox());
+			this->label18 = (gcnew System::Windows::Forms::Label());
+			this->MaxOmegaNUD = (gcnew System::Windows::Forms::NumericUpDown());
+			this->label17 = (gcnew System::Windows::Forms::Label());
+			this->ClearOmegaGraphBtn = (gcnew System::Windows::Forms::Button());
+			this->ShowMaxMinCB = (gcnew System::Windows::Forms::CheckBox());
 			this->Omega1TB = (gcnew System::Windows::Forms::TextBox());
 			this->Omega2 = (gcnew System::Windows::Forms::Label());
 			this->Omega1 = (gcnew System::Windows::Forms::Label());
 			this->Omega2TB = (gcnew System::Windows::Forms::TextBox());
 			this->Change_scale_Omega = (gcnew System::Windows::Forms::Button());
+			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
+			this->radioButton3 = (gcnew System::Windows::Forms::RadioButton());
+			this->radioButton4 = (gcnew System::Windows::Forms::RadioButton());
 			this->OmegaGraph = (gcnew ZedGraph::ZedGraphControl());
 			this->PhasesGraph = (gcnew ZedGraph::ZedGraphControl());
 			this->dataGridView1 = (gcnew System::Windows::Forms::DataGridView());
@@ -393,6 +454,20 @@ namespace WinForm {
 			this->textBox8 = (gcnew System::Windows::Forms::TextBox());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->BetaCrNGraph = (gcnew ZedGraph::ZedGraphControl());
+			this->tabPage8 = (gcnew System::Windows::Forms::TabPage());
+			this->FreqSyncPanel = (gcnew System::Windows::Forms::Panel());
+			this->FreqSyncClearGraphBtn = (gcnew System::Windows::Forms::Button());
+			this->FreqSyncStartBtn = (gcnew System::Windows::Forms::Button());
+			this->label42 = (gcnew System::Windows::Forms::Label());
+			this->FreqSyncCancelBtn = (gcnew System::Windows::Forms::Button());
+			this->FreqSyncBetaStepTB = (gcnew System::Windows::Forms::TextBox());
+			this->label43 = (gcnew System::Windows::Forms::Label());
+			this->label45 = (gcnew System::Windows::Forms::Label());
+			this->FreqSyncBeta1TB = (gcnew System::Windows::Forms::TextBox());
+			this->FreqSyncBeta2TB = (gcnew System::Windows::Forms::TextBox());
+			this->FreqSyncGraph = (gcnew ZedGraph::ZedGraphControl());
+			this->FreqSyncProgBar = (gcnew System::Windows::Forms::ProgressBar());
+			this->FreqSyncProgressLabel = (gcnew System::Windows::Forms::Label());
 			this->tabPage9 = (gcnew System::Windows::Forms::TabPage());
 			this->panel3 = (gcnew System::Windows::Forms::Panel());
 			this->button15 = (gcnew System::Windows::Forms::Button());
@@ -445,6 +520,7 @@ namespace WinForm {
 			this->backgroundWorker4 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->backgroundWorker5 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->backgroundWorker6 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->FreqSyncBW = (gcnew System::ComponentModel::BackgroundWorker());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->IntegrParams->SuspendLayout();
@@ -453,6 +529,9 @@ namespace WinForm {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SystemParams->SuspendLayout();
 			this->tabPage2->SuspendLayout();
+			this->OmegaPan->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->MaxOmegaNUD))->BeginInit();
+			this->groupBox1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->TPhaseTable))->BeginInit();
 			this->tabPage3->SuspendLayout();
@@ -460,6 +539,8 @@ namespace WinForm {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView2))->BeginInit();
 			this->tabPage7->SuspendLayout();
 			this->panel2->SuspendLayout();
+			this->tabPage8->SuspendLayout();
+			this->FreqSyncPanel->SuspendLayout();
 			this->tabPage9->SuspendLayout();
 			this->panel3->SuspendLayout();
 			this->tabPage4->SuspendLayout();
@@ -474,6 +555,7 @@ namespace WinForm {
 			this->tabControl1->Controls->Add(this->tabPage2);
 			this->tabControl1->Controls->Add(this->tabPage3);
 			this->tabControl1->Controls->Add(this->tabPage7);
+			this->tabControl1->Controls->Add(this->tabPage8);
 			this->tabControl1->Controls->Add(this->tabPage9);
 			this->tabControl1->Controls->Add(this->tabPage4);
 			this->tabControl1->Controls->Add(this->tabPage5);
@@ -1065,14 +1147,8 @@ namespace WinForm {
 			// 
 			// tabPage2
 			// 
-			this->tabPage2->Controls->Add(this->checkBox2);
-			this->tabPage2->Controls->Add(this->radioButton3);
-			this->tabPage2->Controls->Add(this->radioButton4);
-			this->tabPage2->Controls->Add(this->Omega1TB);
-			this->tabPage2->Controls->Add(this->Omega2);
-			this->tabPage2->Controls->Add(this->Omega1);
-			this->tabPage2->Controls->Add(this->Omega2TB);
-			this->tabPage2->Controls->Add(this->Change_scale_Omega);
+			this->tabPage2->Controls->Add(this->OmegaPan);
+			this->tabPage2->Controls->Add(this->groupBox1);
 			this->tabPage2->Controls->Add(this->OmegaGraph);
 			this->tabPage2->Controls->Add(this->PhasesGraph);
 			this->tabPage2->Controls->Add(this->dataGridView1);
@@ -1085,19 +1161,163 @@ namespace WinForm {
 			this->tabPage2->Text = L"Средние частоты";
 			this->tabPage2->UseVisualStyleBackColor = true;
 			// 
-			// checkBox2
+			// OmegaPan
 			// 
-			this->checkBox2->AutoSize = true;
-			this->checkBox2->Enabled = false;
-			this->checkBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->OmegaPan->Controls->Add(this->OffsetTB);
+			this->OmegaPan->Controls->Add(this->label18);
+			this->OmegaPan->Controls->Add(this->MaxOmegaNUD);
+			this->OmegaPan->Controls->Add(this->label17);
+			this->OmegaPan->Controls->Add(this->ClearOmegaGraphBtn);
+			this->OmegaPan->Controls->Add(this->ShowMaxMinCB);
+			this->OmegaPan->Controls->Add(this->Omega1TB);
+			this->OmegaPan->Controls->Add(this->Omega2);
+			this->OmegaPan->Controls->Add(this->Omega1);
+			this->OmegaPan->Controls->Add(this->Omega2TB);
+			this->OmegaPan->Controls->Add(this->Change_scale_Omega);
+			this->OmegaPan->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->checkBox2->Location = System::Drawing::Point(1129, 142);
-			this->checkBox2->Name = L"checkBox2";
-			this->checkBox2->Size = System::Drawing::Size(349, 28);
-			this->checkBox2->TabIndex = 149;
-			this->checkBox2->Text = L"Показывать подписи для Max и Min";
-			this->checkBox2->UseVisualStyleBackColor = true;
-			this->checkBox2->CheckedChanged += gcnew System::EventHandler(this, &MyForm::checkBox2_CheckedChanged);
+			this->OmegaPan->Location = System::Drawing::Point(1109, 103);
+			this->OmegaPan->Name = L"OmegaPan";
+			this->OmegaPan->Size = System::Drawing::Size(453, 223);
+			this->OmegaPan->TabIndex = 152;
+			// 
+			// OffsetTB
+			// 
+			this->OffsetTB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->OffsetTB->Location = System::Drawing::Point(289, 181);
+			this->OffsetTB->Name = L"OffsetTB";
+			this->OffsetTB->Size = System::Drawing::Size(125, 29);
+			this->OffsetTB->TabIndex = 161;
+			this->OffsetTB->Text = L"0,015";
+			// 
+			// label18
+			// 
+			this->label18->AutoSize = true;
+			this->label18->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label18->Location = System::Drawing::Point(203, 184);
+			this->label18->Name = L"label18";
+			this->label18->Size = System::Drawing::Size(80, 24);
+			this->label18->TabIndex = 160;
+			this->label18->Text = L"Отступ:";
+			// 
+			// MaxOmegaNUD
+			// 
+			this->MaxOmegaNUD->DecimalPlaces = 3;
+			this->MaxOmegaNUD->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->MaxOmegaNUD->Increment = System::Decimal(gcnew cli::array< System::Int32 >(4) { 5, 0, 0, 131072 });
+			this->MaxOmegaNUD->Location = System::Drawing::Point(77, 182);
+			this->MaxOmegaNUD->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 2, 0, 0, 0 });
+			this->MaxOmegaNUD->Name = L"MaxOmegaNUD";
+			this->MaxOmegaNUD->Size = System::Drawing::Size(97, 29);
+			this->MaxOmegaNUD->TabIndex = 159;
+			this->MaxOmegaNUD->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 3, 0, 0, 0 });
+			this->MaxOmegaNUD->ValueChanged += gcnew System::EventHandler(this, &MyForm::MaxOmegaNUD_ValueChanged);
+			// 
+			// label17
+			// 
+			this->label17->AutoSize = true;
+			this->label17->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label17->Location = System::Drawing::Point(5, 184);
+			this->label17->Name = L"label17";
+			this->label17->Size = System::Drawing::Size(66, 24);
+			this->label17->TabIndex = 158;
+			this->label17->Text = L"Ωmax:";
+			// 
+			// ClearOmegaGraphBtn
+			// 
+			this->ClearOmegaGraphBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->ClearOmegaGraphBtn->Location = System::Drawing::Point(9, 110);
+			this->ClearOmegaGraphBtn->Name = L"ClearOmegaGraphBtn";
+			this->ClearOmegaGraphBtn->Size = System::Drawing::Size(138, 60);
+			this->ClearOmegaGraphBtn->TabIndex = 156;
+			this->ClearOmegaGraphBtn->Text = L"Очистить графики";
+			this->ClearOmegaGraphBtn->UseVisualStyleBackColor = true;
+			this->ClearOmegaGraphBtn->Click += gcnew System::EventHandler(this, &MyForm::ClearOmegaGraphBtn_Click);
+			// 
+			// ShowMaxMinCB
+			// 
+			this->ShowMaxMinCB->AutoSize = true;
+			this->ShowMaxMinCB->Enabled = false;
+			this->ShowMaxMinCB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->ShowMaxMinCB->Location = System::Drawing::Point(9, 76);
+			this->ShowMaxMinCB->Name = L"ShowMaxMinCB";
+			this->ShowMaxMinCB->Size = System::Drawing::Size(349, 28);
+			this->ShowMaxMinCB->TabIndex = 155;
+			this->ShowMaxMinCB->Text = L"Показывать подписи для Max и Min";
+			this->ShowMaxMinCB->UseVisualStyleBackColor = true;
+			this->ShowMaxMinCB->CheckedChanged += gcnew System::EventHandler(this, &MyForm::checkBox2_CheckedChanged);
+			// 
+			// Omega1TB
+			// 
+			this->Omega1TB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Omega1TB->Location = System::Drawing::Point(75, 11);
+			this->Omega1TB->Name = L"Omega1TB";
+			this->Omega1TB->Size = System::Drawing::Size(99, 29);
+			this->Omega1TB->TabIndex = 154;
+			// 
+			// Omega2
+			// 
+			this->Omega2->AutoSize = true;
+			this->Omega2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Omega2->Location = System::Drawing::Point(4, 48);
+			this->Omega2->Name = L"Omega2";
+			this->Omega2->Size = System::Drawing::Size(65, 25);
+			this->Omega2->TabIndex = 153;
+			this->Omega2->Text = L" Ω₂ = ";
+			// 
+			// Omega1
+			// 
+			this->Omega1->AutoSize = true;
+			this->Omega1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Omega1->Location = System::Drawing::Point(4, 13);
+			this->Omega1->Name = L"Omega1";
+			this->Omega1->Size = System::Drawing::Size(65, 25);
+			this->Omega1->TabIndex = 152;
+			this->Omega1->Text = L" Ω₁ = ";
+			// 
+			// Omega2TB
+			// 
+			this->Omega2TB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Omega2TB->Location = System::Drawing::Point(76, 46);
+			this->Omega2TB->Name = L"Omega2TB";
+			this->Omega2TB->Size = System::Drawing::Size(98, 29);
+			this->Omega2TB->TabIndex = 151;
+			// 
+			// Change_scale_Omega
+			// 
+			this->Change_scale_Omega->Enabled = false;
+			this->Change_scale_Omega->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->Change_scale_Omega->Location = System::Drawing::Point(180, 11);
+			this->Change_scale_Omega->Name = L"Change_scale_Omega";
+			this->Change_scale_Omega->Size = System::Drawing::Size(184, 64);
+			this->Change_scale_Omega->TabIndex = 150;
+			this->Change_scale_Omega->Text = L"Изменить масштаб от Ω₁ до Ω₂";
+			this->Change_scale_Omega->UseVisualStyleBackColor = true;
+			this->Change_scale_Omega->Click += gcnew System::EventHandler(this, &MyForm::Change_scale_Omega_Click);
+			// 
+			// groupBox1
+			// 
+			this->groupBox1->Controls->Add(this->radioButton3);
+			this->groupBox1->Controls->Add(this->radioButton4);
+			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->groupBox1->Location = System::Drawing::Point(1109, 6);
+			this->groupBox1->Name = L"groupBox1";
+			this->groupBox1->Size = System::Drawing::Size(453, 91);
+			this->groupBox1->TabIndex = 151;
+			this->groupBox1->TabStop = false;
+			this->groupBox1->Text = L"Отображение графика";
 			// 
 			// radioButton3
 			// 
@@ -1105,10 +1325,10 @@ namespace WinForm {
 			this->radioButton3->Checked = true;
 			this->radioButton3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->radioButton3->Location = System::Drawing::Point(1129, 74);
+			this->radioButton3->Location = System::Drawing::Point(9, 20);
 			this->radioButton3->Name = L"radioButton3";
 			this->radioButton3->Size = System::Drawing::Size(210, 28);
-			this->radioButton3->TabIndex = 147;
+			this->radioButton3->TabIndex = 149;
 			this->radioButton3->TabStop = true;
 			this->radioButton3->Text = L"Средние частоты Ωⱼ";
 			this->radioButton3->UseVisualStyleBackColor = true;
@@ -1119,66 +1339,13 @@ namespace WinForm {
 			this->radioButton4->AutoSize = true;
 			this->radioButton4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->radioButton4->Location = System::Drawing::Point(1129, 108);
+			this->radioButton4->Location = System::Drawing::Point(9, 54);
 			this->radioButton4->Name = L"radioButton4";
 			this->radioButton4->Size = System::Drawing::Size(387, 28);
-			this->radioButton4->TabIndex = 146;
+			this->radioButton4->TabIndex = 148;
 			this->radioButton4->Text = L"Фазы в конечный момент времени φⱼ(T)";
 			this->radioButton4->UseVisualStyleBackColor = true;
 			this->radioButton4->CheckedChanged += gcnew System::EventHandler(this, &MyForm::radioButton4_CheckedChanged);
-			// 
-			// Omega1TB
-			// 
-			this->Omega1TB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->Omega1TB->Location = System::Drawing::Point(1195, 4);
-			this->Omega1TB->Name = L"Omega1TB";
-			this->Omega1TB->Size = System::Drawing::Size(99, 29);
-			this->Omega1TB->TabIndex = 145;
-			// 
-			// Omega2
-			// 
-			this->Omega2->AutoSize = true;
-			this->Omega2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->Omega2->Location = System::Drawing::Point(1124, 41);
-			this->Omega2->Name = L"Omega2";
-			this->Omega2->Size = System::Drawing::Size(65, 25);
-			this->Omega2->TabIndex = 144;
-			this->Omega2->Text = L" Ω₂ = ";
-			// 
-			// Omega1
-			// 
-			this->Omega1->AutoSize = true;
-			this->Omega1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->Omega1->Location = System::Drawing::Point(1124, 6);
-			this->Omega1->Name = L"Omega1";
-			this->Omega1->Size = System::Drawing::Size(65, 25);
-			this->Omega1->TabIndex = 143;
-			this->Omega1->Text = L" Ω₁ = ";
-			// 
-			// Omega2TB
-			// 
-			this->Omega2TB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->Omega2TB->Location = System::Drawing::Point(1196, 39);
-			this->Omega2TB->Name = L"Omega2TB";
-			this->Omega2TB->Size = System::Drawing::Size(98, 29);
-			this->Omega2TB->TabIndex = 142;
-			// 
-			// Change_scale_Omega
-			// 
-			this->Change_scale_Omega->Enabled = false;
-			this->Change_scale_Omega->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->Change_scale_Omega->Location = System::Drawing::Point(1300, 4);
-			this->Change_scale_Omega->Name = L"Change_scale_Omega";
-			this->Change_scale_Omega->Size = System::Drawing::Size(184, 60);
-			this->Change_scale_Omega->TabIndex = 141;
-			this->Change_scale_Omega->Text = L"Изменить масштаб от Ω₁ до Ω₂";
-			this->Change_scale_Omega->UseVisualStyleBackColor = true;
-			this->Change_scale_Omega->Click += gcnew System::EventHandler(this, &MyForm::Change_scale_Omega_Click);
 			// 
 			// OmegaGraph
 			// 
@@ -1213,7 +1380,6 @@ namespace WinForm {
 			this->PhasesGraph->ScrollMinY2 = 0;
 			this->PhasesGraph->Size = System::Drawing::Size(1103, 718);
 			this->PhasesGraph->TabIndex = 148;
-			this->PhasesGraph->Visible = false;
 			// 
 			// dataGridView1
 			// 
@@ -1225,11 +1391,11 @@ namespace WinForm {
 				this->dataGridViewTextBoxColumn1,
 					this->dataGridViewTextBoxColumn2
 			});
-			this->dataGridView1->Location = System::Drawing::Point(1109, 176);
+			this->dataGridView1->Location = System::Drawing::Point(1109, 332);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->ReadOnly = true;
 			this->dataGridView1->RowHeadersVisible = false;
-			this->dataGridView1->Size = System::Drawing::Size(445, 545);
+			this->dataGridView1->Size = System::Drawing::Size(445, 389);
 			this->dataGridView1->TabIndex = 115;
 			// 
 			// dataGridViewTextBoxColumn1
@@ -1258,10 +1424,10 @@ namespace WinForm {
 				this->dataGridViewTextBoxColumn5,
 					this->dataGridViewTextBoxColumn6
 			});
-			this->TPhaseTable->Location = System::Drawing::Point(1109, 176);
+			this->TPhaseTable->Location = System::Drawing::Point(1109, 332);
 			this->TPhaseTable->Name = L"TPhaseTable";
 			this->TPhaseTable->RowHeadersVisible = false;
-			this->TPhaseTable->Size = System::Drawing::Size(445, 545);
+			this->TPhaseTable->Size = System::Drawing::Size(445, 389);
 			this->TPhaseTable->TabIndex = 150;
 			this->TPhaseTable->Visible = false;
 			// 
@@ -1696,6 +1862,170 @@ namespace WinForm {
 			this->BetaCrNGraph->ScrollMinY2 = 0;
 			this->BetaCrNGraph->Size = System::Drawing::Size(1200, 692);
 			this->BetaCrNGraph->TabIndex = 0;
+			// 
+			// tabPage8
+			// 
+			this->tabPage8->Controls->Add(this->FreqSyncPanel);
+			this->tabPage8->Controls->Add(this->FreqSyncGraph);
+			this->tabPage8->Controls->Add(this->FreqSyncProgBar);
+			this->tabPage8->Controls->Add(this->FreqSyncCancelBtn);
+			this->tabPage8->Controls->Add(this->FreqSyncProgressLabel);
+			this->tabPage8->Location = System::Drawing::Point(4, 22);
+			this->tabPage8->Name = L"tabPage8";
+			this->tabPage8->Size = System::Drawing::Size(1565, 730);
+			this->tabPage8->TabIndex = 9;
+			this->tabPage8->Text = L"Частотная синхронизация";
+			this->tabPage8->UseVisualStyleBackColor = true;
+			// 
+			// FreqSyncPanel
+			// 
+			this->FreqSyncPanel->Controls->Add(this->FreqSyncClearGraphBtn);
+			this->FreqSyncPanel->Controls->Add(this->FreqSyncStartBtn);
+			this->FreqSyncPanel->Controls->Add(this->label42);
+			this->FreqSyncPanel->Controls->Add(this->FreqSyncBetaStepTB);
+			this->FreqSyncPanel->Controls->Add(this->label43);
+			this->FreqSyncPanel->Controls->Add(this->label45);
+			this->FreqSyncPanel->Controls->Add(this->FreqSyncBeta1TB);
+			this->FreqSyncPanel->Controls->Add(this->FreqSyncBeta2TB);
+			this->FreqSyncPanel->Location = System::Drawing::Point(1203, 5);
+			this->FreqSyncPanel->Name = L"FreqSyncPanel";
+			this->FreqSyncPanel->Size = System::Drawing::Size(360, 184);
+			this->FreqSyncPanel->TabIndex = 182;
+			// 
+			// FreqSyncClearGraphBtn
+			// 
+			this->FreqSyncClearGraphBtn->Enabled = false;
+			this->FreqSyncClearGraphBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->FreqSyncClearGraphBtn->Location = System::Drawing::Point(178, 104);
+			this->FreqSyncClearGraphBtn->Name = L"FreqSyncClearGraphBtn";
+			this->FreqSyncClearGraphBtn->Size = System::Drawing::Size(173, 71);
+			this->FreqSyncClearGraphBtn->TabIndex = 174;
+			this->FreqSyncClearGraphBtn->Text = L"Очистить график";
+			this->FreqSyncClearGraphBtn->UseVisualStyleBackColor = true;
+			this->FreqSyncClearGraphBtn->Click += gcnew System::EventHandler(this, &MyForm::FreqSyncClearGraphBtn_Click);
+			// 
+			// FreqSyncStartBtn
+			// 
+			this->FreqSyncStartBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->FreqSyncStartBtn->Location = System::Drawing::Point(4, 104);
+			this->FreqSyncStartBtn->Name = L"FreqSyncStartBtn";
+			this->FreqSyncStartBtn->Size = System::Drawing::Size(168, 71);
+			this->FreqSyncStartBtn->TabIndex = 4;
+			this->FreqSyncStartBtn->Text = L"Начать построение";
+			this->FreqSyncStartBtn->UseVisualStyleBackColor = true;
+			this->FreqSyncStartBtn->Click += gcnew System::EventHandler(this, &MyForm::FreqSyncStartBtn_Click);
+			// 
+			// label42
+			// 
+			this->label42->AutoSize = true;
+			this->label42->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label42->Location = System::Drawing::Point(51, 64);
+			this->label42->Name = L"label42";
+			this->label42->Size = System::Drawing::Size(91, 24);
+			this->label42->TabIndex = 169;
+			this->label42->Text = L"Шаг по β:";
+			// 
+			// FreqSyncCancelBtn
+			// 
+			this->FreqSyncCancelBtn->Enabled = false;
+			this->FreqSyncCancelBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->FreqSyncCancelBtn->Location = System::Drawing::Point(1304, 283);
+			this->FreqSyncCancelBtn->Name = L"FreqSyncCancelBtn";
+			this->FreqSyncCancelBtn->Size = System::Drawing::Size(173, 71);
+			this->FreqSyncCancelBtn->TabIndex = 173;
+			this->FreqSyncCancelBtn->Text = L"Отмена";
+			this->FreqSyncCancelBtn->UseVisualStyleBackColor = true;
+			this->FreqSyncCancelBtn->Click += gcnew System::EventHandler(this, &MyForm::FreqSyncCancelBtn_Click);
+			// 
+			// FreqSyncBetaStepTB
+			// 
+			this->FreqSyncBetaStepTB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->FreqSyncBetaStepTB->Location = System::Drawing::Point(148, 61);
+			this->FreqSyncBetaStepTB->Name = L"FreqSyncBetaStepTB";
+			this->FreqSyncBetaStepTB->Size = System::Drawing::Size(110, 29);
+			this->FreqSyncBetaStepTB->TabIndex = 170;
+			this->FreqSyncBetaStepTB->Text = L"0,005";
+			// 
+			// label43
+			// 
+			this->label43->AutoSize = true;
+			this->label43->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label43->Location = System::Drawing::Point(188, 15);
+			this->label43->Name = L"label43";
+			this->label43->Size = System::Drawing::Size(48, 24);
+			this->label43->TabIndex = 168;
+			this->label43->Text = L"β₂ = ";
+			// 
+			// label45
+			// 
+			this->label45->AutoSize = true;
+			this->label45->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label45->Location = System::Drawing::Point(22, 18);
+			this->label45->Name = L"label45";
+			this->label45->Size = System::Drawing::Size(48, 24);
+			this->label45->TabIndex = 167;
+			this->label45->Text = L"β₁ = ";
+			// 
+			// FreqSyncBeta1TB
+			// 
+			this->FreqSyncBeta1TB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->FreqSyncBeta1TB->Location = System::Drawing::Point(79, 15);
+			this->FreqSyncBeta1TB->Name = L"FreqSyncBeta1TB";
+			this->FreqSyncBeta1TB->Size = System::Drawing::Size(57, 29);
+			this->FreqSyncBeta1TB->TabIndex = 165;
+			this->FreqSyncBeta1TB->Text = L"0,01";
+			// 
+			// FreqSyncBeta2TB
+			// 
+			this->FreqSyncBeta2TB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->FreqSyncBeta2TB->Location = System::Drawing::Point(245, 12);
+			this->FreqSyncBeta2TB->Name = L"FreqSyncBeta2TB";
+			this->FreqSyncBeta2TB->Size = System::Drawing::Size(57, 29);
+			this->FreqSyncBeta2TB->TabIndex = 166;
+			this->FreqSyncBeta2TB->Text = L"0,1";
+			// 
+			// FreqSyncGraph
+			// 
+			this->FreqSyncGraph->IsShowPointValues = true;
+			this->FreqSyncGraph->Location = System::Drawing::Point(2, 5);
+			this->FreqSyncGraph->Name = L"FreqSyncGraph";
+			this->FreqSyncGraph->ScrollGrace = 0;
+			this->FreqSyncGraph->ScrollMaxX = 0;
+			this->FreqSyncGraph->ScrollMaxY = 0;
+			this->FreqSyncGraph->ScrollMaxY2 = 0;
+			this->FreqSyncGraph->ScrollMinX = 0;
+			this->FreqSyncGraph->ScrollMinY = 0;
+			this->FreqSyncGraph->ScrollMinY2 = 0;
+			this->FreqSyncGraph->Size = System::Drawing::Size(1200, 720);
+			this->FreqSyncGraph->TabIndex = 181;
+			// 
+			// FreqSyncProgBar
+			// 
+			this->FreqSyncProgBar->Location = System::Drawing::Point(1207, 209);
+			this->FreqSyncProgBar->Name = L"FreqSyncProgBar";
+			this->FreqSyncProgBar->Size = System::Drawing::Size(350, 31);
+			this->FreqSyncProgBar->TabIndex = 163;
+			// 
+			// FreqSyncProgressLabel
+			// 
+			this->FreqSyncProgressLabel->AutoSize = true;
+			this->FreqSyncProgressLabel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(204)));
+			this->FreqSyncProgressLabel->Location = System::Drawing::Point(1277, 243);
+			this->FreqSyncProgressLabel->Name = L"FreqSyncProgressLabel";
+			this->FreqSyncProgressLabel->Size = System::Drawing::Size(214, 24);
+			this->FreqSyncProgressLabel->TabIndex = 164;
+			this->FreqSyncProgressLabel->Text = L"Идёт построение... 0%";
+			this->FreqSyncProgressLabel->Visible = false;
 			// 
 			// tabPage9
 			// 
@@ -2295,6 +2625,14 @@ namespace WinForm {
 			this->backgroundWorker6->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::backgroundWorker6_ProgressChanged);
 			this->backgroundWorker6->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::backgroundWorker6_RunWorkerCompleted);
 			// 
+			// FreqSyncBW
+			// 
+			this->FreqSyncBW->WorkerReportsProgress = true;
+			this->FreqSyncBW->WorkerSupportsCancellation = true;
+			this->FreqSyncBW->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &MyForm::FreqSyncBW_DoWork);
+			this->FreqSyncBW->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::FreqSyncBW_ProgressChanged);
+			this->FreqSyncBW->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::FreqSyncBW_RunWorkerCompleted);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -2316,7 +2654,11 @@ namespace WinForm {
 			this->SystemParams->ResumeLayout(false);
 			this->SystemParams->PerformLayout();
 			this->tabPage2->ResumeLayout(false);
-			this->tabPage2->PerformLayout();
+			this->OmegaPan->ResumeLayout(false);
+			this->OmegaPan->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->MaxOmegaNUD))->EndInit();
+			this->groupBox1->ResumeLayout(false);
+			this->groupBox1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->TPhaseTable))->EndInit();
 			this->tabPage3->ResumeLayout(false);
@@ -2327,6 +2669,10 @@ namespace WinForm {
 			this->tabPage7->PerformLayout();
 			this->panel2->ResumeLayout(false);
 			this->panel2->PerformLayout();
+			this->tabPage8->ResumeLayout(false);
+			this->tabPage8->PerformLayout();
+			this->FreqSyncPanel->ResumeLayout(false);
+			this->FreqSyncPanel->PerformLayout();
 			this->tabPage9->ResumeLayout(false);
 			this->panel3->ResumeLayout(false);
 			this->panel3->PerformLayout();
@@ -2344,13 +2690,12 @@ namespace WinForm {
 #pragma endregion
 
 		//Для вычислений без сбора дополнительной информации и с возможностью остановки backgroundWorker
-		private: int PerformCalculations(int NumOfEquations, double endTime, double& _E0, double& _E0Star, double& _ts, double* fi, double* fipl1, BackgroundWorker^ bw)
+		private: int PerformCalculations(int NumOfEquations, double endTime, double Beta, double& _E0, double& _E0Star, double& _ts, double* fi, double* fipl1, BackgroundWorker^ bw)
 		{
 			const double h = Convert::ToDouble(hTB->Text);              //Шаг
 			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
 			const double g = Convert::ToDouble(gTB->Text);              //Коэффициент связи
 			const double alpha = Convert::ToDouble(AlphaTB->Text);      //Число α
-			const double beta = Convert::ToDouble(textBox7->Text);      //Число β
 			double t = 0.0;                                             //Текущее время       
 
 			const double D2PI = 2 * M_PI;
@@ -2380,7 +2725,7 @@ namespace WinForm {
 						oldE0 = _E0;
 						_E0 = E(t + h, _ts, _E0, _E0Star, alpha);          //Пересчет начальных условий
 						_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
-						_E0Star += beta;                                //Добавление β к начальному значению производной
+						_E0Star += Beta;                                //Добавление β к начальному значению производной
 						_ts = t + h;                                    //Изменение времени последнего спайка
 						fi[j] = 0.0;                                   //Обнуление значения ф
 					}
@@ -2392,14 +2737,13 @@ namespace WinForm {
 		}
 
 		//Для вычислений со сбором информации о средних частотах и с возможностью остановки backgroundWorker
-		private: int PerformCalculations(int NumOfEquations, double startTime, double endTime, double& _E0, double& _E0Star, double& _ts, int* clustersArr, double* fi,
+		private: int PerformCalculations(int NumOfEquations, double startTime, double endTime, double Beta, double& _E0, double& _E0Star, double& _ts, int* clustersArr, double* fi,
 			double* fipl1, double* fi0, BackgroundWorker^ bw)
 		{
 			const double h = Convert::ToDouble(hTB->Text);              //Шаг
 			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
 			const double g = Convert::ToDouble(gTB->Text);              //Коэффициент связи
 			const double alpha = Convert::ToDouble(AlphaTB->Text);      //Число α
-			const double beta = Convert::ToDouble(textBox7->Text);      //Число β
 			double t = startTime;                                       //Текущее время
 
 			const double D2PI = 2 * M_PI;
@@ -2425,7 +2769,7 @@ namespace WinForm {
 					oldE0 = _E0;
 					_E0 = E(t + h, _ts, _E0, _E0Star, alpha);          //Пересчет начальных условий
 					_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
-					_E0Star += beta;                                //Добавление β к начальному значению производной
+					_E0Star += Beta;                                //Добавление β к начальному значению производной
 					_ts = t + h;                                    //Изменение времени последнего спайка
 					fi[j] = 0.0;                                   //Обнуление значения ф
 					clustersArr[j]++;                              //Увеличение числа спайков на 1
@@ -2463,7 +2807,7 @@ namespace WinForm {
 						oldE0 = _E0;
 						_E0 = E(t + h, _ts, _E0, _E0Star, alpha);           //Пересчет начальных условий
 						_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
-						_E0Star += beta;                                 //Добавление β к начальному значению производной
+						_E0Star += Beta;                                 //Добавление β к начальному значению производной
 						_ts = t + h;                                     //Изменение времени последнего спайка
 						fi[j] = 0.0;                                    //Обнуление значения ф
 						clustersArr[j]++;                               //Увеличение числа спайков на 1
@@ -2477,7 +2821,7 @@ namespace WinForm {
 		}
 
 		//Для вычислений со сбором информации о спайках, среднем поле и параметре фазовой синхронизации и с возможностью остановки backgroundWorker
-		private: int PerformCalculations(int NumOfEquations, double startTime, double endTime, double& _E0, double& _E0Star, double& _ts, double* fi, double* fipl1,
+		private: int PerformCalculations(int NumOfEquations, double startTime, double endTime, double Beta, double& _E0, double& _E0Star, double& _ts, double* fi, double* fipl1,
 			PointPairList^ E_PPL, PointPairList^ Mu_PPL, BackgroundWorker^ bw)
 		{
 			GraphPane^ panel = SpikesGraph->GraphPane;
@@ -2487,7 +2831,6 @@ namespace WinForm {
 			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
 			const double g = Convert::ToDouble(gTB->Text);              //Коэффициент связи
 			const double alpha = Convert::ToDouble(AlphaTB->Text);      //Число α
-			const double beta = Convert::ToDouble(textBox7->Text);      //Число β
 			double Et;                                                  //Поле E(t)
 			double t = startTime;                                       //Текущее время
 			complex<double> Mu;                                         //Параметр фазовой синхронизации μ
@@ -2521,7 +2864,7 @@ namespace WinForm {
 						oldE0 = _E0;
 						_E0 = E(t + h, _ts, _E0, _E0Star, alpha);           //Пересчет начальных условий
 						_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
-						_E0Star += beta;                                    //Добавление β к начальному значению производной
+						_E0Star += Beta;                                    //Добавление β к начальному значению производной
 						_ts = t + h;                                        //Изменение времени последнего спайка
 						fi[j] = 0.0;                                        //Обнуление значения ф
 						if (!spike_flag)                                    //Отбражение нового спайка на графике
@@ -2554,7 +2897,7 @@ namespace WinForm {
 		}
 
 		//Для вычислений со сбором информации о частотах, спайках, среднем поле и параметре фазовой синхронизации и с возможностью остановки backgroundWorker
-		private: int PerformCalculations(bool T1LessThanT2, int NumOfEquations, double startTime, double& _E0, double& _E0Star, double& _ts, int* clustersArr, double* fi,
+		private: int PerformCalculations(bool T1LessThanT2, int NumOfEquations, double startTime, double Beta, double& _E0, double& _E0Star, double& _ts, int* clustersArr, double* fi,
 			double* fipl1, double* fi0, PointPairList^ E_PPL, PointPairList^ Mu_PPL, BackgroundWorker^ bw)
 		{
 			GraphPane^ panel = SpikesGraph->GraphPane;
@@ -2564,7 +2907,6 @@ namespace WinForm {
 			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
 			const double g = Convert::ToDouble(gTB->Text);              //Коэффициент связи
 			const double alpha = Convert::ToDouble(AlphaTB->Text);      //Число α
-			const double beta = Convert::ToDouble(textBox7->Text);      //Число β
 			double Et;                                                  //Поле E(t)
 			double t = startTime;                                       //Текущее время
 			complex<double> Mu;                                         //Параметр фазовой синхронизации μ
@@ -2599,7 +2941,7 @@ namespace WinForm {
 							oldE0 = _E0;
 							_E0 = E(t + h, _ts, _E0, _E0Star, alpha);           //Пересчет начальных условий
 							_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
-							_E0Star += beta;                                 //Добавление β к начальному значению производной
+							_E0Star += Beta;                                 //Добавление β к начальному значению производной
 							_ts = t + h;                                     //Изменение времени последнего спайка
 							fi[j] = 0.0;                                    //Обнуление значения ф
 							clustersArr[j]++;                               //Увеличение числа спайков на 1
@@ -2653,7 +2995,7 @@ namespace WinForm {
 						oldE0 = _E0;
 						_E0 = E(t + h, _ts, _E0, _E0Star, alpha);          //Пересчет начальных условий
 						_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
-						_E0Star += beta;                                //Добавление β к начальному значению производной
+						_E0Star += Beta;                                //Добавление β к начальному значению производной
 						_ts = t + h;                                    //Изменение времени последнего спайка
 						fi[j] = 0.0;                                   //Обнуление значения ф
 						clustersArr[j]++;                              //Увеличение числа спайков на 1
@@ -2713,7 +3055,7 @@ namespace WinForm {
 							oldE0 = _E0;
 							_E0 = E(t + h, _ts, _E0, _E0Star, alpha);           //Пересчет начальных условий
 							_E0Star = dEdt(t + h, _ts, oldE0, _E0Star, alpha);
-							_E0Star += beta;                                 //Добавление β к начальному значению производной
+							_E0Star += Beta;                                 //Добавление β к начальному значению производной
 							_ts = t + h;                                     //Изменение времени последнего спайка
 							fi[j] = 0.0;                                    //Обнуление значения ф
 							clustersArr[j]++;                                         //Увеличение числа спайков на 1	
@@ -2896,7 +3238,6 @@ namespace WinForm {
 			GraphPane^ panel5 = PhSyncParamGraph->GraphPane;
 			GraphPane^ panel6 = PhasesGraph->GraphPane;
 
-			panel2->CurveList->Clear();
 			panel4->CurveList->Clear();
 			panel5->CurveList->Clear();
 			panel6->CurveList->Clear();
@@ -2916,6 +3257,7 @@ namespace WinForm {
 			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
 			const double T01 = Convert::ToDouble(T1_TB->Text);          //Начальное время, от которого будет считаться частота
 			const double T02 = Convert::ToDouble(T02_text->Text);       //Начальное время, от которого будут рисоваться график E(t) и график числа спайков
+			const double beta = Convert::ToDouble(textBox7->Text);      //Параметр β
 			int NumOfClusters;                                          //Число кластеров при t = T
 			int IndexOfMaxOmega, IndexOfMinOmega;                       //Номера элементов с максимальными и минимальными частотами
 			double E0 = Convert::ToDouble(E0_Text->Text);               //Начальное условие для E
@@ -2969,21 +3311,21 @@ namespace WinForm {
 			//Основной цикл: Вычисление φⱼ(t) методом Рунге-Кутта 4-го порядка
 			if (T01 <= T02)
 			{
-				int res = PerformCalculations(n, T01 - h, E0, E0Star, ts, Fi, Fiplus1, SingleCalculationBW);
+				int res = PerformCalculations(n, T01 - h, beta, E0, E0Star, ts, Fi, Fiplus1, SingleCalculationBW);
 				if (res == -1)
 				{
 					e->Cancel = true;
 					return;
 				}
 
-				res = PerformCalculations(n, T01 - h, T02 - h, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, SingleCalculationBW);
+				res = PerformCalculations(n, T01 - h, T02 - h, beta, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, SingleCalculationBW);
 				if (res == -1)
 				{
 					e->Cancel = true;
 					return;
 				}
 
-				res = PerformCalculations(true, n, T02 - h, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, E_list, Mu_list, SingleCalculationBW);
+				res = PerformCalculations(true, n, T02 - h, beta, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, E_list, Mu_list, SingleCalculationBW);
 				if (res == -1)
 				{
 					e->Cancel = true;
@@ -2992,21 +3334,21 @@ namespace WinForm {
 			}
 			else
 			{
-				int res = PerformCalculations(n, T02 - h, E0, E0Star, ts, Fi, Fiplus1, SingleCalculationBW);
+				int res = PerformCalculations(n, T02 - h, beta, E0, E0Star, ts, Fi, Fiplus1, SingleCalculationBW);
 				if (res == -1)
 				{
 					e->Cancel = true;
 					return;
 				}
 
-				res = PerformCalculations(n, T02 - h, T01 - h, E0, E0Star, ts, Fi, Fiplus1, E_list, Mu_list, SingleCalculationBW);
+				res = PerformCalculations(n, T02 - h, T01 - h, beta, E0, E0Star, ts, Fi, Fiplus1, E_list, Mu_list, SingleCalculationBW);
 				if (res == -1)
 				{
 					e->Cancel = true;
 					return;
 				}
 
-				res = PerformCalculations(false, n, T02 - h, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, E_list, Mu_list, SingleCalculationBW);
+				res = PerformCalculations(false, n, T02 - h, beta, E0, E0Star, ts, k, Fi, Fiplus1, Fi0, E_list, Mu_list, SingleCalculationBW);
 				if (res == -1)
 				{
 					e->Cancel = true;
@@ -3057,7 +3399,7 @@ namespace WinForm {
 			PointPairList^ MinMaxOmegaList = gcnew PointPairList();
 
 			//Рисование графиков
-			LineItem^ Curve6 = panel2->AddCurve(L"Ωⱼ", g_list, Color::Red, SymbolType::Circle);
+			LineItem^ Curve6 = panel2->AddCurve(String::Format(L"β = {0}, кластеров: {1}", Convert::ToDouble(textBox7->Text), NumOfClusters), g_list, Color::Red, SymbolType::Circle);
 			LineItem^ Curve7 = panel4->AddCurve("E(t)", E_list, Color::Red, SymbolType::None);
 			LineItem^ Curve8 = panel5->AddCurve(L"|μ|(t)", Mu_list, Color::Red, SymbolType::None);
 			LineItem^ Curve9 = panel6->AddCurve(L"φⱼ(T)", FIT_list, Color::Blue, SymbolType::Circle);
@@ -3065,31 +3407,35 @@ namespace WinForm {
 			MinMaxOmegaList->Add(IndexOfMaxOmega, MaxOmega);
 			MinMaxOmegaList->Add(IndexOfMinOmega, MinOmega);
 
-			LineItem^ CurveMinMaxOmega = panel2->AddCurve(L"Min & Max Ωⱼ", MinMaxOmegaList, Color::Green, SymbolType::Circle);
+			LineItem^ CurveMinMaxOmega = panel2->AddCurve("", MinMaxOmegaList, Color::Green, SymbolType::Circle);
 
-			panel2->Title->Text += String::Format("\nКластеров: {0}", NumOfClusters);
+			//panel2->Title->Text += String::Format("\nКластеров: {0}", NumOfClusters);
+
+			float pointsSize = 6.0f;
 
 			Curve6->Line->IsVisible = false;
-			Curve6->Symbol->Fill->Color = Color::Red;
+			Curve6->Symbol->Fill->Color = Colors[panel2->CurveList->Count - 1 % Colors->Length - 1];
+			Curve6->Symbol->Border->Color = Colors[panel2->CurveList->Count - 1 % Colors->Length - 1];
 			Curve6->Symbol->Fill->Type = FillType::Solid;
-			Curve6->Symbol->Size = 6;
+			Curve6->Symbol->Size = pointsSize;
 
 			CurveMinMaxOmega->Line->IsVisible = false;
 			CurveMinMaxOmega->Symbol->Fill->Color = Color::Green;
 			CurveMinMaxOmega->Symbol->Fill->Type = FillType::Solid;
-			CurveMinMaxOmega->Symbol->Size = 6;
+			CurveMinMaxOmega->Symbol->Size = pointsSize;
 
 			Curve9->Line->IsVisible = false;
 			Curve9->Symbol->Fill->Color = Color::Blue;
 			Curve9->Symbol->Fill->Type = FillType::Solid;
-			Curve9->Symbol->Size = 6;
+			Curve9->Symbol->Size = pointsSize;
 
 			panel2->XAxis->Scale->Min = -1;
 			panel2->XAxis->Scale->Max = n;
-			panel2->YAxis->Scale->Min = MinOmega - (MaxOmega - MinOmega) / 2;
-			panel2->YAxis->Scale->Max = MaxOmega + (MaxOmega - MinOmega) / 2;
-			panel2->YAxis->Scale->Min = MinOmega - 0.1;
-			panel2->YAxis->Scale->Max = MaxOmega + 0.1;
+			//double yaxisOffset = Convert::ToDouble(OffsetTB->Text);
+			//panel2->YAxis->Scale->Min = MinOmega - yaxisOffset;
+			//panel2->YAxis->Scale->Max = MaxOmega + yaxisOffset;
+			//Omega1TB->Text = String::Format("{0}", Math::Round(MinOmega - yaxisOffset, 3));
+			//Omega2TB->Text = String::Format("{0}", Math::Round(MaxOmega + yaxisOffset, 3));
 
 			OmegaGraph->AxisChange();
 
@@ -3130,6 +3476,7 @@ namespace WinForm {
 			panel5->XAxis->Scale->Max = T + 0.05;
 			panel5->XAxis->Scale->Min = T02 - 0.05;
 
+			OmegaGraph->AxisChange();
 			OmegaGraph->Invalidate();
 			E_fieldGraph->AxisChange();
 			E_fieldGraph->Invalidate();
@@ -3485,14 +3832,22 @@ namespace WinForm {
 		private: System::Void Change_scale_Omega_Click(System::Object^ sender, System::EventArgs^ e)
 		{
 			GraphPane^ panel = OmegaGraph->GraphPane;
-			double Om1 = Convert::ToDouble(Omega1TB->Text);
-			double Om2 = Convert::ToDouble(Omega2TB->Text);
-			panel->YAxis->Scale->Min = Om1;
-			panel->YAxis->Scale->Max = Om2;
+
+			if (Omega1TB->Text != String::Empty)
+			{
+				double Om1 = Convert::ToDouble(Omega1TB->Text);
+				panel->YAxis->Scale->Min = Om1;
+			}
+
+			if(Omega2TB->Text != String::Empty)
+			{
+				double Om2 = Convert::ToDouble(Omega2TB->Text);
+				panel->YAxis->Scale->Max = Om2;
+			}
 			panel->YAxis->Scale->MajorStepAuto = false;
 			panel->YAxis->Scale->MinorStepAuto = false;
-			panel->YAxis->Scale->MajorStep = (Om2 - Om1) * 0.1;
-			panel->YAxis->Scale->MinorStep = (Om2 - Om1) * 0.02;
+			panel->YAxis->Scale->MajorStep = (panel->YAxis->Scale->Max - panel->YAxis->Scale->Min) * 0.1;
+			panel->YAxis->Scale->MinorStep = (panel->YAxis->Scale->Max - panel->YAxis->Scale->Min) * 0.02;
 			OmegaGraph->AxisChange();
 			OmegaGraph->Invalidate();
 		}
@@ -3847,6 +4202,7 @@ namespace WinForm {
 			SystemParams->Enabled = true;
 			StopBtn->Enabled = false;
 			Change_scale_Omega->Enabled = true;
+			ShowMaxMinCB->Enabled = true;
 		}
 
 		private: System::Void button6_Click(System::Object^ sender, System::EventArgs^ e)
@@ -4187,29 +4543,16 @@ namespace WinForm {
 		private: System::Void radioButton3_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
 		{
 			dataGridView1->Visible = true;
-			TPhaseTable->Visible = false;
-			PhasesGraph->Visible = false;
 			OmegaGraph->Visible = true;
-			Omega1->Visible = true;
-			Omega2->Visible = true;
-			Omega1TB->Visible = true;
-			Omega2TB->Visible = true;
-			Change_scale_Omega->Visible = true;
-			checkBox2->Visible = true;
+			OmegaPan->Visible = true;
 		}
 
 		private: System::Void radioButton4_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
 		{
 			dataGridView1->Visible = false;
 			TPhaseTable->Visible = true;
-			PhasesGraph->Visible = true;
 			OmegaGraph->Visible = false;
-			Omega1->Visible = false;
-			Omega2->Visible = false;
-			Omega1TB->Visible = false;
-			Omega2TB->Visible = false;
-			Change_scale_Omega->Visible = false;
-			checkBox2->Visible = false;
+			OmegaPan->Visible = false;
 		}
 
 		private: System::Void backgroundWorker6_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e)
@@ -4325,7 +4668,7 @@ namespace WinForm {
 
 		private: System::Void checkBox2_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
 		{
-			if (checkBox2->Checked)
+			if (ShowMaxMinCB->Checked)
 			{
 				for each (GraphObj ^ obj in OmegaGraph->GraphPane->GraphObjList)
 				{
@@ -4392,14 +4735,229 @@ namespace WinForm {
 			cli::array<String^>^ firstLine = sr->ReadLine()->Split(gcnew cli::array<wchar_t> {'\t'});
 			Gamma0CmbB->Text = firstLine[0];
 			DeltaCmbB->Text = firstLine[1];
+			List<double>^ GammaList = gcnew List<double>();
 
 			while (!sr->EndOfStream)
 			{
-				GammaTable->Rows->Add(counter, sr->ReadLine());
+				String ^Line = sr->ReadLine();
+				GammaList->Add(Convert::ToDouble(Line));
+				GammaTable->Rows->Add(counter, Line);
 				counter++;
 			}
 
+			gamma = new double[GammaList->Count];
+
+			for (int i = 0; i < GammaList->Count; i++) 
+			{
+				gamma[i] = GammaList[i];
+			}
+
+			gamma1 = gamma[0];
+			gamma2 = gamma[GammaList->Count];
+
 			SaveSetToFileBtn->Enabled = true;
+			StartBtn->Enabled = true;
+		}
+		private: System::Void ClearOmegaGraphBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+		{
+			Change_scale_Omega->Enabled = false;
+			OmegaGraph->GraphPane->CurveList->Clear();
+			OmegaGraph->Invalidate();
+		}
+
+		private: System::Void MaxOmegaNUD_ValueChanged(System::Object^ sender, System::EventArgs^ e) 
+		{
+			double oldVal = OmegaGraph->GraphPane->YAxis->Scale->Min;
+			OmegaGraph->GraphPane->YAxis->Scale->Max = (double)MaxOmegaNUD->Value + (double)MaxOmegaNUD->Value * 0.01;
+			OmegaGraph->GraphPane->YAxis->Scale->Min = oldVal;
+			OmegaGraph->AxisChange();
+			OmegaGraph->Invalidate();
+		}
+
+		private: System::Void FreqSyncStartBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+		{
+			if (gamma == NULL)
+			{
+				MessageBox::Show(L"Набор γ не задан", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+				return;
+			}
+
+			FreqSyncPanel->Enabled = false;
+			FreqSyncProgressLabel->Visible = true;
+			FreqSyncCancelBtn->Enabled = true;
+			FreqSyncBW->RunWorkerAsync();
+		}
+
+		private: System::Void FreqSyncBW_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e) 
+		{
+			FreqSyncGraph->GraphPane->Title->Text = FreqSyncGraphTitle + Environment::NewLine + String::Format(L"Δ = {0}", Convert::ToDouble(DeltaCmbB->Text));
+
+			PointPairList^ XiPPL = gcnew PointPairList();
+
+			const int n = Convert::ToInt32(nTB->Text);                  //Число уравнений в системе
+			const int p = Convert::ToInt32(IterationsTB->Text);         //Максимальное число итераций
+			const double h = Convert::ToDouble(hTB->Text);              //Шаг
+			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
+			const double T01 = Convert::ToDouble(T1_TB->Text);          //Начальное время, от которого будет считаться частота
+			const double Beta1 = Convert::ToDouble(FreqSyncBeta1TB->Text); //Левая граница β₁
+			const double Beta2 = Convert::ToDouble(FreqSyncBeta2TB->Text); //Правая граница β₂
+			const double BetaStep = Convert::ToDouble(FreqSyncBetaStepTB->Text); //Шаг по β
+			const double E0 = Convert::ToDouble(E0_Text->Text);         //Начальное условие для E
+			const double E0Star = Convert::ToDouble(E0Star_Text->Text); //Начальное условие для Ė
+			const double TS = 0.0;                                      //Время последнего спайка
+			int NumOfClusters;                                          //Число кластеров при t = T
+			int IndexOfMaxOmega, IndexOfMinOmega;                       //Номера элементов с максимальными и минимальными частотами
+			double Xi;                                                  //Параметр частотной синхронизации
+			double beta = Beta1;                                        //Параметр β
+			int* k;                                                     //Число спайков для каждого ротатора
+			double* Fi0;                                                //Фазы при t = T₁
+			double* Fi, * Fiplus1;                                      //Фазы φⱼ(t) j = 0,...,n - 1
+			double* Omega;                                              //Средние частоты Ω
+
+			bool stopFlag = false;
+			const double D2PI = 2 * M_PI;
+			double maxXi = -1.0;
+			double minXi = 2.0;
+
+			Fi = new double[n];
+			Fiplus1 = new double[n];
+			Fi0 = new double[n];
+			Omega = new double[n];
+			k = new int[n];
+
+			double A = (Beta2 - Beta1) / BetaStep;
+			double dec = A - (int)A;
+
+			int iterCounter = 1;
+			int IterationsCount = A + 1;
+			if (dec != 0.0)
+			{
+				IterationsCount++;
+			}
+
+			FreqSyncGraph->Tag = String::Format("({0}/{1})", iterCounter, IterationsCount);
+
+			while (beta <= Beta2)
+			{
+				FreqSyncBW->ReportProgress(0);
+
+				double e0 = E0;
+				double e0s = E0Star;
+				double ts = TS;
+
+				for (int i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
+				{
+					Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
+					k[i] = 0;                          //Изначальное число спайков равно нулю
+				}
+
+				int res = PerformCalculations(n, T01 - h, beta, e0, e0s, ts, Fi, Fiplus1, FreqSyncBW);
+				if (res == -1)
+				{
+					e->Cancel = true;
+					return;
+				}
+
+				res = PerformCalculations(n, T01 - h, T, beta, e0, e0s, ts, k, Fi, Fiplus1, Fi0, FreqSyncBW);
+				if (res == -1)
+				{
+					e->Cancel = true;
+					return;
+				}
+
+				//Вычисление средних частот
+				for (int i = 0; i < n; i++)
+				{
+					//Вычисление значения частоты
+					if (k[i] != 0)
+					{
+						Omega[i] = ((k[i] - 1) * D2PI + Fi[i] - Fi0[i]) / (T - T01);
+					}
+					else
+					{
+						Omega[i] = (Fi[i] - Fi0[i]) / (T - T01);
+					}
+				}
+
+				NumOfClusters = GetNumberOfClusters(Omega, n);	 //Вычисление числа кластеров при t = T
+				Xi = (double)(NumOfClusters - 1) / (n - 1);
+
+				if (Xi > maxXi)
+				{
+					maxXi = Xi;
+				}
+
+				if (Xi < minXi)
+				{
+					minXi = Xi;
+				}
+
+				XiPPL->Add(beta, Xi, String::Format(L"β = {0} χ = {1}", beta, Xi));
+
+				beta += BetaStep;
+				if (beta > Beta2 && !stopFlag)
+				{
+					beta = Beta2;
+					stopFlag = true;
+				}
+
+				iterCounter++;
+				FreqSyncGraph->Tag = String::Format("({0}/{1})", iterCounter, IterationsCount);
+			}
+
+			LineItem^ curve = FreqSyncGraph->GraphPane->AddCurve("", XiPPL, Color::Blue, SymbolType::None);
+			FreqSyncGraph->GraphPane->XAxis->Scale->Min = Beta1 - 0.001;
+			FreqSyncGraph->GraphPane->XAxis->Scale->Max = Beta2 + 0.001;
+			FreqSyncGraph->GraphPane->YAxis->Scale->Min = minXi - 0.01;
+			FreqSyncGraph->GraphPane->YAxis->Scale->Max = maxXi + 0.01;
+			curve->Line->Width = 2.5;
+			//curve->Line->IsSmooth = true;
+			//curve->Line->SmoothTension = 1.0;
+
+			FreqSyncGraph->AxisChange();
+			FreqSyncGraph->Invalidate();
+
+			delete[] Fi;
+			delete[] Fiplus1;
+			delete[] Fi0;
+			delete[] Omega;
+			delete[] k;
+		}
+
+		private: System::Void FreqSyncBW_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e) 
+		{
+			FreqSyncProgBar->Value = e->ProgressPercentage;
+			FreqSyncProgressLabel->Text = String::Format("Идёт построение... {0}% ", e->ProgressPercentage) + FreqSyncGraph->Tag->ToString();
+		}
+
+		private: System::Void FreqSyncBW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e) 
+		{
+			Activate();
+
+			if(e->Cancelled)
+			{
+				MessageBox::Show("Построение отменено", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			}
+			else
+			{
+				MessageBox::Show("Построение закончено", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+				FreqSyncClearGraphBtn->Enabled = true;
+			}
+			FreqSyncProgBar->Value = 0;
+			FreqSyncCancelBtn->Enabled = false;
+			FreqSyncPanel->Enabled = true;
+			FreqSyncProgressLabel->Visible = false;
+		}
+
+		private: System::Void FreqSyncClearGraphBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+		{
+			FreqSyncGraph->GraphPane->CurveList->Clear();
+			FreqSyncGraph->Invalidate();
+		}
+
+		private: System::Void FreqSyncCancelBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+		{
+			FreqSyncBW->CancelAsync();
 		}
 	};
 }
