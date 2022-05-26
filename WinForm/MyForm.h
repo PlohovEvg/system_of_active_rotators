@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <Windows.h>
 #include "Calculating_functions.h"
+#include "MyDoubleComparer.h"
 
 namespace WinForm {
 
@@ -31,9 +32,25 @@ namespace WinForm {
 
 	public: bool AvgMaxMinAlreadyExists;
 
+	public: bool ParamChanged;
+
 	public: vector<int*>* Clusters_vec;
 
 	public: vector<double**>* Omega_vec;
+
+	public: double* phi;
+	private: System::Windows::Forms::Button^ ResetPhiValuesBtn;
+	private: System::Windows::Forms::GroupBox^ groupBox2;
+	private: System::Windows::Forms::ComboBox^ BigPictureCmbB;
+
+	private: System::Windows::Forms::Label^ label26;
+	private: System::Windows::Forms::Button^ CreateBigImageBtn;
+	private: System::Windows::Forms::NumericUpDown^ BigPictureOffsetNUD;
+
+	private: System::Windows::Forms::Label^ label44;
+	private: System::Windows::Forms::Label^ label46;
+	private: System::Windows::Forms::CheckBox^ BigPictureReversedCB;
+	public:
 
 	public: cli::array<Color>^ Colors;
 
@@ -46,8 +63,9 @@ namespace WinForm {
 			AvgMaxMinAlreadyExists = false;
 			Clusters_vec = new vector<int*>;
 			Omega_vec = new vector<double**>;
-
+			ResetPhiValues();
 			Str = "";
+			ParamChanged = false;
 			gamma = NULL;
 
 			Colors = gcnew cli::array<Color>(50);
@@ -149,7 +167,8 @@ namespace WinForm {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::Button^ CreateBigImageBtn;
+	private: System::Windows::Forms::NumericUpDown^ nNUD;
+
 	private: static String^ FreqSyncGraphTitle = L"График зависимости параметра частотной синхронизации χ от параметра β";
 	private: System::Windows::Forms::Button^ LoadSetFromFileBtn;
 	private: System::Windows::Forms::Button^ SaveSetToFileBtn;
@@ -217,7 +236,7 @@ namespace WinForm {
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::TextBox^ gTB;
 	private: System::Windows::Forms::Label^ label21;
-	private: System::Windows::Forms::TextBox^ nTB;
+
 
 	private: System::Windows::Forms::DataGridView^ TPhaseTable;
 	private: System::Windows::Forms::DataGridView^ TimeOfSpikesTable;
@@ -350,6 +369,14 @@ namespace WinForm {
 			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->tabPage1 = (gcnew System::Windows::Forms::TabPage());
+			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
+			this->label46 = (gcnew System::Windows::Forms::Label());
+			this->BigPictureOffsetNUD = (gcnew System::Windows::Forms::NumericUpDown());
+			this->label44 = (gcnew System::Windows::Forms::Label());
+			this->BigPictureCmbB = (gcnew System::Windows::Forms::ComboBox());
+			this->label26 = (gcnew System::Windows::Forms::Label());
+			this->CreateBigImageBtn = (gcnew System::Windows::Forms::Button());
+			this->ResetPhiValuesBtn = (gcnew System::Windows::Forms::Button());
 			this->LoadSetFromFileBtn = (gcnew System::Windows::Forms::Button());
 			this->SaveSetToFileBtn = (gcnew System::Windows::Forms::Button());
 			this->IntegrParams = (gcnew System::Windows::Forms::GroupBox());
@@ -381,6 +408,7 @@ namespace WinForm {
 			this->ResultsTB = (gcnew System::Windows::Forms::TextBox());
 			this->StartBtn = (gcnew System::Windows::Forms::Button());
 			this->SystemParams = (gcnew System::Windows::Forms::GroupBox());
+			this->nNUD = (gcnew System::Windows::Forms::NumericUpDown());
 			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->textBox7 = (gcnew System::Windows::Forms::TextBox());
 			this->label8 = (gcnew System::Windows::Forms::Label());
@@ -396,7 +424,6 @@ namespace WinForm {
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->gTB = (gcnew System::Windows::Forms::TextBox());
 			this->label21 = (gcnew System::Windows::Forms::Label());
-			this->nTB = (gcnew System::Windows::Forms::TextBox());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
 			this->OmegaPan = (gcnew System::Windows::Forms::Panel());
 			this->OffsetTB = (gcnew System::Windows::Forms::TextBox());
@@ -522,14 +549,17 @@ namespace WinForm {
 			this->backgroundWorker5 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->backgroundWorker6 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->FreqSyncBW = (gcnew System::ComponentModel::BackgroundWorker());
-			this->CreateBigImageBtn = (gcnew System::Windows::Forms::Button());
+			this->BigPictureReversedCB = (gcnew System::Windows::Forms::CheckBox());
 			this->tabControl1->SuspendLayout();
 			this->tabPage1->SuspendLayout();
+			this->groupBox2->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->BigPictureOffsetNUD))->BeginInit();
 			this->IntegrParams->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->GammaTable))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SystemParams->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->nNUD))->BeginInit();
 			this->tabPage2->SuspendLayout();
 			this->OmegaPan->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->MaxOmegaNUD))->BeginInit();
@@ -571,6 +601,8 @@ namespace WinForm {
 			// 
 			// tabPage1
 			// 
+			this->tabPage1->Controls->Add(this->groupBox2);
+			this->tabPage1->Controls->Add(this->ResetPhiValuesBtn);
 			this->tabPage1->Controls->Add(this->LoadSetFromFileBtn);
 			this->tabPage1->Controls->Add(this->SaveSetToFileBtn);
 			this->tabPage1->Controls->Add(this->IntegrParams);
@@ -599,11 +631,97 @@ namespace WinForm {
 			this->tabPage1->Text = L"Ввод данных";
 			this->tabPage1->UseVisualStyleBackColor = true;
 			// 
+			// groupBox2
+			// 
+			this->groupBox2->Controls->Add(this->BigPictureReversedCB);
+			this->groupBox2->Controls->Add(this->label46);
+			this->groupBox2->Controls->Add(this->BigPictureOffsetNUD);
+			this->groupBox2->Controls->Add(this->label44);
+			this->groupBox2->Controls->Add(this->BigPictureCmbB);
+			this->groupBox2->Controls->Add(this->label26);
+			this->groupBox2->Controls->Add(this->CreateBigImageBtn);
+			this->groupBox2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->groupBox2->Location = System::Drawing::Point(835, 570);
+			this->groupBox2->Name = L"groupBox2";
+			this->groupBox2->Size = System::Drawing::Size(472, 152);
+			this->groupBox2->TabIndex = 173;
+			this->groupBox2->TabStop = false;
+			this->groupBox2->Text = L"Создание больших картинок";
+			// 
+			// label46
+			// 
+			this->label46->AutoSize = true;
+			this->label46->Location = System::Drawing::Point(168, 82);
+			this->label46->Name = L"label46";
+			this->label46->Size = System::Drawing::Size(47, 20);
+			this->label46->TabIndex = 168;
+			this->label46->Text = L"пикс.";
+			// 
+			// BigPictureOffsetNUD
+			// 
+			this->BigPictureOffsetNUD->Location = System::Drawing::Point(79, 80);
+			this->BigPictureOffsetNUD->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 10000, 0, 0, 0 });
+			this->BigPictureOffsetNUD->Name = L"BigPictureOffsetNUD";
+			this->BigPictureOffsetNUD->Size = System::Drawing::Size(83, 26);
+			this->BigPictureOffsetNUD->TabIndex = 167;
+			this->BigPictureOffsetNUD->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 150, 0, 0, 0 });
+			// 
+			// label44
+			// 
+			this->label44->AutoSize = true;
+			this->label44->Location = System::Drawing::Point(6, 82);
+			this->label44->Name = L"label44";
+			this->label44->Size = System::Drawing::Size(67, 20);
+			this->label44->TabIndex = 166;
+			this->label44->Text = L"Отступ:";
+			// 
+			// BigPictureCmbB
+			// 
+			this->BigPictureCmbB->FormattingEnabled = true;
+			this->BigPictureCmbB->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"β = ", L"g = " });
+			this->BigPictureCmbB->Location = System::Drawing::Point(79, 35);
+			this->BigPictureCmbB->Name = L"BigPictureCmbB";
+			this->BigPictureCmbB->Size = System::Drawing::Size(68, 28);
+			this->BigPictureCmbB->TabIndex = 165;
+			this->BigPictureCmbB->Text = L"β = ";
+			// 
+			// label26
+			// 
+			this->label26->AutoSize = true;
+			this->label26->Location = System::Drawing::Point(6, 38);
+			this->label26->Name = L"label26";
+			this->label26->Size = System::Drawing::Size(56, 20);
+			this->label26->TabIndex = 164;
+			this->label26->Text = L"Текст:";
+			// 
+			// CreateBigImageBtn
+			// 
+			this->CreateBigImageBtn->Location = System::Drawing::Point(255, 82);
+			this->CreateBigImageBtn->Name = L"CreateBigImageBtn";
+			this->CreateBigImageBtn->Size = System::Drawing::Size(211, 64);
+			this->CreateBigImageBtn->TabIndex = 163;
+			this->CreateBigImageBtn->Text = L"Создать большое изображение";
+			this->CreateBigImageBtn->UseVisualStyleBackColor = true;
+			this->CreateBigImageBtn->Click += gcnew System::EventHandler(this, &MyForm::CreateBigImageBtn_Click);
+			// 
+			// ResetPhiValuesBtn
+			// 
+			this->ResetPhiValuesBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->ResetPhiValuesBtn->Location = System::Drawing::Point(1151, 194);
+			this->ResetPhiValuesBtn->Name = L"ResetPhiValuesBtn";
+			this->ResetPhiValuesBtn->Size = System::Drawing::Size(156, 73);
+			this->ResetPhiValuesBtn->TabIndex = 172;
+			this->ResetPhiValuesBtn->Text = L"Обнулить начальные условия";
+			this->ResetPhiValuesBtn->UseVisualStyleBackColor = true;
+			this->ResetPhiValuesBtn->Click += gcnew System::EventHandler(this, &MyForm::ResetPhiValuesBtn_Click);
+			// 
 			// LoadSetFromFileBtn
 			// 
 			this->LoadSetFromFileBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->LoadSetFromFileBtn->Location = System::Drawing::Point(1151, 149);
+			this->LoadSetFromFileBtn->Location = System::Drawing::Point(1151, 133);
 			this->LoadSetFromFileBtn->Name = L"LoadSetFromFileBtn";
 			this->LoadSetFromFileBtn->Size = System::Drawing::Size(156, 55);
 			this->LoadSetFromFileBtn->TabIndex = 171;
@@ -616,7 +734,7 @@ namespace WinForm {
 			this->SaveSetToFileBtn->Enabled = false;
 			this->SaveSetToFileBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->SaveSetToFileBtn->Location = System::Drawing::Point(1151, 88);
+			this->SaveSetToFileBtn->Location = System::Drawing::Point(1151, 72);
 			this->SaveSetToFileBtn->Name = L"SaveSetToFileBtn";
 			this->SaveSetToFileBtn->Size = System::Drawing::Size(156, 55);
 			this->SaveSetToFileBtn->TabIndex = 170;
@@ -717,6 +835,7 @@ namespace WinForm {
 			this->T_TB->Size = System::Drawing::Size(100, 29);
 			this->T_TB->TabIndex = 151;
 			this->T_TB->Text = L"11000";
+			this->T_TB->TextChanged += gcnew System::EventHandler(this, &MyForm::paramChanged);
 			// 
 			// label23
 			// 
@@ -738,6 +857,7 @@ namespace WinForm {
 			this->hTB->Size = System::Drawing::Size(100, 29);
 			this->hTB->TabIndex = 149;
 			this->hTB->Text = L"0,005";
+			this->hTB->TextChanged += gcnew System::EventHandler(this, &MyForm::paramChanged);
 			// 
 			// pictureBox2
 			// 
@@ -817,7 +937,7 @@ namespace WinForm {
 			// 
 			this->progressBar2->Location = System::Drawing::Point(668, 280);
 			this->progressBar2->Name = L"progressBar2";
-			this->progressBar2->Size = System::Drawing::Size(598, 31);
+			this->progressBar2->Size = System::Drawing::Size(639, 31);
 			this->progressBar2->Step = 1;
 			this->progressBar2->TabIndex = 161;
 			// 
@@ -826,7 +946,7 @@ namespace WinForm {
 			this->label30->AutoSize = true;
 			this->label30->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label30->Location = System::Drawing::Point(366, 631);
+			this->label30->Location = System::Drawing::Point(37, 618);
 			this->label30->Name = L"label30";
 			this->label30->Size = System::Drawing::Size(775, 24);
 			this->label30->TabIndex = 150;
@@ -837,7 +957,7 @@ namespace WinForm {
 			this->label29->AutoSize = true;
 			this->label29->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label29->Location = System::Drawing::Point(366, 591);
+			this->label29->Location = System::Drawing::Point(37, 578);
 			this->label29->Name = L"label29";
 			this->label29->Size = System::Drawing::Size(704, 24);
 			this->label29->TabIndex = 149;
@@ -887,7 +1007,7 @@ namespace WinForm {
 			// 
 			this->GenerateGammaBtn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->GenerateGammaBtn->Location = System::Drawing::Point(1151, 27);
+			this->GenerateGammaBtn->Location = System::Drawing::Point(1151, 11);
 			this->GenerateGammaBtn->Name = L"GenerateGammaBtn";
 			this->GenerateGammaBtn->Size = System::Drawing::Size(156, 55);
 			this->GenerateGammaBtn->TabIndex = 141;
@@ -931,11 +1051,11 @@ namespace WinForm {
 			// 
 			this->ResultsTB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->ResultsTB->Location = System::Drawing::Point(735, 348);
+			this->ResultsTB->Location = System::Drawing::Point(668, 348);
 			this->ResultsTB->Multiline = true;
 			this->ResultsTB->Name = L"ResultsTB";
 			this->ResultsTB->ReadOnly = true;
-			this->ResultsTB->Size = System::Drawing::Size(434, 172);
+			this->ResultsTB->Size = System::Drawing::Size(639, 216);
 			this->ResultsTB->TabIndex = 93;
 			this->ResultsTB->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
@@ -954,6 +1074,7 @@ namespace WinForm {
 			// 
 			// SystemParams
 			// 
+			this->SystemParams->Controls->Add(this->nNUD);
 			this->SystemParams->Controls->Add(this->label13);
 			this->SystemParams->Controls->Add(this->textBox7);
 			this->SystemParams->Controls->Add(this->label8);
@@ -969,7 +1090,6 @@ namespace WinForm {
 			this->SystemParams->Controls->Add(this->label2);
 			this->SystemParams->Controls->Add(this->gTB);
 			this->SystemParams->Controls->Add(this->label21);
-			this->SystemParams->Controls->Add(this->nTB);
 			this->SystemParams->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
 			this->SystemParams->Location = System::Drawing::Point(370, 247);
@@ -978,6 +1098,17 @@ namespace WinForm {
 			this->SystemParams->TabIndex = 168;
 			this->SystemParams->TabStop = false;
 			this->SystemParams->Text = L"Параметры системы";
+			// 
+			// nNUD
+			// 
+			this->nNUD->Location = System::Drawing::Point(181, 28);
+			this->nNUD->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
+			this->nNUD->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->nNUD->Name = L"nNUD";
+			this->nNUD->Size = System::Drawing::Size(100, 29);
+			this->nNUD->TabIndex = 169;
+			this->nNUD->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100, 0, 0, 0 });
+			this->nNUD->ValueChanged += gcnew System::EventHandler(this, &MyForm::nNUD_ValueChanged);
 			// 
 			// label13
 			// 
@@ -1020,6 +1151,7 @@ namespace WinForm {
 			this->T02_text->Size = System::Drawing::Size(100, 29);
 			this->T02_text->TabIndex = 165;
 			this->T02_text->Text = L"10900";
+			this->T02_text->TextChanged += gcnew System::EventHandler(this, &MyForm::paramChanged);
 			// 
 			// label5
 			// 
@@ -1041,6 +1173,7 @@ namespace WinForm {
 			this->T1_TB->Size = System::Drawing::Size(100, 29);
 			this->T1_TB->TabIndex = 163;
 			this->T1_TB->Text = L"5000";
+			this->T1_TB->TextChanged += gcnew System::EventHandler(this, &MyForm::paramChanged);
 			// 
 			// label7
 			// 
@@ -1062,6 +1195,7 @@ namespace WinForm {
 			this->E0Star_Text->Size = System::Drawing::Size(100, 29);
 			this->E0Star_Text->TabIndex = 161;
 			this->E0Star_Text->Text = L"0";
+			this->E0Star_Text->TextChanged += gcnew System::EventHandler(this, &MyForm::paramChanged);
 			// 
 			// label6
 			// 
@@ -1083,6 +1217,7 @@ namespace WinForm {
 			this->E0_Text->Size = System::Drawing::Size(100, 29);
 			this->E0_Text->TabIndex = 159;
 			this->E0_Text->Text = L"0";
+			this->E0_Text->TextChanged += gcnew System::EventHandler(this, &MyForm::paramChanged);
 			// 
 			// label3
 			// 
@@ -1104,6 +1239,7 @@ namespace WinForm {
 			this->AlphaTB->Size = System::Drawing::Size(100, 29);
 			this->AlphaTB->TabIndex = 157;
 			this->AlphaTB->Text = L"1,5";
+			this->AlphaTB->TextChanged += gcnew System::EventHandler(this, &MyForm::paramChanged);
 			// 
 			// label2
 			// 
@@ -1125,6 +1261,7 @@ namespace WinForm {
 			this->gTB->Size = System::Drawing::Size(100, 29);
 			this->gTB->TabIndex = 155;
 			this->gTB->Text = L"1";
+			this->gTB->TextChanged += gcnew System::EventHandler(this, &MyForm::paramChanged);
 			// 
 			// label21
 			// 
@@ -1136,16 +1273,6 @@ namespace WinForm {
 			this->label21->Size = System::Drawing::Size(169, 24);
 			this->label21->TabIndex = 154;
 			this->label21->Text = L" Число уравнений";
-			// 
-			// nTB
-			// 
-			this->nTB->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->nTB->Location = System::Drawing::Point(181, 30);
-			this->nTB->Name = L"nTB";
-			this->nTB->Size = System::Drawing::Size(100, 29);
-			this->nTB->TabIndex = 153;
-			this->nTB->Text = L"100";
 			// 
 			// tabPage2
 			// 
@@ -1165,7 +1292,6 @@ namespace WinForm {
 			// 
 			// OmegaPan
 			// 
-			this->OmegaPan->Controls->Add(this->CreateBigImageBtn);
 			this->OmegaPan->Controls->Add(this->OffsetTB);
 			this->OmegaPan->Controls->Add(this->label18);
 			this->OmegaPan->Controls->Add(this->MaxOmegaNUD);
@@ -1236,7 +1362,7 @@ namespace WinForm {
 				static_cast<System::Byte>(204)));
 			this->ClearOmegaGraphBtn->Location = System::Drawing::Point(9, 110);
 			this->ClearOmegaGraphBtn->Name = L"ClearOmegaGraphBtn";
-			this->ClearOmegaGraphBtn->Size = System::Drawing::Size(138, 60);
+			this->ClearOmegaGraphBtn->Size = System::Drawing::Size(165, 60);
 			this->ClearOmegaGraphBtn->TabIndex = 156;
 			this->ClearOmegaGraphBtn->Text = L"Очистить графики";
 			this->ClearOmegaGraphBtn->UseVisualStyleBackColor = true;
@@ -2636,15 +2762,15 @@ namespace WinForm {
 			this->FreqSyncBW->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &MyForm::FreqSyncBW_ProgressChanged);
 			this->FreqSyncBW->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::FreqSyncBW_RunWorkerCompleted);
 			// 
-			// CreateBigImageBtn
+			// BigPictureReversedCB
 			// 
-			this->CreateBigImageBtn->Location = System::Drawing::Point(153, 110);
-			this->CreateBigImageBtn->Name = L"CreateBigImageBtn";
-			this->CreateBigImageBtn->Size = System::Drawing::Size(211, 60);
-			this->CreateBigImageBtn->TabIndex = 162;
-			this->CreateBigImageBtn->Text = L"Создать большое изображение";
-			this->CreateBigImageBtn->UseVisualStyleBackColor = true;
-			this->CreateBigImageBtn->Click += gcnew System::EventHandler(this, &MyForm::CreateBigImageBtn_Click);
+			this->BigPictureReversedCB->AutoSize = true;
+			this->BigPictureReversedCB->Location = System::Drawing::Point(255, 37);
+			this->BigPictureReversedCB->Name = L"BigPictureReversedCB";
+			this->BigPictureReversedCB->Size = System::Drawing::Size(127, 24);
+			this->BigPictureReversedCB->TabIndex = 169;
+			this->BigPictureReversedCB->Text = L"Обраный ход";
+			this->BigPictureReversedCB->UseVisualStyleBackColor = true;
 			// 
 			// MyForm
 			// 
@@ -2659,6 +2785,9 @@ namespace WinForm {
 			this->tabControl1->ResumeLayout(false);
 			this->tabPage1->ResumeLayout(false);
 			this->tabPage1->PerformLayout();
+			this->groupBox2->ResumeLayout(false);
+			this->groupBox2->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->BigPictureOffsetNUD))->EndInit();
 			this->IntegrParams->ResumeLayout(false);
 			this->IntegrParams->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->EndInit();
@@ -2666,6 +2795,7 @@ namespace WinForm {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->SystemParams->ResumeLayout(false);
 			this->SystemParams->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->nNUD))->EndInit();
 			this->tabPage2->ResumeLayout(false);
 			this->OmegaPan->ResumeLayout(false);
 			this->OmegaPan->PerformLayout();
@@ -3265,7 +3395,7 @@ namespace WinForm {
 			PointPairList^ Mu_list = gcnew PointPairList();             //Список точек для графика |μ| от t
 			PointPairList^ FIT_list = gcnew PointPairList();            //Список точек для графика φⱼ(T) в конечный момент времени
 
-			const int n = Convert::ToInt32(nTB->Text);                  //Число уравнений в системе
+			const int n = Convert::ToInt32(nNUD->Value);                  //Число уравнений в системе
 			const int p = Convert::ToInt32(IterationsTB->Text);         //Максимальное число итераций
 			const double h = Convert::ToDouble(hTB->Text);              //Шаг
 			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
@@ -3305,7 +3435,8 @@ namespace WinForm {
 			{
 				for (int i = 0; i < n; i++)                //Начальные условия для каждого из φⱼ(t) равны нулю
 				{
-					Fi[i] = Fiplus1[i] = Fi0[i] = 0.0;
+					Fi[i] = phi[i];
+					Fiplus1[i] = Fi0[i] = 0.0;
 					k[i] = 0;                          //Изначальное число спайков равно нулю
 				}
 			}
@@ -3373,6 +3504,8 @@ namespace WinForm {
 			//Вычисление средних частот
 			for (int i = 0; i < n; i++)
 			{
+				phi[i] = Fi[i];
+
 				//Вычисление значения частоты
 				if (k[i] != 0)
 				{
@@ -3511,7 +3644,7 @@ namespace WinForm {
 			GraphPane^ panel = OmegaBetaGraph->GraphPane;
 			GraphPane^ panel2 = ClustersCountBetaGraph->GraphPane;
 
-			const int n = Convert::ToInt32(nTB->Text);                       //Число уравнений в системе
+			const int n = Convert::ToInt32(nNUD->Value);                     //Число уравнений в системе
 			const int p = Convert::ToInt32(IterationsTB->Text);              //Число итераций, второй критерий остановки
 			const int NumOfSets = Convert::ToInt32(GammaSetsCountTB->Text);  //Число наборов
 			const double gamma1Copy = Convert::ToDouble(Gamma1MinTB->Text);  //Минимальное значение γ₁
@@ -3870,7 +4003,7 @@ namespace WinForm {
 		{
 			GammaTable->Rows->Clear();
 
-			const int n = Convert::ToInt32(nTB->Text);
+			const int n = Convert::ToInt32(nNUD->Value);
 			const double gamma0 = Convert::ToDouble(Gamma0CmbB->Text);
 			const double delta = Convert::ToDouble(DeltaCmbB->Text);
 
@@ -3899,6 +4032,7 @@ namespace WinForm {
 
 			StartBtn->Enabled = true;
 			SaveSetToFileBtn->Enabled = true;
+			ParamChanged = true;
 
 			MessageBox::Show("Набор сгенерирован", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Asterisk);
 		}
@@ -3965,7 +4099,7 @@ namespace WinForm {
 
 		private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			const int n = Convert::ToInt32(nTB->Text);
+			const int n = Convert::ToInt32(nNUD->Value);
 			const int NumOfSets = Convert::ToInt32(GammaSetsCountTB->Text);
 			const double beta1 = Convert::ToDouble(Beta1TB->Text);
 			const double beta2 = Convert::ToDouble(Beta2TB->Text);
@@ -4139,6 +4273,17 @@ namespace WinForm {
 
 		private: System::Void button7_Click(System::Object^ sender, System::EventArgs^ e)
 		{
+			if (ParamChanged)
+			{
+				ParamChanged = false;
+
+				if (MessageBox::Show(L"Обнаружено изменение параметров. Вы хотите обнулить начальные значения φ?", "Сообщение", MessageBoxButtons::YesNo,
+					MessageBoxIcon::Question) == System::Windows::Forms::DialogResult::Yes)
+				{
+					ResetPhiValues();
+				}
+			}
+
 			const double delta = Convert::ToDouble(DeltaCmbB->Text);
 			SingleCalculationProgressLbl->Text = "Идут вычисления... 0%";
 			SingleCalculationProgressLbl->Visible = true;
@@ -4153,6 +4298,17 @@ namespace WinForm {
 			StopBtn->Focus();
 
 			SingleCalculationBW->RunWorkerAsync(delta);
+		}
+
+		private: System::Void ResetPhiValues() 
+		{
+			int n = Convert::ToInt32(nNUD->Value);
+			phi = new double[n];
+
+			for (int i = 0; i < n; i++)
+			{
+				phi[i] = 0.0;
+			}
 		}
 
 		private: System::Void SingleCalculationBW_RunWorkerCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
@@ -4578,7 +4734,7 @@ namespace WinForm {
 			const double Beta1 = Convert::ToDouble(textBox16->Text);         //Начальное значение β
 			const double Beta2 = Convert::ToDouble(textBox17->Text);         //Конечное значение β
 			const int NOM = Convert::ToInt32(textBox14->Text);               //Число измерений
-			const int N = Convert::ToInt32(nTB->Text);                       //Число уравнений
+			const int N = Convert::ToInt32(nNUD->Value);                     //Число уравнений
 			double BetaStep = (Beta2 - Beta1) / NOM;                         //Шаг по β
 			double* Fi0;                                                     //Начальное распределение фаз φⱼ(0)
 			double* Fi;                                                      //Фазы φⱼ(t) j = 0,...,n - 1
@@ -4769,6 +4925,7 @@ namespace WinForm {
 			gamma1 = gamma[0];
 			gamma2 = gamma[GammaList->Count - 1];
 
+			ParamChanged = true;
 			SaveSetToFileBtn->Enabled = true;
 			StartBtn->Enabled = true;
 		}
@@ -4808,7 +4965,7 @@ namespace WinForm {
 
 			PointPairList^ XiPPL = gcnew PointPairList();
 
-			const int n = Convert::ToInt32(nTB->Text);                  //Число уравнений в системе
+			const int n = Convert::ToInt32(nNUD->Value);                  //Число уравнений в системе
 			const int p = Convert::ToInt32(IterationsTB->Text);         //Максимальное число итераций
 			const double h = Convert::ToDouble(hTB->Text);              //Шаг
 			const double T = Convert::ToDouble(T_TB->Text);             //Максимальное время, до которого будет подсчет, первый критерий остановки
@@ -4988,15 +5145,27 @@ namespace WinForm {
 				return;
 			}
 
-			SortedDictionary<float, Bitmap^>^ imgesDict = gcnew SortedDictionary<float, Bitmap^>();
-			String^ textToWrite = L" β = ";
+			SortedDictionary<double, Bitmap^>^ imgesDict;
+
+			if (!BigPictureReversedCB->Checked) 
+			{
+				imgesDict = gcnew SortedDictionary<double, Bitmap^>();
+			}
+			else
+			{
+				MyDoubleComparer^ myComparer = gcnew MyDoubleComparer();
+				imgesDict = gcnew SortedDictionary<double, Bitmap^>(myComparer);
+			}
+
+			String^ textToWrite = BigPictureCmbB->Text;
+			int offset = Convert::ToInt32(BigPictureOffsetNUD->Value);
 			int maxWidth = 0;
 			int sumHeight = 0;
 
 			for each (String ^ imagePath in ofd->FileNames)
 			{
 				Bitmap^ picture = gcnew Bitmap(imagePath);
-				imgesDict->Add(Convert::ToSingle(Path::GetFileNameWithoutExtension(imagePath)), picture);
+				imgesDict->Add(Convert::ToDouble(Path::GetFileNameWithoutExtension(imagePath)), picture);
 
 				sumHeight += picture->Height;
 
@@ -5006,7 +5175,7 @@ namespace WinForm {
 				}
 			}
 
-			Bitmap^ bigPicture = gcnew Bitmap(maxWidth + 200, sumHeight);
+			Bitmap^ bigPicture = gcnew Bitmap(maxWidth + offset, sumHeight);
 			Graphics^ g = Graphics::FromImage(bigPicture);
 			g->FillRectangle(Brushes::White, 0, 0, bigPicture->Width, bigPicture->Height);
 			System::Drawing::Font^ strFont = gcnew System::Drawing::Font("Times New Roman", 28);
@@ -5014,7 +5183,7 @@ namespace WinForm {
 			int counter = 0;
 			int yPos = 0;
 
-			for each (KeyValuePair<float, Bitmap^> ^ pair in imgesDict)
+			for each (KeyValuePair<double, Bitmap^> ^ pair in imgesDict)
 			{
 				String^ writeStr = String::Format("{0}{1}", textToWrite, pair->Key);
 				SizeF^ writeStrSize = g->MeasureString(writeStr, strFont);
@@ -5050,5 +5219,22 @@ namespace WinForm {
 
 			System::Diagnostics::Process::Start(Path::GetDirectoryName(picFile));
 		}
-	};
+
+		private: System::Void paramChanged(System::Object^ sender, System::EventArgs^ e) 
+		{
+			ParamChanged = true;
+		}
+
+		private: System::Void nNUD_ValueChanged(System::Object^ sender, System::EventArgs^ e) 
+		{
+			ResetPhiValues();
+			MessageBox::Show("Значения φ были обнулены", "Сообщение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+
+		private: System::Void ResetPhiValuesBtn_Click(System::Object^ sender, System::EventArgs^ e) 
+		{
+			ResetPhiValues();
+		}
+
+};
 }
